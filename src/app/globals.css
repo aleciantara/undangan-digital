@@ -1,0 +1,56 @@
+@import "tailwindcss";
+
+/* Tell Tailwind v4 which files contain utility classes */
+@source "../**/*.{js,ts,jsx,tsx,mdx}";
+
+:root {
+  --background: #faf8f5;
+  --foreground: #3d2914;
+  --batik-brown: #8b5e3c;
+  --batik-dark: #5c3317;
+  --batik-cream: #f5e6d3;
+  --gold: #d4af37;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-batik-brown: var(--batik-brown);
+  --color-batik-dark: var(--batik-dark);
+  --color-batik-cream: var(--batik-cream);
+  --color-gold-500: var(--gold);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+  --font-playfair: var(--font-playfair);
+  --font-cormorant: var(--font-cormorant);
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-geist-sans), system-ui, sans-serif;
+}
+
+/* Batik-inspired diagonal pattern */
+.batik-pattern {
+  background-color: var(--batik-cream);
+  background-image:
+    linear-gradient(135deg, rgba(139, 94, 60, 0.08) 25%, transparent 25%),
+    linear-gradient(225deg, rgba(139, 94, 60, 0.08) 25%, transparent 25%),
+    linear-gradient(45deg, rgba(139, 94, 60, 0.05) 25%, transparent 25%),
+    linear-gradient(315deg, rgba(212, 175, 55, 0.12) 25%, transparent 25%);
+  background-size: 24px 24px;
+}
+
+.font-invitation {
+  font-family: var(--font-playfair), Georgia, serif;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.animate-fade-in {
+  animation: fadeIn 1s ease-in-out;
+}

@@ -1,0 +1,5 @@
+-- AlterTable
+ALTER TABLE "Invitation" ADD COLUMN IF NOT EXISTS "seatQuota" INTEGER;
+
+-- AlterTable
+ALTER TABLE "Guest" ADD COLUMN IF NOT EXISTS "reservedSeats" INTEGER NOT NULL DEFAULT 1;

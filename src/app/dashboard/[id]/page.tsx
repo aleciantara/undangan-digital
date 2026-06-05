@@ -1,0 +1,67 @@
+import { auth } from "@/lib/auth";
+import { prisma } from "@/lib/prisma";
+import { notFound } from "next/navigation";
+import { ManageInvitation } from "@/components/dashboard/manage-invitation";
+
+type Props = { params: Promise<{ id: string }> };
+
+export default async function ManageInvitationPage({ params }: Props) {
+  const session = await auth();
+  const { id } = await params;
+
+  const invitation = await prisma.invitation.findFirst({
+    where: { id, userId: session!.user!.id },
+    include: {
+      events: { orderBy: { order: "asc" } },
+      guests: { orderBy: { createdAt: "desc" } },
+      _count: { select: { wishes: true } },
+    },
+  });
+
+  if (!invitation) notFound();
+
+  const rsvps = await prisma.rSVP.findMany({
+    where: { guest: { invitationId: id } },
+    select: { status: true },
+  });
+
+  const rsvpStats = {
+    confirmed: rsvps.filter((r) => r.status === "CONFIRMED").length,
+    declined: rsvps.filter((r) => r.status === "DECLINED").length,
+    maybe: rsvps.filter((r) => r.status === "MAYBE").length,
+    pending: rsvps.filter((r) => r.status === "PENDING").length,
+  };
+
+  const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000";
+
+  return (
+    <ManageInvitation
+      invitation={{
+        id: invitation.id,
+        slug: invitation.slug,
+        groomName: invitation.groomName,
+        brideName: invitation.brideName,
+        isPublished: invitation.isPublished,
+        seatQuota: invitation.seatQuota,
+        templateId: invitation.templateId,
+        events: invitation.events.map((e) => ({
+          id: e.id,
+          name: e.name,
+          date: e.date.toISOString(),
+          venue: e.venue,
+          address: e.address,
+        })),
+        guests: invitation.guests.map((g) => ({
+          id: g.id,
+          name: g.name,
+          token: g.token,
+          phone: g.phone,
+          reservedSeats: g.reservedSeats,
+        })),
+        _count: invitation._count,
+      }}
+      rsvpStats={rsvpStats}
+      appUrl={appUrl}
+    />
+  );
+}
