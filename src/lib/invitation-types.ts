@@ -62,6 +62,10 @@ export type SerializedInvitation = {
   coverPhotoUrl: string | null;
   loveStory: string | null;
   musicUrl: string | null;
+  musicTitle: string | null;
+  musicAutoplay: boolean;
+  musicStartSec: number;
+  opensAt: string | null;
   seatQuota: number | null;
   events: SerializedEvent[];
   wishes: SerializedWish[];

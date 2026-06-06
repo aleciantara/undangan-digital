@@ -83,7 +83,42 @@ export const wishSchema = z.object({
   emoji: z.string().optional(),
 });
 
+export const updateInvitationSchema = z.object({
+  isPublished: z.boolean().optional(),
+  loveStory: z.string().nullable().optional(),
+  seatQuota: z.union([z.number().min(1), z.null(), z.literal("")]).optional(),
+  musicUrl: z
+    .union([z.string(), z.literal("")])
+    .optional()
+    .transform((v) => {
+      const s = typeof v === "string" ? v.trim() : "";
+      return s === "" ? null : s;
+    })
+    .refine((v) => v === null || v === undefined || /^https?:\/\/.+/i.test(v), {
+      message: "URL tidak valid",
+    }),
+  musicTitle: z
+    .union([z.string().max(100), z.literal("")])
+    .optional()
+    .transform((v) => {
+      const s = typeof v === "string" ? v.trim() : "";
+      return s === "" ? null : s;
+    }),
+  musicAutoplay: z.boolean().optional(),
+  musicStartSec: z.coerce.number().min(0).max(86400).optional(),
+  coverPhotoUrl: optionalUrlField(),
+  opensAt: z
+    .union([z.string(), z.null(), z.literal("")])
+    .optional()
+    .transform((v) => {
+      if (v === null || v === undefined || v === "") return null;
+      const d = new Date(v);
+      return Number.isNaN(d.getTime()) ? undefined : d;
+    }),
+});
+
 export type CreateInvitationInput = z.infer<typeof createInvitationSchema>;
+export type UpdateInvitationInput = z.infer<typeof updateInvitationSchema>;
 export type CreateEventInput = z.infer<typeof createEventSchema>;
 export type RSVPInput = z.infer<typeof rsvpSchema>;
 export type WishInput = z.infer<typeof wishSchema>;

@@ -86,6 +86,7 @@ model Invitation {
   musicUrl       String?
   musicTitle     String?
   musicAutoplay  Boolean       @default(true)
+  musicStartSec  Int           @default(0) // Start playback at this second (e.g. chorus)
 
   // Story
   loveStory      String?

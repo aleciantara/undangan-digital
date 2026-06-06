@@ -18,6 +18,10 @@ export function serializeInvitation(invitation: any): SerializedInvitation {
     coverPhotoUrl: invitation.coverPhotoUrl,
     loveStory: invitation.loveStory,
     musicUrl: invitation.musicUrl,
+    musicTitle: invitation.musicTitle ?? null,
+    musicAutoplay: invitation.musicAutoplay ?? true,
+    musicStartSec: invitation.musicStartSec ?? 0,
+    opensAt: invitation.opensAt ? new Date(invitation.opensAt).toISOString() : null,
     seatQuota: invitation.seatQuota ?? null,
     events: invitation.events.map((e: { date: Date; endTime: Date | null; [k: string]: unknown }) => ({
       ...e,

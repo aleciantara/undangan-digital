@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { updateInvitationSchema } from "@/lib/validations";
 
 type Params = { params: Promise<{ id: string }> };
 
@@ -14,6 +15,7 @@ export async function GET(_req: Request, { params }: Params) {
     include: {
       events: { orderBy: { order: "asc" } },
       guests: { orderBy: { createdAt: "desc" } },
+      photos: { orderBy: { order: "asc" } },
       _count: { select: { wishes: true } },
     },
   });
@@ -29,12 +31,21 @@ export async function PATCH(req: Request, { params }: Params) {
   const { id } = await params;
   const body = await req.json();
 
+  const parsed = updateInvitationSchema.safeParse(body);
+  if (!parsed.success) {
+    const fieldErrors = parsed.error.flatten().fieldErrors;
+    const first = Object.values(fieldErrors).flat()[0] ?? "Data tidak valid";
+    return NextResponse.json({ error: first, fields: fieldErrors }, { status: 400 });
+  }
+
+  const data = parsed.data;
+
   const existing = await prisma.invitation.findFirst({
     where: { id, userId: session.user.id },
   });
   if (!existing) return NextResponse.json({ error: "Not found" }, { status: 404 });
 
-  if (body.isPublished === true && !existing.isPublished) {
+  if (data.isPublished === true && !existing.isPublished) {
     const eventCount = await prisma.weddingEvent.count({ where: { invitationId: id } });
     if (eventCount === 0) {
       return NextResponse.json(
@@ -47,15 +58,27 @@ export async function PATCH(req: Request, { params }: Params) {
   const invitation = await prisma.invitation.update({
     where: { id },
     data: {
-      isPublished: body.isPublished ?? existing.isPublished,
-      publishedAt: body.isPublished ? new Date() : existing.publishedAt,
-      loveStory: body.loveStory ?? existing.loveStory,
-      seatQuota:
-        body.seatQuota !== undefined
-          ? body.seatQuota === null || body.seatQuota === ""
+      isPublished: data.isPublished ?? existing.isPublished,
+      publishedAt:
+        data.isPublished === true && !existing.isPublished
+          ? new Date()
+          : data.isPublished === false
             ? null
-            : Number(body.seatQuota)
+            : existing.publishedAt,
+      loveStory: data.loveStory !== undefined ? data.loveStory : existing.loveStory,
+      seatQuota:
+        data.seatQuota !== undefined
+          ? data.seatQuota === null || data.seatQuota === ""
+            ? null
+            : Number(data.seatQuota)
           : existing.seatQuota,
+      musicUrl: data.musicUrl !== undefined ? (data.musicUrl ?? null) : existing.musicUrl,
+      musicTitle: data.musicTitle !== undefined ? data.musicTitle : existing.musicTitle,
+      musicAutoplay: data.musicAutoplay ?? existing.musicAutoplay,
+      musicStartSec: data.musicStartSec ?? existing.musicStartSec,
+      coverPhotoUrl:
+        data.coverPhotoUrl !== undefined ? (data.coverPhotoUrl ?? null) : existing.coverPhotoUrl,
+      opensAt: data.opensAt !== undefined ? data.opensAt : existing.opensAt,
     },
   });
 

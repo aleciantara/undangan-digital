@@ -1,4 +1,5 @@
 import type { PrismaClient } from "@/generated/prisma/client";
+import { isInvitationOpen } from "@/lib/invitation-access";
 import { normalizePhone, isValidIndonesianPhone } from "@/lib/phone";
 
 export type GuestWithRsvps = {
@@ -55,7 +56,7 @@ export async function findOrCreateOpenGuest(
   const invitation = await prisma.invitation.findFirst({
     where: { id: invitationId, isPublished: true },
   });
-  if (!invitation) {
+  if (!invitation || !isInvitationOpen(invitation)) {
     return { ok: false, error: "Undangan tidak ditemukan", status: 404 };
   }
 

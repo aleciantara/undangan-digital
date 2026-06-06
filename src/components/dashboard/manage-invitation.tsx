@@ -5,6 +5,9 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { InvitationGallery } from "@/components/dashboard/invitation-gallery";
+import { InvitationMusic } from "@/components/dashboard/invitation-music";
+import { InvitationSchedule } from "@/components/dashboard/invitation-schedule";
 import { InviteQr } from "@/components/dashboard/invite-qr";
 import { formatEventDate, formatEventTime } from "@/lib/format";
 import { buildGuestInviteMessage, buildWhatsAppUrl } from "@/lib/whatsapp";
@@ -30,6 +33,12 @@ type Guest = {
   reservedSeats: number;
 };
 
+type Photo = {
+  id: string;
+  url: string;
+  caption: string | null;
+};
+
 type RsvpStats = {
   confirmed: number;
   declined: number;
@@ -44,8 +53,15 @@ type Props = {
     groomName: string;
     brideName: string;
     isPublished: boolean;
+    opensAt: string | null;
     seatQuota: number | null;
     templateId: string;
+    coverPhotoUrl: string | null;
+    musicUrl: string | null;
+    musicTitle: string | null;
+    musicAutoplay: boolean;
+    musicStartSec: number;
+    photos: Photo[];
     events: Event[];
     guests: Guest[];
     _count: { wishes: number };
@@ -212,6 +228,11 @@ export function ManageInvitation({ invitation, rsvpStats, appUrl }: Props) {
   const totalRsvp =
     rsvpStats.confirmed + rsvpStats.declined + rsvpStats.maybe + rsvpStats.pending;
 
+  const isScheduled =
+    invitation.isPublished &&
+    invitation.opensAt &&
+    new Date(invitation.opensAt).getTime() > Date.now();
+
   return (
     <div className="space-y-8">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
@@ -221,8 +242,16 @@ export function ManageInvitation({ invitation, rsvpStats, appUrl }: Props) {
           </h1>
           <p className="mt-1 text-sm text-stone-500">/{invitation.slug}</p>
           <div className="mt-2 flex flex-wrap gap-2">
-            <Badge className={invitation.isPublished ? "bg-green-100 text-green-800" : "bg-stone-100"}>
-              {invitation.isPublished ? "Terbit" : "Draft"}
+            <Badge
+              className={
+                isScheduled
+                  ? "bg-amber-100 text-amber-800"
+                  : invitation.isPublished
+                    ? "bg-green-100 text-green-800"
+                    : "bg-stone-100"
+              }
+            >
+              {isScheduled ? "Terjadwal" : invitation.isPublished ? "Terbit" : "Draft"}
             </Badge>
             <Badge className="bg-batik-cream text-batik-brown">{invitation._count.wishes} ucapan</Badge>
             <Badge className="bg-stone-100 text-stone-600">{invitation.guests.length} tamu</Badge>
@@ -277,6 +306,26 @@ export function ManageInvitation({ invitation, rsvpStats, appUrl }: Props) {
           </CardContent>
         </Card>
       )}
+
+      <InvitationSchedule
+        invitationId={invitation.id}
+        isPublished={invitation.isPublished}
+        opensAt={invitation.opensAt}
+      />
+
+      <InvitationGallery
+        invitationId={invitation.id}
+        photos={invitation.photos}
+        coverPhotoUrl={invitation.coverPhotoUrl}
+      />
+
+      <InvitationMusic
+        invitationId={invitation.id}
+        musicUrl={invitation.musicUrl}
+        musicTitle={invitation.musicTitle}
+        musicAutoplay={invitation.musicAutoplay}
+        musicStartSec={invitation.musicStartSec}
+      />
 
       {invitation.isPublished && (
         <Card>

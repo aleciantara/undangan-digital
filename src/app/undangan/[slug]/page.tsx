@@ -2,6 +2,8 @@ import { prisma } from "@/lib/prisma";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { InvitationRenderer } from "@/components/templates/invitation-renderer";
+import { ScheduledGate } from "@/components/invitation/scheduled-gate";
+import { isInvitationOpen } from "@/lib/invitation-access";
 import { serializeGuest, serializeInvitation } from "@/lib/serialize-invitation";
 
 type Props = {
@@ -43,6 +45,20 @@ export default async function InvitationPage({ params, searchParams }: Props) {
         include: { rsvps: true },
       })
     : null;
+
+  if (!isInvitationOpen(invitation)) {
+    return (
+      <>
+        <TrackOpen invitationId={invitation.id} guestToken={tamu} />
+        <ScheduledGate
+          groomName={invitation.groomName}
+          brideName={invitation.brideName}
+          opensAt={invitation.opensAt!.toISOString()}
+          accentColor={invitation.accentColor}
+        />
+      </>
+    );
+  }
 
   const serialized = serializeInvitation(invitation);
 

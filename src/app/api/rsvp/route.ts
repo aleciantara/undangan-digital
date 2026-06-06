@@ -3,6 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { rsvpSchema } from "@/lib/validations";
 import { isValidIndonesianPhone } from "@/lib/phone";
 import { getConfirmedPaxTotal } from "@/lib/rsvp-seats";
+import { isInvitationOpen } from "@/lib/invitation-access";
 import { findGuestByPhone, findOrCreateOpenGuest } from "@/lib/guest-resolve";
 
 export const runtime = "nodejs";
@@ -60,6 +61,13 @@ export async function POST(req: Request) {
   const guest = await resolveGuest(guestToken, invitationId, guestPhone, guestName);
   if (!guest) {
     return NextResponse.json({ error: "Tamu tidak ditemukan" }, { status: 404 });
+  }
+
+  const invitationForAccess = await prisma.invitation.findUnique({
+    where: { id: guest.invitationId },
+  });
+  if (!invitationForAccess || !isInvitationOpen(invitationForAccess)) {
+    return NextResponse.json({ error: "Undangan belum dibuka" }, { status: 403 });
   }
 
   if (email?.trim()) {

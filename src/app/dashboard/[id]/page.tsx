@@ -14,6 +14,7 @@ export default async function ManageInvitationPage({ params }: Props) {
     include: {
       events: { orderBy: { order: "asc" } },
       guests: { orderBy: { createdAt: "desc" } },
+      photos: { orderBy: { order: "asc" } },
       _count: { select: { wishes: true } },
     },
   });
@@ -42,8 +43,19 @@ export default async function ManageInvitationPage({ params }: Props) {
         groomName: invitation.groomName,
         brideName: invitation.brideName,
         isPublished: invitation.isPublished,
+        opensAt: invitation.opensAt?.toISOString() ?? null,
         seatQuota: invitation.seatQuota,
         templateId: invitation.templateId,
+        coverPhotoUrl: invitation.coverPhotoUrl,
+        musicUrl: invitation.musicUrl,
+        musicTitle: invitation.musicTitle,
+        musicAutoplay: invitation.musicAutoplay,
+        musicStartSec: invitation.musicStartSec,
+        photos: invitation.photos.map((p) => ({
+          id: p.id,
+          url: p.url,
+          caption: p.caption,
+        })),
         events: invitation.events.map((e) => ({
           id: e.id,
           name: e.name,

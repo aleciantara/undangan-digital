@@ -87,32 +87,32 @@ Product feature list organized by area. Tags indicate when to build and market f
 
 ## MVP checklist (build first)
 
-- [ ] Template picker
-- [ ] Indonesian motif themes
-- [ ] Color & font picker
-- [ ] Multiple event cards
-- [ ] Per-event RSVP
-- [ ] Per-event countdown
-- [ ] Venue map + Waze/Gmaps
-- [ ] Unique guest link
-- [ ] WhatsApp share
-- [ ] QR code per invite
+- [x] Template picker *(partial — picker UI; only Jawa Klasik renders)*
+- [x] Indonesian motif themes *(partial — Jawa Klasik live; 4 motifs config-only)*
+- [~] Color & font picker *(from template at create; no custom editor)*
+- [x] Multiple event cards
+- [x] Per-event RSVP
+- [x] Per-event countdown
+- [x] Venue map + Waze/Gmaps
+- [x] Unique guest link
+- [x] WhatsApp share
+- [x] QR code per invite
 - [ ] Email delivery
-- [ ] Guestlist manager
-- [ ] RSVP form
-- [ ] RSVP dashboard
-- [ ] Wishes / comments
-- [ ] Background music
-- [ ] Photo gallery
-- [ ] Couple dashboard
-- [ ] Open & click tracking
-- [ ] Publish scheduling
-- [ ] Freemium / paid plans
-- [ ] Bahasa Indonesia / EN
+- [x] Guestlist manager *(partial — manual add; no CSV import)*
+- [x] RSVP form
+- [x] RSVP dashboard
+- [x] Wishes / comments *(partial — no moderation UI)*
+- [x] Background music *(embed YouTube / Spotify + player di template)*
+- [x] Photo gallery *(upload ke R2, galeri + foto sampul)*
+- [x] Couple dashboard
+- [~] Open & click tracking *(opens only; no dashboard view)*
+- [x] Publish scheduling *(jadwal `opensAt` + halaman tunggu countdown)*
+- [~] Freemium / paid plans *(premium flag only; no billing)*
+- [~] Bahasa Indonesia / EN *(ID-first; no i18n toggle)*
 
 ## v2 backlog (after launch)
 
-- [ ] Envelope animation
+- [x] Envelope animation *(amplop buka + kartu naik; musik mulai saat tap)*
 - [ ] Animated motifs
 - [ ] PDF export
 - [ ] SMS / WA broadcast
