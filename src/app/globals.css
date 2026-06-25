@@ -4,8 +4,20 @@
 @source "../**/*.{js,ts,jsx,tsx,mdx}";
 
 :root {
+  /* Platform brand — pink & sage, tuned for UI contrast */
   --background: #faf8f5;
-  --foreground: #3d2914;
+  --foreground: #2e2430;
+  --brand-amaranth: #9b4062;
+  --brand-amaranth-dark: #7f3450;
+  --brand-rose: #c992a8;
+  --brand-brook: #8fb5a0;
+  --brand-brook-light: #d2e9d8;
+  --brand-brook-dark: #3d6b56;
+  --brand-chalk: #faf6f0;
+  --brand-muted: #746f6a;
+  --brand-ink: #2e2430;
+
+  /* Invitation templates — kept separate from platform UI */
   --batik-brown: #8b5e3c;
   --batik-dark: #5c3317;
   --batik-cream: #f5e6d3;
@@ -15,6 +27,15 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --color-brand-amaranth: var(--brand-amaranth);
+  --color-brand-amaranth-dark: var(--brand-amaranth-dark);
+  --color-brand-rose: var(--brand-rose);
+  --color-brand-brook: var(--brand-brook);
+  --color-brand-brook-light: var(--brand-brook-light);
+  --color-brand-brook-dark: var(--brand-brook-dark);
+  --color-brand-chalk: var(--brand-chalk);
+  --color-brand-muted: var(--brand-muted);
+  --color-brand-ink: var(--brand-ink);
   --color-batik-brown: var(--batik-brown);
   --color-batik-dark: var(--batik-dark);
   --color-batik-cream: var(--batik-cream);
@@ -31,7 +52,17 @@ body {
   font-family: var(--font-geist-sans), system-ui, sans-serif;
 }
 
-/* Batik-inspired diagonal pattern */
+/* Platform — soft botanical garden pattern */
+.brand-pattern {
+  background-color: var(--brand-chalk);
+  background-image:
+    radial-gradient(ellipse 80% 50% at 20% 40%, rgba(143, 181, 160, 0.35) 0%, transparent 55%),
+    radial-gradient(ellipse 60% 40% at 80% 20%, rgba(201, 146, 168, 0.18) 0%, transparent 50%),
+    radial-gradient(circle at 70% 80%, rgba(155, 64, 98, 0.06) 0%, transparent 40%),
+    url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%239B4062' fill-opacity='0.035'%3E%3Cpath d='M30 30c0-5.5 4.5-10 10-10s10 4.5 10 10-4.5 10-10 10-10-4.5-10-10zm-20 0c0-5.5 4.5-10 10-10s10 4.5 10 10-4.5 10-10 10-10-4.5-10-10z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+}
+
+/* Invitation templates — batik diagonal pattern */
 .batik-pattern {
   background-color: var(--batik-cream);
   background-image:
@@ -42,8 +73,208 @@ body {
   background-size: 24px 24px;
 }
 
+/* Invitation-themed buttons follow per-invitation CSS variables */
+.inv-btn-primary {
+  background-color: var(--inv-primary, var(--batik-brown)) !important;
+  color: white !important;
+  border-color: transparent !important;
+}
+.inv-btn-primary:hover:not(:disabled) {
+  filter: brightness(0.92);
+}
+.inv-btn-outline {
+  border: 1px solid color-mix(in srgb, var(--inv-primary, var(--batik-brown)) 35%, transparent) !important;
+  color: var(--inv-primary, var(--batik-brown)) !important;
+  background: transparent !important;
+}
+.inv-btn-outline:hover:not(:disabled) {
+  background-color: color-mix(in srgb, var(--inv-primary, var(--batik-brown)) 8%, white) !important;
+}
+
 .font-invitation {
   font-family: var(--font-playfair), Georgia, serif;
+}
+
+/* ── Landing page — abstract editorial effects ── */
+.landing-page {
+  --landing-ease: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.landing-grain {
+  position: relative;
+}
+
+.landing-grain::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  opacity: 0.35;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.5'/%3E%3C/svg%3E");
+}
+
+.landing-text-stroke {
+  -webkit-text-stroke: 1.5px color-mix(in srgb, var(--brand-rose) 70%, white);
+  color: transparent;
+}
+
+.landing-text-stroke-light {
+  -webkit-text-stroke: 1px rgba(255, 255, 255, 0.45);
+  color: transparent;
+}
+
+@keyframes landing-float {
+  0%, 100% { transform: translate(0, 0) rotate(0deg); }
+  33% { transform: translate(14px, -22px) rotate(2deg); }
+  66% { transform: translate(-10px, 14px) rotate(-1.5deg); }
+}
+
+@keyframes landing-float-slow {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(-20px, 16px) scale(1.05); }
+}
+
+@keyframes landing-marquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+
+@keyframes landing-gradient-drift {
+  0%, 100% { transform: translate(0, 0) scale(1); opacity: 0.55; }
+  50% { transform: translate(4%, -3%) scale(1.12); opacity: 0.85; }
+}
+
+@keyframes landing-fade-up {
+  from { opacity: 0; transform: translateY(28px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes landing-spin-slow {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.animate-landing-float { animation: landing-float 9s ease-in-out infinite; }
+.animate-landing-float-slow { animation: landing-float-slow 14s ease-in-out infinite; }
+.animate-landing-marquee { animation: landing-marquee 32s linear infinite; }
+.animate-landing-gradient-drift { animation: landing-gradient-drift 12s ease-in-out infinite; }
+.animate-landing-fade-up { animation: landing-fade-up 1s var(--landing-ease) both; }
+.animate-landing-spin-slow { animation: landing-spin-slow 48s linear infinite; }
+
+.landing-delay-1 { animation-delay: 0.12s; }
+.landing-delay-2 { animation-delay: 0.24s; }
+.landing-delay-3 { animation-delay: 0.36s; }
+
+/* ── CTA interactive wedding rings ── */
+.landing-rings {
+  cursor: pointer;
+  background: transparent;
+  border: none;
+  padding: 0;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.landing-rings__frame {
+  animation: landing-rings-float 5s ease-in-out infinite;
+  transition: transform 0.65s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.landing-rings__img {
+  /* Black studio backdrop blends into dark CTA */
+  mix-blend-mode: screen;
+  filter: drop-shadow(0 10px 28px rgba(0, 0, 0, 0.45));
+  transition: filter 0.65s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.landing-rings--hover .landing-rings__frame {
+  transform: scale(1.04) rotate(-1deg);
+}
+
+.landing-rings--hover .landing-rings__img {
+  filter: drop-shadow(0 14px 36px rgba(0, 0, 0, 0.5));
+}
+
+.landing-rings--linked .landing-rings__frame {
+  animation: landing-rings-float 5s ease-in-out infinite, landing-rings-pulse 2.5s ease-in-out infinite;
+  transform: scale(1.06);
+}
+
+.landing-rings--linked .landing-rings__img {
+  filter: drop-shadow(0 16px 40px rgba(255, 255, 255, 0.12))
+    drop-shadow(0 10px 28px rgba(0, 0, 0, 0.5));
+}
+
+.landing-rings__diamond-glow {
+  position: absolute;
+  top: 14%;
+  left: 22%;
+  width: 22%;
+  height: 22%;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.55) 0%, transparent 70%);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.5s ease;
+}
+
+.landing-rings--linked .landing-rings__diamond-glow {
+  opacity: 1;
+  animation: landing-rings-diamond-glow 2s ease-in-out infinite;
+}
+
+.landing-rings__spark {
+  position: absolute;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: #ffffff;
+  opacity: 0;
+  pointer-events: none;
+  z-index: 20;
+  box-shadow: 0 0 14px 3px rgba(255, 255, 255, 0.75);
+}
+
+.landing-rings--linked .landing-rings__spark {
+  animation: landing-rings-spark 2s ease-in-out infinite;
+}
+
+.landing-rings__spark--1 { top: 16%; left: 26%; animation-delay: 0s; }
+.landing-rings__spark--2 { top: 10%; left: 34%; animation-delay: 0.35s; }
+.landing-rings__spark--3 { top: 22%; left: 30%; animation-delay: 0.7s; }
+
+@keyframes landing-rings-float {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50% { transform: translateY(-8px) rotate(0.5deg); }
+}
+
+@keyframes landing-rings-pulse {
+  0%, 100% { filter: none; }
+  50% { filter: brightness(1.06); }
+}
+
+@keyframes landing-rings-diamond-glow {
+  0%, 100% { opacity: 0.45; transform: scale(0.95); }
+  50% { opacity: 0.95; transform: scale(1.08); }
+}
+
+@keyframes landing-rings-spark {
+  0%, 100% { opacity: 0; transform: scale(0.4); }
+  50% { opacity: 1; transform: scale(1.3); }
+}
+
+.landing-photo-tilt-left { transform: rotate(-4deg); }
+.landing-photo-tilt-right { transform: rotate(3.5deg); }
+
+.landing-diagonal-cut {
+  clip-path: polygon(0 0, 100% 0, 100% calc(100% - 4rem), 0 100%);
+}
+
+@media (min-width: 768px) {
+  .landing-diagonal-cut {
+    clip-path: polygon(0 0, 100% 0, 100% calc(100% - 6rem), 0 100%);
+  }
 }
 
 @keyframes fadeIn {
@@ -84,6 +315,149 @@ body {
   height: min(14rem, 62vw);
   perspective: 1400px;
   overflow: visible;
+}
+
+.env-scene--embedded {
+  width: min(17rem, 72vw);
+  height: min(12rem, 48vw);
+}
+
+.env-embedded {
+  border: 1px solid color-mix(in srgb, var(--brand-amaranth) 12%, transparent);
+  box-shadow:
+    0 1px 2px rgba(60, 50, 40, 0.06),
+    0 16px 48px rgba(155, 64, 98, 0.12);
+}
+
+/* Landing — envelope floats on section bg, no marble box */
+.env-embedded-bare {
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  min-height: auto;
+}
+
+/* Landing garden — bold green envelope, pink accents */
+.env-theme-garden {
+  --env-green: #3d6b56;
+  --env-green-light: #4f8a6e;
+  --env-green-dark: #2a4f3f;
+  --env-pink: #9b4062;
+  --env-pink-soft: #c992a8;
+}
+
+.env-theme-garden .env-scene--embedded {
+  width: min(19rem, 80vw);
+  height: min(13rem, 52vw);
+  filter: drop-shadow(0 20px 40px rgba(42, 79, 63, 0.28));
+}
+
+.env-theme-garden .env-paper--back {
+  background: linear-gradient(155deg, var(--env-green-light) 0%, var(--env-green) 48%, var(--env-green-dark) 100%);
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 255, 255, 0.12),
+    inset 0 0 48px rgba(0, 0, 0, 0.08);
+}
+
+.env-theme-garden .env-back-label {
+  color: color-mix(in srgb, var(--env-pink-soft) 85%, white);
+}
+
+.env-theme-garden .env-back-recipient {
+  color: #faf6f0;
+}
+
+.env-theme-garden .env-postmark {
+  border-color: color-mix(in srgb, var(--env-pink-soft) 55%, transparent);
+  color: color-mix(in srgb, var(--env-pink-soft) 70%, white);
+}
+
+.env-theme-garden .env-stamp {
+  background: #faf6f0;
+  border-color: color-mix(in srgb, var(--env-pink) 25%, transparent);
+}
+
+.env-theme-garden .env-paper--front {
+  background-color: var(--env-green);
+}
+
+.env-theme-garden .env-front-body {
+  background: linear-gradient(180deg, var(--env-green-light) 0%, var(--env-green) 65%, var(--env-green-dark) 100%);
+}
+
+.env-theme-garden .env-flap-side--left {
+  background: linear-gradient(148deg, var(--env-green) 0%, var(--env-green-dark) 100%);
+}
+
+.env-theme-garden .env-flap-side--right {
+  background: linear-gradient(212deg, var(--env-green-dark) 0%, #234a3a 100%);
+}
+
+.env-theme-garden .env-flap-bottom {
+  background: linear-gradient(0deg, #234a3a 0%, var(--env-green-dark) 50%, var(--env-green) 100%);
+}
+
+.env-theme-garden .env-flap-closed {
+  background: linear-gradient(180deg, var(--env-green-light) 0%, var(--env-green) 55%, var(--env-green-dark) 100%);
+  box-shadow: inset 0 2px 0 rgba(255, 255, 255, 0.15);
+}
+
+.env-theme-garden .env-flap-open {
+  background-color: color-mix(in srgb, var(--env-pink) 22%, var(--env-green-light));
+  background-image:
+    url("data:image/svg+xml,%3Csvg width='28' height='28' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 14h28M14 0v28' stroke='%23ffffff' stroke-opacity='0.35' stroke-width='0.7'/%3E%3Cpath d='M14 6c2 2.5 2 5.5 0 8-2-2.5-2-5.5 0-8z' fill='%23ffffff' fill-opacity='0.15'/%3E%3C/svg%3E"),
+    linear-gradient(180deg, color-mix(in srgb, var(--env-pink-soft) 18%, var(--env-green-light)) 0%, var(--env-green) 100%);
+}
+
+.env-theme-garden .env-pocket-liner {
+  background-color: color-mix(in srgb, var(--env-pink) 14%, var(--env-green-dark));
+}
+
+.env-theme-garden .env-letter {
+  background: linear-gradient(180deg, #fffdf9 0%, #faf6f0 100%);
+  border: 2px solid color-mix(in srgb, var(--env-pink) 35%, transparent);
+  box-shadow: 0 4px 20px rgba(155, 64, 98, 0.15);
+}
+
+.env-theme-garden .env-letter__name {
+  color: var(--env-green-dark) !important;
+}
+
+.env-theme-garden .env-letter__amp {
+  color: var(--env-pink) !important;
+}
+
+.env-theme-garden .env-wax-seal {
+  background-color: color-mix(in srgb, var(--env-pink) 75%, #fff8f5);
+  background-image:
+    radial-gradient(circle at 32% 28%, rgba(255, 255, 255, 0.55) 0%, transparent 52%),
+    radial-gradient(circle at 68% 72%, rgba(0, 0, 0, 0.08) 0%, transparent 48%),
+    radial-gradient(
+      circle at 50% 55%,
+      color-mix(in srgb, var(--env-pink) 88%, #fff) 0%,
+      color-mix(in srgb, var(--env-pink) 65%, #e8c8d4) 100%
+    );
+  box-shadow:
+    inset 0 2px 0 rgba(255, 255, 255, 0.45),
+    inset 0 -2px 6px rgba(0, 0, 0, 0.1),
+    0 4px 14px rgba(155, 64, 98, 0.35);
+}
+
+.env-theme-garden .env-wax-seal__icon {
+  color: white;
+}
+
+.env-flipper--instant {
+  transition: none !important;
+}
+
+.env-flipper--instant .env-pocket,
+.env-flipper--instant .env-letter,
+.env-flipper--instant .env-wax-seal,
+.env-flipper--instant .env-flap-closed,
+.env-flipper--instant .env-flap-open {
+  transition: none !important;
+  animation: none !important;
 }
 
 /* Nudge whole scene down when flap opens — do NOT use padding-top (shrinks body) */

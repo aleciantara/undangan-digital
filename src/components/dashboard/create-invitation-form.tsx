@@ -85,11 +85,11 @@ export function CreateInvitationForm() {
               onClick={() => setTemplateId(t.id)}
               className={`rounded-xl border-2 p-4 text-left transition ${
                 templateId === t.id
-                  ? "border-batik-brown bg-batik-cream/50"
-                  : "border-stone-200 hover:border-batik-brown/40"
+                  ? "border-brand-amaranth bg-brand-chalk/60"
+                  : "border-stone-200 hover:border-brand-rose/50"
               }`}
             >
-              <p className="font-medium text-batik-dark">{t.nameId}</p>
+              <p className="font-medium text-brand-ink">{t.nameId}</p>
               <p className="text-xs text-stone-500">{t.region ?? "Umum"} · {t.motif}</p>
               <div className="mt-2 flex gap-1">
                 <span

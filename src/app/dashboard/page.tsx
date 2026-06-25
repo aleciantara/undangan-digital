@@ -21,8 +21,8 @@ export default async function DashboardPage() {
     <div>
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="font-invitation text-2xl font-semibold text-batik-dark">Undangan saya</h1>
-          <p className="mt-1 text-sm text-stone-600">{invitations.length} undangan</p>
+          <h1 className="font-invitation text-2xl font-semibold text-brand-ink">Undangan saya</h1>
+          <p className="mt-1 text-sm text-brand-muted">{invitations.length} undangan</p>
         </div>
         <Link href="/dashboard/buat">
           <Button>
@@ -35,7 +35,7 @@ export default async function DashboardPage() {
       {invitations.length === 0 ? (
         <Card className="mt-8">
           <CardContent className="py-12 text-center">
-            <p className="text-stone-600">Belum ada undangan. Mulai buat undangan pertama kamu.</p>
+            <p className="text-brand-muted">Belum ada undangan. Mulai buat undangan pertama kamu.</p>
             <Link href="/dashboard/buat" className="mt-4 inline-block">
               <Button>Buat undangan</Button>
             </Link>
@@ -49,14 +49,14 @@ export default async function DashboardPage() {
                 <CardContent className="flex flex-col gap-4 py-5 sm:flex-row sm:items-center sm:justify-between">
                   <div>
                     <div className="flex flex-wrap items-center gap-2">
-                      <h2 className="font-invitation text-xl font-semibold text-batik-dark">
+                      <h2 className="font-invitation text-xl font-semibold text-brand-ink">
                         {inv.groomName} & {inv.brideName}
                       </h2>
                       <Badge
                         className={
                           inv.isPublished
-                            ? "bg-green-100 text-green-800"
-                            : "bg-stone-100 text-stone-600"
+                            ? "bg-brand-brook-light text-brand-brook-dark"
+                            : "bg-brand-chalk text-brand-muted"
                         }
                       >
                         {inv.isPublished ? "Terbit" : "Draft"}

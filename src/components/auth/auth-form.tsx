@@ -91,11 +91,11 @@ export function AuthForm({ mode }: AuthFormProps) {
   const isLogin = mode === "login";
 
   return (
-    <div className="mx-auto w-full max-w-md rounded-2xl border border-stone-200 bg-white p-8 shadow-sm">
-      <h1 className="text-center font-serif text-2xl text-stone-800">
+    <div className="mx-auto w-full max-w-md rounded-2xl border border-brand-brook/30 bg-white p-8 shadow-sm">
+      <h1 className="font-invitation text-center text-2xl text-brand-ink">
         {isLogin ? "Masuk" : "Daftar"}
       </h1>
-      <p className="mt-2 text-center text-sm text-stone-500">
+      <p className="mt-2 text-center text-sm text-brand-muted">
         {isLogin ? "Kelola undangan pernikahan kamu" : "Buat akun Undangan Digital"}
       </p>
 
@@ -112,7 +112,7 @@ export function AuthForm({ mode }: AuthFormProps) {
               required
               minLength={2}
               autoComplete="name"
-              className="w-full rounded-lg border border-stone-300 px-3 py-2 text-stone-900 outline-none focus:border-amber-700 focus:ring-1 focus:ring-amber-700"
+              className="w-full rounded-lg border border-stone-300 px-3 py-2 text-stone-900 outline-none focus:border-brand-amaranth focus:ring-1 focus:ring-brand-amaranth/30"
             />
           </div>
         )}
@@ -128,7 +128,7 @@ export function AuthForm({ mode }: AuthFormProps) {
             required
             autoComplete="email"
             defaultValue={isLogin ? "admin@undangandigital.com" : undefined}
-            className="w-full rounded-lg border border-stone-300 px-3 py-2 text-stone-900 outline-none focus:border-amber-700 focus:ring-1 focus:ring-amber-700"
+            className="w-full rounded-lg border border-stone-300 px-3 py-2 text-stone-900 outline-none focus:border-brand-amaranth focus:ring-1 focus:ring-brand-amaranth/30"
           />
         </div>
 
@@ -143,7 +143,7 @@ export function AuthForm({ mode }: AuthFormProps) {
             required
             minLength={8}
             autoComplete={isLogin ? "current-password" : "new-password"}
-            className="w-full rounded-lg border border-stone-300 px-3 py-2 text-stone-900 outline-none focus:border-amber-700 focus:ring-1 focus:ring-amber-700"
+            className="w-full rounded-lg border border-stone-300 px-3 py-2 text-stone-900 outline-none focus:border-brand-amaranth focus:ring-1 focus:ring-brand-amaranth/30"
           />
           {!isLogin && (
             <p className="mt-1 text-xs text-stone-500">Minimal 8 karakter</p>
@@ -164,7 +164,7 @@ export function AuthForm({ mode }: AuthFormProps) {
         <button
           type="submit"
           disabled={loading}
-          className="w-full rounded-lg bg-amber-800 py-2.5 font-medium text-white transition hover:bg-amber-900 disabled:opacity-60"
+          className="w-full rounded-lg bg-brand-amaranth py-2.5 font-medium text-white transition hover:bg-brand-amaranth-dark disabled:opacity-60"
         >
           {loading ? "Memproses..." : isLogin ? "Masuk" : "Daftar"}
         </button>
@@ -174,14 +174,14 @@ export function AuthForm({ mode }: AuthFormProps) {
         {isLogin ? (
           <>
             Belum punya akun?{" "}
-            <Link href="/daftar" className="font-medium text-amber-800 hover:underline">
+            <Link href="/daftar" className="font-medium text-brand-amaranth hover:underline">
               Daftar
             </Link>
           </>
         ) : (
           <>
             Sudah punya akun?{" "}
-            <Link href="/masuk" className="font-medium text-amber-800 hover:underline">
+            <Link href="/masuk" className="font-medium text-brand-amaranth hover:underline">
               Masuk
             </Link>
           </>

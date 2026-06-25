@@ -237,7 +237,7 @@ export function ManageInvitation({ invitation, rsvpStats, appUrl }: Props) {
     <div className="space-y-8">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
         <div>
-          <h1 className="font-invitation text-2xl font-semibold text-batik-dark">
+          <h1 className="font-invitation text-2xl font-semibold text-brand-ink">
             {invitation.groomName} & {invitation.brideName}
           </h1>
           <p className="mt-1 text-sm text-stone-500">/{invitation.slug}</p>
@@ -253,7 +253,7 @@ export function ManageInvitation({ invitation, rsvpStats, appUrl }: Props) {
             >
               {isScheduled ? "Terjadwal" : invitation.isPublished ? "Terbit" : "Draft"}
             </Badge>
-            <Badge className="bg-batik-cream text-batik-brown">{invitation._count.wishes} ucapan</Badge>
+            <Badge className="bg-brand-chalk text-brand-amaranth">{invitation._count.wishes} ucapan</Badge>
             <Badge className="bg-stone-100 text-stone-600">{invitation.guests.length} tamu</Badge>
           </div>
         </div>
@@ -390,7 +390,7 @@ export function ManageInvitation({ invitation, rsvpStats, appUrl }: Props) {
                 key={t.value}
                 type="button"
                 onClick={() => setEventName(t.label)}
-                className="rounded-full border border-batik-brown/20 px-3 py-1 text-xs text-batik-brown transition hover:bg-batik-cream"
+                className="rounded-full border border-brand-amaranth/20 px-3 py-1 text-xs text-brand-amaranth transition hover:bg-brand-chalk"
               >
                 {t.label}
               </button>

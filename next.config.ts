@@ -15,6 +15,7 @@ const r2Host = r2PublicHost();
 const nextConfig: NextConfig = {
   images: {
     remotePatterns: [
+      { protocol: "https", hostname: "images.unsplash.com" },
       { protocol: "https", hostname: "**.r2.cloudflarestorage.com" },
       { protocol: "https", hostname: "lh3.googleusercontent.com" },
       ...(r2Host ? [{ protocol: "https" as const, hostname: r2Host }] : []),

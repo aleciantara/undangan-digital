@@ -255,7 +255,7 @@ export function RsvpSection({ invitationId, seatQuota, events, guest }: Props) {
           </div>
           <Button
             type="button"
-            className="w-full"
+            className="inv-btn-primary w-full"
             onClick={identifyGuest}
             disabled={verifyLoading}
           >
@@ -354,6 +354,7 @@ export function RsvpSection({ invitationId, seatQuota, events, guest }: Props) {
                 <div className="mt-4 flex flex-wrap gap-2">
                   <Button
                     size="sm"
+                    className="inv-btn-primary"
                     disabled={loading === event.id}
                     onClick={() => submit(event.id, "CONFIRMED")}
                   >
@@ -362,6 +363,7 @@ export function RsvpSection({ invitationId, seatQuota, events, guest }: Props) {
                   <Button
                     size="sm"
                     variant="outline"
+                    className="inv-btn-outline"
                     disabled={loading === event.id}
                     onClick={() => submit(event.id, "MAYBE")}
                   >
@@ -370,6 +372,7 @@ export function RsvpSection({ invitationId, seatQuota, events, guest }: Props) {
                   <Button
                     size="sm"
                     variant="ghost"
+                    className="inv-btn-outline border-0"
                     disabled={loading === event.id}
                     onClick={() => submit(event.id, "DECLINED")}
                   >

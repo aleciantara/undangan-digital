@@ -10,13 +10,24 @@ type Props = {
   brideName: string;
   recipientName: string;
   accentColor: string;
-  onOpen: () => void;
-  onComplete: () => void;
+  onOpen?: () => void;
+  onComplete?: () => void;
+  /** fullscreen overlay for invitations; embedded for landing/demo */
+  variant?: "overlay" | "embedded";
+  /** replay animation after sequence (default true when embedded) */
+  loop?: boolean;
+  hintText?: string;
+  headerText?: string;
+  /** click for invitations; hover for landing demo */
+  activateOn?: "click" | "hover";
+  /** landing: bare on page + green envelope / pink accents */
+  embedTheme?: "default" | "garden";
 };
 
 const FLIP_MS = 1000;
 const OPEN_MS = 1000;
 const PULL_MS = 1100;
+const RESET_MS = 1400;
 
 export function EnvelopeCover({
   groomName,
@@ -25,59 +36,124 @@ export function EnvelopeCover({
   accentColor,
   onOpen,
   onComplete,
+  variant = "overlay",
+  loop,
+  hintText = "Ketuk amplop untuk membuka undangan",
+  headerText = "Undangan Pernikahan",
+  activateOn = "click",
+  embedTheme = "default",
 }: Props) {
   const [step, setStep] = useState<EnvelopeStep>("back");
+  const [instantReset, setInstantReset] = useState(false);
   const startedRef = useRef(false);
+  const isHoveredRef = useRef(false);
+  const runSequenceRef = useRef<() => void>(() => {});
+  const timersRef = useRef<number[]>([]);
+
+  const isEmbedded = variant === "embedded";
+  const isGarden = isEmbedded && embedTheme === "garden";
+  const shouldLoop = loop ?? isEmbedded;
 
   const isFlapOpen = step === "open" || step === "pull" || step === "exit";
+
+  const resetEnvelope = useCallback(() => {
+    setInstantReset(true);
+    setStep("back");
+    startedRef.current = false;
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => setInstantReset(false));
+    });
+    if (activateOn === "hover" && isHoveredRef.current) {
+      timersRef.current.push(window.setTimeout(() => runSequenceRef.current(), 350));
+    }
+  }, [activateOn]);
 
   const runSequence = useCallback(() => {
     if (startedRef.current) return;
     startedRef.current = true;
-    onOpen();
+    onOpen?.();
 
     setStep("flip");
-    window.setTimeout(() => setStep("open"), FLIP_MS);
-    window.setTimeout(() => setStep("pull"), FLIP_MS + OPEN_MS);
-    window.setTimeout(() => {
-      setStep("exit");
-      onComplete();
-    }, FLIP_MS + OPEN_MS + PULL_MS);
-  }, [onOpen, onComplete]);
+    timersRef.current.push(window.setTimeout(() => setStep("open"), FLIP_MS));
+    timersRef.current.push(window.setTimeout(() => setStep("pull"), FLIP_MS + OPEN_MS));
+    timersRef.current.push(
+      window.setTimeout(() => {
+        setStep("exit");
+        onComplete?.();
+        if (shouldLoop) {
+          timersRef.current.push(window.setTimeout(resetEnvelope, RESET_MS));
+        }
+      }, FLIP_MS + OPEN_MS + PULL_MS)
+    );
+  }, [onOpen, onComplete, shouldLoop, resetEnvelope]);
+
+  useEffect(() => {
+    runSequenceRef.current = runSequence;
+  }, [runSequence]);
 
   useEffect(() => {
     return () => {
+      timersRef.current.forEach((id) => window.clearTimeout(id));
+      timersRef.current = [];
       startedRef.current = false;
     };
   }, []);
 
-  const hint =
-    step === "back"
-      ? "Ketuk amplop untuk membuka undangan"
-      : step === "flip"
-        ? ""
-        : "";
+  const hint = step === "back" ? hintText : "";
+  const isHoverActivated = activateOn === "hover";
+
+  const wrapperClass =
+    variant === "overlay"
+      ? `env-overlay fixed inset-0 z-50 flex flex-col items-center justify-center px-4 ${step === "exit" && !shouldLoop ? "env-overlay--exit" : ""}`
+      : isGarden
+        ? "env-embedded-bare env-theme-garden relative flex flex-col items-center justify-center py-4 sm:py-6"
+        : "env-embedded relative flex min-h-[min(420px,70vw)] flex-col items-center justify-center overflow-hidden rounded-[2rem] px-4 py-10 sm:rounded-[3rem] sm:py-12";
 
   return (
-    <div
-      className={`env-overlay fixed inset-0 z-50 flex flex-col items-center justify-center px-4 ${step === "exit" ? "env-overlay--exit" : ""}`}
-    >
-      <div className="env-marble pointer-events-none absolute inset-0" />
+    <div className={wrapperClass}>
+      {!isGarden && (
+        <div className={`env-marble pointer-events-none absolute inset-0 ${isEmbedded ? "rounded-[2rem] sm:rounded-[3rem]" : ""}`} />
+      )}
 
-      <p className="relative mb-8 text-center text-xs uppercase tracking-[0.35em] text-stone-500">
-        Undangan Pernikahan
+      <p
+        className={`relative mb-6 text-center text-xs uppercase tracking-[0.35em] sm:mb-8 ${
+          isGarden ? "text-brand-amaranth" : isEmbedded ? "text-brand-muted" : "text-stone-500"
+        }`}
+      >
+        {headerText}
       </p>
 
-      <button
-        type="button"
-        onClick={runSequence}
-        disabled={step !== "back"}
-        className="env-tap relative rounded-lg focus:outline-none focus-visible:ring-2 focus-visible:ring-stone-400/50 disabled:cursor-default"
-        aria-label="Buka undangan"
+      <div
+        role={isHoverActivated ? "group" : undefined}
+        onMouseEnter={
+          isHoverActivated
+            ? () => {
+                isHoveredRef.current = true;
+                if (step === "back") runSequence();
+              }
+            : undefined
+        }
+        onMouseLeave={isHoverActivated ? () => { isHoveredRef.current = false; } : undefined}
+        onClick={!isHoverActivated && step === "back" ? runSequence : undefined}
+        onKeyDown={
+          !isHoverActivated && step === "back"
+            ? (e) => {
+                if (e.key === "Enter" || e.key === " ") {
+                  e.preventDefault();
+                  runSequence();
+                }
+              }
+            : undefined
+        }
+        tabIndex={isHoverActivated ? undefined : step === "back" ? 0 : -1}
+        className={`env-tap relative z-10 rounded-lg focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-amaranth/40 ${
+          isHoverActivated ? "cursor-default" : step !== "back" ? "cursor-default" : "cursor-pointer"
+        }`}
+        aria-label={isHoverActivated ? undefined : "Buka undangan"}
       >
-        <div className={`env-scene ${isFlapOpen ? "env-scene--opening" : ""}`}>
+        <div className={`env-scene ${isFlapOpen ? "env-scene--opening" : ""} ${isEmbedded ? "env-scene--embedded" : ""}`}>
           <div
-            className={`env-flipper env-flipper--${step}`}
+            className={`env-flipper env-flipper--${step} ${instantReset ? "env-flipper--instant" : ""}`}
             data-step={step}
           >
             {/* ── Back of envelope ── */}
@@ -155,10 +231,12 @@ export function EnvelopeCover({
             </div>
           </div>
         </div>
-      </button>
+      </div>
 
       <p
-        className={`relative mt-10 min-h-[1.25rem] text-center text-sm text-stone-500 transition-opacity duration-300 ${step === "back" ? "animate-pulse" : "opacity-0"}`}
+        className={`relative z-10 mt-8 min-h-[1.25rem] text-center text-sm transition-opacity duration-300 sm:mt-10 ${
+          isGarden ? "text-brand-brook-dark" : isEmbedded ? "text-brand-muted" : "text-stone-500"
+        } ${step === "back" ? (isHoverActivated ? "" : "animate-pulse") : "opacity-0"}`}
       >
         {hint}
       </p>

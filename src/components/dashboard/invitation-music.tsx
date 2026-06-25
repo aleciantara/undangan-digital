@@ -138,7 +138,7 @@ export function InvitationMusic({
                 <p className="truncate text-sm font-medium">{musicTitle || "Musik latar"}</p>
                 <Badge className="bg-stone-100 text-stone-600">{current.label}</Badge>
                 {musicStartSec > 0 && (
-                  <Badge className="bg-batik-cream text-batik-brown">
+                  <Badge className="bg-brand-chalk text-brand-amaranth">
                     Mulai {formatMmSs(musicStartSec)}
                   </Badge>
                 )}

@@ -76,7 +76,7 @@ export function WishesSection({ invitationId, initialWishes, defaultGuestName = 
           />
         </div>
         {error && <p className="text-sm text-red-600">{error}</p>}
-        <Button type="submit" disabled={loading} className="w-full">
+        <Button type="submit" disabled={loading} className="inv-btn-primary w-full">
           {loading ? "Mengirim..." : "Kirim ucapan"}
         </Button>
       </form>

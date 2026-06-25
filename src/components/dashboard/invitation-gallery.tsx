@@ -93,7 +93,7 @@ export function InvitationGallery({ invitationId, photos, coverPhotoUrl }: Props
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img src={photo.url} alt={photo.caption ?? ""} className="h-full w-full object-cover" />
                 {coverPhotoUrl === photo.url && (
-                  <span className="absolute left-2 top-2 rounded bg-batik-brown px-2 py-0.5 text-xs text-white">
+                  <span className="absolute left-2 top-2 rounded bg-brand-amaranth px-2 py-0.5 text-xs text-white">
                     Sampul
                   </span>
                 )}

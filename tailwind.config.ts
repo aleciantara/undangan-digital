@@ -14,6 +14,17 @@ const config: Config = {
         sans: ["var(--font-geist-sans)", "system-ui", "sans-serif"],
       },
       colors: {
+        brand: {
+          amaranth:        "#9B4062",
+          "amaranth-dark": "#7F3450",
+          rose:            "#C992A8",
+          brook:           "#8FB5A0",
+          "brook-light":   "#D2E9D8",
+          "brook-dark":    "#3D6B56",
+          chalk:           "#FAF6F0",
+          muted:           "#746F6A",
+          ink:             "#2E2430",
+        },
         gold: {
           50:  "#FEFCE8",
           100: "#FEF9C3",

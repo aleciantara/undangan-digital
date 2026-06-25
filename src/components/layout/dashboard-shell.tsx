@@ -11,23 +11,23 @@ type Props = {
 
 export function DashboardShell({ children, userName, userRole }: Props) {
   return (
-    <div className="min-h-screen bg-stone-50">
-      <header className="border-b border-stone-200 bg-white">
+    <div className="min-h-screen bg-background">
+      <header className="border-b border-brand-brook/30 bg-brand-chalk/60 backdrop-blur">
         <div className="mx-auto flex h-14 max-w-6xl items-center justify-between px-4">
-          <Link href="/dashboard" className="flex items-center gap-2 font-invitation font-semibold text-batik-dark">
-            <Heart className="h-5 w-5 text-gold-500" fill="currentColor" />
+          <Link href="/dashboard" className="flex items-center gap-2 font-invitation font-semibold text-brand-ink">
+            <Heart className="h-5 w-5 text-brand-rose" fill="currentColor" />
             Dashboard
           </Link>
           <div className="flex items-center gap-4">
             {userName && (
-              <span className="hidden items-center gap-2 text-sm text-stone-600 sm:inline-flex">
+              <span className="hidden items-center gap-2 text-sm text-brand-muted sm:inline-flex">
                 Halo, {userName}
                 {userRole && (
                   <span
                     className={
                       userRole === "ADMIN"
-                        ? "rounded-full bg-amber-100 px-2 py-0.5 text-xs font-medium text-amber-900"
-                        : "rounded-full bg-stone-100 px-2 py-0.5 text-xs font-medium text-stone-600"
+                        ? "rounded-full bg-brand-rose/20 px-2 py-0.5 text-xs font-medium text-brand-amaranth"
+                        : "rounded-full bg-brand-brook/30 px-2 py-0.5 text-xs font-medium text-brand-muted"
                     }
                   >
                     {userRole}
@@ -55,14 +55,14 @@ export function DashboardShell({ children, userName, userRole }: Props) {
           <nav className="space-y-1">
             <Link
               href="/dashboard"
-              className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium text-stone-700 hover:bg-white hover:shadow-sm"
+              className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium text-brand-ink hover:bg-white hover:shadow-sm"
             >
               <LayoutDashboard className="h-4 w-4" />
               Undangan saya
             </Link>
             <Link
               href="/dashboard/buat"
-              className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium text-batik-brown hover:bg-white hover:shadow-sm"
+              className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium text-brand-amaranth hover:bg-white hover:shadow-sm"
             >
               <Plus className="h-4 w-4" />
               Buat undangan
