@@ -7,6 +7,14 @@ import { GardenReveal } from "@/components/templates/garden/garden-reveal";
 
 type Photo = { id: string; url: string; caption?: string | null };
 
+/** Dashboard slot labels — not shown on the live invitation */
+function invitationCaption(caption?: string | null): string | null {
+  if (!caption?.trim()) return null;
+  const normalized = caption.trim().toLowerCase();
+  if (normalized === "galeri") return null;
+  return caption.trim();
+}
+
 type Props = {
   photos: Photo[];
   accentColor: string;
@@ -93,19 +101,22 @@ export function PhantomGallery({ photos, accentColor, primaryColor }: Props) {
             style={{ "--gal-accent": accentColor, "--gal-primary": primaryColor } as React.CSSProperties}
           >
             <div ref={trackRef} className="phantom-gallery__track" onScroll={onTrackScroll}>
-              {items.map((photo, i) => (
+              {items.map((photo, i) => {
+                const label = invitationCaption(photo.caption);
+                return (
                 <button
                   key={photo.id}
                   type="button"
                   className="phantom-gallery__slide"
                   onClick={() => setLightbox(i)}
-                  aria-label={photo.caption ?? `Foto ${i + 1}`}
+                  aria-label={label ?? `Foto ${i + 1}`}
                 >
                   {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src={photo.url} alt={photo.caption ?? ""} className="phantom-gallery__img" />
-                  {photo.caption && <span className="phantom-gallery__caption">{photo.caption}</span>}
+                  <img src={photo.url} alt={label ?? ""} className="phantom-gallery__img" />
+                  {label && <span className="phantom-gallery__caption">{label}</span>}
                 </button>
-              ))}
+              );
+              })}
             </div>
 
             <div className="phantom-gallery__nav">
@@ -143,7 +154,10 @@ export function PhantomGallery({ photos, accentColor, primaryColor }: Props) {
         </GardenReveal>
       </div>
 
-      {lightbox !== null && (
+      {lightbox !== null && (() => {
+        const current = items[lightbox];
+        const label = invitationCaption(current.caption);
+        return (
         <div className="phantom-lightbox" role="dialog" aria-modal="true" onClick={closeLightbox}>
           <button
             type="button"
@@ -166,8 +180,8 @@ export function PhantomGallery({ photos, accentColor, primaryColor }: Props) {
           </button>
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
-            src={items[lightbox].url}
-            alt={items[lightbox].caption ?? ""}
+            src={current.url}
+            alt={label ?? ""}
             className="phantom-lightbox__img"
             onClick={(e) => e.stopPropagation()}
           />
@@ -182,11 +196,10 @@ export function PhantomGallery({ photos, accentColor, primaryColor }: Props) {
           >
             <ChevronRight className="h-7 w-7" />
           </button>
-          {items[lightbox].caption && (
-            <p className="phantom-lightbox__caption">{items[lightbox].caption}</p>
-          )}
+          {label && <p className="phantom-lightbox__caption">{label}</p>}
         </div>
-      )}
+        );
+      })()}
     </div>
   );
 }

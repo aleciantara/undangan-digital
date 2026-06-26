@@ -71,11 +71,13 @@ export function PhantomCoupleShowcase({
       className="phantom-couple-showcase px-4 py-16 sm:py-24"
       style={{ "--cs-accent": accentColor, "--cs-primary": primaryColor } as React.CSSProperties}
     >
-      <GardenReveal variant="up">
+      <GardenReveal variant="clip">
         <p className="phantom-couple-showcase__eyebrow text-center">The Bride & Groom</p>
         <p className="phantom-couple-showcase__sub text-center">Mempelai</p>
+      </GardenReveal>
 
-        <div className="phantom-couple-showcase__grid phantom-couple-showcase__grid--duo mx-auto mt-12 max-w-3xl">
+      <div className="phantom-couple-showcase__grid phantom-couple-showcase__grid--duo mx-auto mt-12 max-w-3xl">
+        <GardenReveal variant="up" delay={80}>
           <PortraitCard
             src={groomPhoto}
             alt={groomName}
@@ -83,6 +85,8 @@ export function PhantomCoupleShowcase({
             role="Mempelai Pria"
             variant="groom"
           />
+        </GardenReveal>
+        <GardenReveal variant="up" delay={180}>
           <PortraitCard
             src={bridePhoto}
             alt={brideName}
@@ -90,8 +94,8 @@ export function PhantomCoupleShowcase({
             role="Mempelai Wanita"
             variant="bride"
           />
-        </div>
-      </GardenReveal>
+        </GardenReveal>
+      </div>
     </div>
   );
 }

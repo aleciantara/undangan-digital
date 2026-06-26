@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { useInvitationScroll } from "@/components/invitation/invitation-scroll-context";
 
 type Props = {
   children: React.ReactNode;
@@ -8,6 +9,30 @@ type Props = {
   variant?: "up" | "left" | "right" | "scale" | "clip";
   delay?: number;
 };
+
+function scrollRootFor(el: HTMLElement, scrollRef: HTMLElement | null): Element | null {
+  if (scrollRef) {
+    const style = getComputedStyle(scrollRef);
+    const scrollable =
+      (style.overflowY === "auto" || style.overflowY === "scroll") &&
+      scrollRef.scrollHeight > scrollRef.clientHeight;
+    if (scrollable) return scrollRef;
+  }
+
+  let parent = el.parentElement;
+  while (parent) {
+    const style = getComputedStyle(parent);
+    if (
+      (style.overflowY === "auto" || style.overflowY === "scroll") &&
+      parent.scrollHeight > parent.clientHeight
+    ) {
+      return parent;
+    }
+    parent = parent.parentElement;
+  }
+
+  return null;
+}
 
 export function GardenReveal({
   children,
@@ -17,8 +42,15 @@ export function GardenReveal({
 }: Props) {
   const ref = useRef<HTMLDivElement>(null);
   const [visible, setVisible] = useState(false);
+  const scrollCtx = useInvitationScroll();
+  const revealsActive = scrollCtx?.revealsActive ?? true;
 
   useEffect(() => {
+    if (!revealsActive) {
+      setVisible(false);
+      return;
+    }
+
     const el = ref.current;
     if (!el) return;
 
@@ -28,6 +60,8 @@ export function GardenReveal({
       return;
     }
 
+    const root = scrollRootFor(el, scrollCtx?.scrollRef.current ?? null);
+
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {
@@ -35,12 +69,16 @@ export function GardenReveal({
           observer.disconnect();
         }
       },
-      { threshold: 0.12, rootMargin: "0px 0px -8% 0px" }
+      {
+        root,
+        threshold: 0.14,
+        rootMargin: "0px 0px -5% 0px",
+      }
     );
 
     observer.observe(el);
     return () => observer.disconnect();
-  }, []);
+  }, [revealsActive, scrollCtx?.scrollRef]);
 
   return (
     <div

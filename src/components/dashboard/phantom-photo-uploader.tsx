@@ -105,6 +105,7 @@ export function PhantomPhotoUploader({ invitationId, photos, coverPhotoUrl }: Pr
   const router = useRouter();
   const [error, setError] = useState<string | null>(null);
   const [busySlot, setBusySlot] = useState<PhantomPhotoSlotId | "extra" | null>(null);
+  const [extraUploadLabel, setExtraUploadLabel] = useState<string | null>(null);
   const [removingId, setRemovingId] = useState<string | null>(null);
   const extraInputRef = useRef<HTMLInputElement>(null);
 
@@ -214,27 +215,57 @@ export function PhantomPhotoUploader({ invitationId, photos, coverPhotoUrl }: Pr
     }
   }
 
-  async function uploadExtra(file: File) {
-    setError(null);
-    setBusySlot("extra");
-    try {
-      const form = new FormData();
-      form.append("file", file);
-      form.append("caption", "Galeri");
+  async function uploadSingleExtra(file: File) {
+    const form = new FormData();
+    form.append("file", file);
 
-      const res = await fetch(`/api/invitations/${invitationId}/photos`, {
-        method: "POST",
-        body: form,
-      });
-      const data = await res.json().catch(() => ({}));
-      if (!res.ok) {
-        throw new Error(typeof data.error === "string" ? data.error : "Gagal mengunggah foto.");
+    const res = await fetch(`/api/invitations/${invitationId}/photos`, {
+      method: "POST",
+      body: form,
+    });
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) {
+      throw new Error(typeof data.error === "string" ? data.error : "Gagal mengunggah foto.");
+    }
+  }
+
+  async function uploadExtras(files: File[]) {
+    const remaining = Math.max(0, 20 - photos.length);
+    if (remaining === 0) {
+      setError("Maksimal 20 foto per undangan.");
+      return;
+    }
+
+    const batch = files.slice(0, remaining);
+    if (files.length > remaining) {
+      setError(`Hanya ${remaining} slot tersisa — mengunggah ${remaining} foto pertama.`);
+    } else {
+      setError(null);
+    }
+
+    setBusySlot("extra");
+
+    let uploaded = 0;
+    try {
+      for (const file of batch) {
+        uploaded += 1;
+        setExtraUploadLabel(`Mengunggah ${uploaded}/${batch.length}...`);
+        await uploadSingleExtra(file);
       }
       router.refresh();
     } catch (e) {
-      setError(e instanceof Error ? e.message : "Terjadi kesalahan.");
+      const message = e instanceof Error ? e.message : "Terjadi kesalahan.";
+      if (uploaded > 1) {
+        setError(`${uploaded - 1} foto berhasil. ${message}`);
+        router.refresh();
+      } else if (uploaded === 1) {
+        setError(message);
+      } else {
+        setError(message);
+      }
     } finally {
       setBusySlot(null);
+      setExtraUploadLabel(null);
     }
   }
 
@@ -283,7 +314,8 @@ export function PhantomPhotoUploader({ invitationId, photos, coverPhotoUrl }: Pr
         <div className="border-t border-stone-100 pt-6">
           <p className="font-medium text-brand-ink">Galeri tambahan</p>
           <p className="mt-1 text-xs text-stone-500">
-            Foto ekstra untuk carousel galeri di undangan (opsional).
+            Foto ekstra untuk carousel galeri di undangan (opsional). Bisa pilih beberapa foto
+            sekaligus.
           </p>
 
           {classified.extras.length > 0 && (
@@ -313,10 +345,11 @@ export function PhantomPhotoUploader({ invitationId, photos, coverPhotoUrl }: Pr
               ref={extraInputRef}
               type="file"
               accept="image/jpeg,image/png,image/webp"
+              multiple
               className="hidden"
               onChange={(e) => {
-                const file = e.target.files?.[0];
-                if (file) uploadExtra(file);
+                const files = Array.from(e.target.files ?? []);
+                if (files.length > 0) uploadExtras(files);
                 e.target.value = "";
               }}
             />
@@ -328,7 +361,9 @@ export function PhantomPhotoUploader({ invitationId, photos, coverPhotoUrl }: Pr
               onClick={() => extraInputRef.current?.click()}
             >
               <ImagePlus className="h-4 w-4" />
-              {busySlot === "extra" ? "Mengunggah..." : "Tambah ke galeri"}
+              {busySlot === "extra"
+                ? (extraUploadLabel ?? "Mengunggah...")
+                : "Tambah ke galeri"}
             </Button>
           </div>
         </div>

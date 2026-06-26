@@ -204,19 +204,21 @@ export function PhantomOperaTemplate({ invitation, guest }: Props) {
           className="phantom-footer-wrap min-h-[85svh] sm:min-h-[90svh]"
           bgPosition="center 40%"
         >
-          <footer
-            className="phantom-footer flex min-h-[inherit] flex-col items-center justify-center px-4 py-20 text-center"
-            style={{ "--ft-accent": accentColor, "--ft-primary": primaryColor } as React.CSSProperties}
-          >
-            <p className="phantom-footer__ornament" aria-hidden>
-              ❧
-            </p>
-            <p className="phantom-footer__names font-invitation">
-              {invitation.groomName} & {invitation.brideName}
-            </p>
-            <p className="phantom-footer__thanks">Terima kasih atas doa restunya</p>
-            <p className="phantom-footer__tagline font-invitation italic">Till the end of time</p>
-          </footer>
+          <GardenReveal variant="up">
+            <footer
+              className="phantom-footer flex min-h-[inherit] flex-col items-center justify-center px-4 py-20 text-center"
+              style={{ "--ft-accent": accentColor, "--ft-primary": primaryColor } as React.CSSProperties}
+            >
+              <p className="phantom-footer__ornament" aria-hidden>
+                ❧
+              </p>
+              <p className="phantom-footer__names font-invitation">
+                {invitation.groomName} & {invitation.brideName}
+              </p>
+              <p className="phantom-footer__thanks">Terima kasih atas doa restunya</p>
+              <p className="phantom-footer__tagline font-invitation italic">Till the end of time</p>
+            </footer>
+          </GardenReveal>
         </PhantomSection>
       </div>
     </InvitationExperience>

@@ -1,6 +1,7 @@
 "use client";
 
 import { EnvelopeCover } from "@/components/invitation/envelope-cover";
+import { InvitationScrollProvider } from "@/components/invitation/invitation-scroll-context";
 import { InvitationMusicPlayer } from "@/components/invitation/invitation-music-player";
 import type { MusicPlayerHandle } from "@/components/invitation/music-player-handle";
 import { useCallback, useEffect, useRef, useState } from "react";
@@ -45,6 +46,7 @@ export function InvitationExperience({
   children,
 }: Props) {
   const musicRef = useRef<MusicPlayerHandle>(null);
+  const scrollRef = useRef<HTMLDivElement>(null);
   const [phase, setPhase] = useState<Phase>("envelope");
   const [mounted, setMounted] = useState(false);
 
@@ -121,20 +123,23 @@ export function InvitationExperience({
         />
       )}
 
-      <div
-        className={
-          phase === "open"
-            ? envelopeTheme === "garden"
-              ? "invitation-content--garden-reveal"
-              : envelopeTheme === "phantom"
-                ? "invitation-content--phantom-reveal invitation-content--snap-mobile"
-                : "invitation-content--revealed"
-            : "pointer-events-none fixed inset-0 overflow-hidden opacity-0"
-        }
-        aria-hidden={phase !== "open"}
-      >
-        {children}
-      </div>
+      <InvitationScrollProvider scrollRef={scrollRef} revealsActive={phase === "open"}>
+        <div
+          ref={scrollRef}
+          className={
+            phase === "open"
+              ? envelopeTheme === "garden"
+                ? "invitation-content--garden-reveal"
+                : envelopeTheme === "phantom"
+                  ? "invitation-content--phantom-reveal invitation-content--snap-mobile"
+                  : "invitation-content--revealed"
+              : "pointer-events-none fixed inset-0 overflow-hidden opacity-0"
+          }
+          aria-hidden={phase !== "open"}
+        >
+          {children}
+        </div>
+      </InvitationScrollProvider>
     </>
   );
 }
