@@ -20,8 +20,10 @@ type Props = {
   headerText?: string;
   /** click for invitations; hover for landing demo */
   activateOn?: "click" | "hover";
-  /** landing: bare on page + green envelope / pink accents */
-  embedTheme?: "default" | "garden";
+  /** landing: bare on page + green envelope / pink accents; invitations: same garden styling on fullscreen */
+  embedTheme?: "default" | "garden" | "phantom";
+  /** use garden envelope on fullscreen overlay (invitation templates) */
+  envelopeTheme?: "default" | "garden" | "phantom";
 };
 
 const FLIP_MS = 1000;
@@ -42,6 +44,7 @@ export function EnvelopeCover({
   headerText = "Undangan Pernikahan",
   activateOn = "click",
   embedTheme = "default",
+  envelopeTheme,
 }: Props) {
   const [step, setStep] = useState<EnvelopeStep>("back");
   const [instantReset, setInstantReset] = useState(false);
@@ -51,7 +54,13 @@ export function EnvelopeCover({
   const timersRef = useRef<number[]>([]);
 
   const isEmbedded = variant === "embedded";
-  const isGarden = isEmbedded && embedTheme === "garden";
+  const isGarden =
+    (isEmbedded && embedTheme === "garden") ||
+    (!isEmbedded && (envelopeTheme === "garden" || embedTheme === "garden"));
+  const isPhantom =
+    (isEmbedded && embedTheme === "phantom") ||
+    (!isEmbedded && (envelopeTheme === "phantom" || embedTheme === "phantom"));
+  const isThemed = isGarden || isPhantom;
   const shouldLoop = loop ?? isEmbedded;
 
   const isFlapOpen = step === "open" || step === "pull" || step === "exit";
@@ -104,20 +113,28 @@ export function EnvelopeCover({
 
   const wrapperClass =
     variant === "overlay"
-      ? `env-overlay fixed inset-0 z-50 flex flex-col items-center justify-center px-4 ${step === "exit" && !shouldLoop ? "env-overlay--exit" : ""}`
+      ? `env-overlay fixed inset-0 z-50 flex flex-col items-center justify-center px-4 ${isGarden ? "env-theme-garden" : ""} ${isPhantom ? "env-theme-phantom" : ""} ${step === "exit" && !shouldLoop ? "env-overlay--exit" : ""}`
       : isGarden
         ? "env-embedded-bare env-theme-garden relative flex flex-col items-center justify-center py-4 sm:py-6"
-        : "env-embedded relative flex min-h-[min(420px,70vw)] flex-col items-center justify-center overflow-hidden rounded-[2rem] px-4 py-10 sm:rounded-[3rem] sm:py-12";
+        : isPhantom
+          ? "env-embedded-bare env-theme-phantom relative flex flex-col items-center justify-center py-4 sm:py-6"
+          : "env-embedded relative flex min-h-[min(420px,70vw)] flex-col items-center justify-center overflow-hidden rounded-[2rem] px-4 py-10 sm:rounded-[3rem] sm:py-12";
 
   return (
     <div className={wrapperClass}>
-      {!isGarden && (
+      {!isThemed && (
         <div className={`env-marble pointer-events-none absolute inset-0 ${isEmbedded ? "rounded-[2rem] sm:rounded-[3rem]" : ""}`} />
       )}
 
       <p
         className={`relative mb-6 text-center text-xs uppercase tracking-[0.35em] sm:mb-8 ${
-          isGarden ? "text-brand-amaranth" : isEmbedded ? "text-brand-muted" : "text-stone-500"
+          isPhantom
+            ? "text-[#c9929a]"
+            : isGarden
+              ? "text-brand-amaranth"
+              : isEmbedded
+                ? "text-brand-muted"
+                : "text-stone-500"
         }`}
       >
         {headerText}
@@ -235,7 +252,13 @@ export function EnvelopeCover({
 
       <p
         className={`relative z-10 mt-8 min-h-[1.25rem] text-center text-sm transition-opacity duration-300 sm:mt-10 ${
-          isGarden ? "text-brand-brook-dark" : isEmbedded ? "text-brand-muted" : "text-stone-500"
+          isPhantom
+            ? "text-[#8a6a72]"
+            : isGarden
+              ? "text-brand-brook-dark"
+              : isEmbedded
+                ? "text-brand-muted"
+                : "text-stone-500"
         } ${step === "back" ? (isHoverActivated ? "" : "animate-pulse") : "opacity-0"}`}
       >
         {hint}

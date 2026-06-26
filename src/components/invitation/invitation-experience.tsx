@@ -19,6 +19,9 @@ type Props = {
   brideName: string;
   recipientName: string;
   accentColor: string;
+  envelopeTheme?: "default" | "garden" | "phantom";
+  headerText?: string;
+  hintText?: string;
   music?: MusicConfig | null;
   children: React.ReactNode;
 };
@@ -35,6 +38,9 @@ export function InvitationExperience({
   brideName,
   recipientName,
   accentColor,
+  envelopeTheme = "default",
+  headerText,
+  hintText,
   music,
   children,
 }: Props) {
@@ -62,8 +68,26 @@ export function InvitationExperience({
 
   if (!mounted) {
     return (
-      <div className="env-marble flex min-h-screen items-center justify-center">
-        <p className="text-sm text-stone-500">Memuat undangan…</p>
+      <div
+        className={`flex min-h-screen items-center justify-center ${
+          envelopeTheme === "phantom"
+            ? "env-overlay env-theme-phantom"
+            : envelopeTheme === "garden"
+              ? "env-overlay env-theme-garden"
+              : "env-marble"
+        }`}
+      >
+        <p
+          className={`text-sm ${
+            envelopeTheme === "phantom"
+              ? "text-[#8a6a72]"
+              : envelopeTheme === "garden"
+                ? "text-brand-brook-dark"
+                : "text-stone-500"
+          }`}
+        >
+          Memuat undangan…
+        </p>
       </div>
     );
   }
@@ -89,6 +113,9 @@ export function InvitationExperience({
           brideName={brideName}
           recipientName={recipientName}
           accentColor={accentColor}
+          envelopeTheme={envelopeTheme}
+          headerText={headerText}
+          hintText={hintText}
           onOpen={handleEnvelopeOpen}
           onComplete={handleEnvelopeComplete}
         />
@@ -97,7 +124,11 @@ export function InvitationExperience({
       <div
         className={
           phase === "open"
-            ? "invitation-content--revealed"
+            ? envelopeTheme === "garden"
+              ? "invitation-content--garden-reveal"
+              : envelopeTheme === "phantom"
+                ? "invitation-content--phantom-reveal invitation-content--snap-mobile"
+                : "invitation-content--revealed"
             : "pointer-events-none fixed inset-0 overflow-hidden opacity-0"
         }
         aria-hidden={phase !== "open"}

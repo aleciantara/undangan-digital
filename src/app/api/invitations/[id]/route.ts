@@ -58,6 +58,18 @@ export async function PATCH(req: Request, { params }: Params) {
   const invitation = await prisma.invitation.update({
     where: { id },
     data: {
+      groomName: data.groomName ?? existing.groomName,
+      brideName: data.brideName ?? existing.brideName,
+      groomFullName:
+        data.groomFullName !== undefined ? data.groomFullName : existing.groomFullName,
+      brideFullName:
+        data.brideFullName !== undefined ? data.brideFullName : existing.brideFullName,
+      groomParents: data.groomParents !== undefined ? data.groomParents : existing.groomParents,
+      brideParents: data.brideParents !== undefined ? data.brideParents : existing.brideParents,
+      templateId: data.templateId ?? existing.templateId,
+      primaryColor: data.primaryColor ?? existing.primaryColor,
+      accentColor: data.accentColor ?? existing.accentColor,
+      fontFamily: data.fontFamily ?? existing.fontFamily,
       isPublished: data.isPublished ?? existing.isPublished,
       publishedAt:
         data.isPublished === true && !existing.isPublished

@@ -1,5 +1,6 @@
 "use client";
 
+import { PhantomPhotoUploader } from "@/components/dashboard/phantom-photo-uploader";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ImagePlus, Star, Trash2 } from "lucide-react";
@@ -16,9 +17,20 @@ type Props = {
   invitationId: string;
   photos: Photo[];
   coverPhotoUrl: string | null;
+  templateId?: string;
 };
 
-export function InvitationGallery({ invitationId, photos, coverPhotoUrl }: Props) {
+export function InvitationGallery({ invitationId, photos, coverPhotoUrl, templateId }: Props) {
+  if (templateId === "phantom-opera") {
+    return (
+      <PhantomPhotoUploader
+        invitationId={invitationId}
+        photos={photos}
+        coverPhotoUrl={coverPhotoUrl}
+      />
+    );
+  }
+
   const router = useRouter();
   const fileRef = useRef<HTMLInputElement>(null);
   const [uploading, setUploading] = useState(false);

@@ -28,7 +28,7 @@ export function Countdown({ targetDate, label = "Menuju hari bahagia" }: Props) 
 
   if (!remaining) {
     return (
-      <p className="text-center font-invitation text-lg text-batik-brown/80">Hari bahagia telah tiba ✨</p>
+      <p className="text-center font-invitation text-lg text-inv-soft">Hari bahagia telah tiba ✨</p>
     );
   }
 
@@ -41,17 +41,17 @@ export function Countdown({ targetDate, label = "Menuju hari bahagia" }: Props) 
 
   return (
     <div className="text-center">
-      <p className="mb-4 text-sm uppercase tracking-[0.2em] text-batik-brown/70">{label}</p>
+      <p className="mb-4 text-sm uppercase tracking-[0.2em] text-inv-muted">{label}</p>
       <div className="grid grid-cols-4 gap-2 sm:gap-4">
         {units.map((u) => (
           <div
             key={u.label}
-            className="rounded-xl border border-batik-brown/15 bg-white/80 px-2 py-3 shadow-sm backdrop-blur sm:px-4"
+            className="rounded-xl border border-inv bg-inv-surface px-2 py-3 shadow-sm backdrop-blur sm:px-4"
           >
-            <p className="font-invitation text-2xl font-semibold text-batik-dark sm:text-3xl">
+            <p className="font-invitation text-2xl font-semibold text-inv-ink sm:text-3xl">
               {String(u.value).padStart(2, "0")}
             </p>
-            <p className="mt-1 text-xs text-batik-brown/70">{u.label}</p>
+            <p className="mt-1 text-xs text-inv-muted">{u.label}</p>
           </div>
         ))}
       </div>

@@ -1,8 +1,8 @@
 import { NextResponse } from "next/server";
 import { randomUUID } from "crypto";
 import { auth } from "@/lib/auth";
+import { isMediaUploadAvailable, uploadMedia } from "@/lib/media-storage";
 import { prisma } from "@/lib/prisma";
-import { isR2Configured, uploadToR2 } from "@/lib/r2";
 
 const MAX_PHOTOS = 20;
 const MAX_BYTES = 5 * 1024 * 1024;
@@ -14,9 +14,12 @@ export async function POST(req: Request, { params }: Params) {
   const session = await auth();
   if (!session?.user?.id) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-  if (!isR2Configured()) {
+  if (!isMediaUploadAvailable()) {
     return NextResponse.json(
-      { error: "Upload foto memerlukan konfigurasi Cloudflare R2. Lihat .env.example." },
+      {
+        error:
+          "Penyimpanan foto belum tersedia. Gunakan Laragon/VPS (simpan lokal) atau konfigurasi R2 di .env.",
+      },
       { status: 503 }
     );
   }
@@ -58,8 +61,9 @@ export async function POST(req: Request, { params }: Params) {
 
   let url: string;
   try {
-    url = await uploadToR2(key, buffer, file.type);
-  } catch {
+    url = await uploadMedia(key, buffer, file.type);
+  } catch (err) {
+    console.error("[photos] upload failed:", err);
     return NextResponse.json({ error: "Gagal mengunggah ke penyimpanan." }, { status: 500 });
   }
 
@@ -77,7 +81,7 @@ export async function POST(req: Request, { params }: Params) {
     },
   });
 
-  if (setCover || !invitation.coverPhotoUrl) {
+  if (setCover) {
     await prisma.invitation.update({
       where: { id },
       data: { coverPhotoUrl: url },

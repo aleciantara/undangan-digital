@@ -84,8 +84,48 @@ export const wishSchema = z.object({
 });
 
 export const updateInvitationSchema = z.object({
+  groomName: z.string().min(2, "Nama mempelai pria minimal 2 karakter").optional(),
+  brideName: z.string().min(2, "Nama mempelai wanita minimal 2 karakter").optional(),
+  groomFullName: z
+    .union([z.string(), z.literal("")])
+    .optional()
+    .transform((v) => {
+      const s = typeof v === "string" ? v.trim() : "";
+      return s === "" ? null : s;
+    }),
+  brideFullName: z
+    .union([z.string(), z.literal("")])
+    .optional()
+    .transform((v) => {
+      const s = typeof v === "string" ? v.trim() : "";
+      return s === "" ? null : s;
+    }),
+  groomParents: z
+    .union([z.string(), z.literal("")])
+    .optional()
+    .transform((v) => {
+      const s = typeof v === "string" ? v.trim() : "";
+      return s === "" ? null : s;
+    }),
+  brideParents: z
+    .union([z.string(), z.literal("")])
+    .optional()
+    .transform((v) => {
+      const s = typeof v === "string" ? v.trim() : "";
+      return s === "" ? null : s;
+    }),
+  templateId: z.string().optional(),
+  primaryColor: z.string().optional(),
+  accentColor: z.string().optional(),
+  fontFamily: z.string().optional(),
+  loveStory: z
+    .union([z.string(), z.literal("")])
+    .optional()
+    .transform((v) => {
+      const s = typeof v === "string" ? v.trim() : "";
+      return s === "" ? null : s;
+    }),
   isPublished: z.boolean().optional(),
-  loveStory: z.string().nullable().optional(),
   seatQuota: z.union([z.number().min(1), z.null(), z.literal("")]).optional(),
   musicUrl: z
     .union([z.string(), z.literal("")])
@@ -106,7 +146,18 @@ export const updateInvitationSchema = z.object({
     }),
   musicAutoplay: z.boolean().optional(),
   musicStartSec: z.coerce.number().min(0).max(86400).optional(),
-  coverPhotoUrl: optionalUrlField(),
+  coverPhotoUrl: z
+    .union([z.string(), z.literal(""), z.null()])
+    .optional()
+    .transform((v) => {
+      if (v === null || v === "") return null;
+      if (v === undefined) return undefined;
+      const s = v.trim();
+      return s === "" ? null : s;
+    })
+    .refine((v) => v === null || v === undefined || z.string().url().safeParse(v).success, {
+      message: "URL tidak valid",
+    }),
   opensAt: z
     .union([z.string(), z.null(), z.literal("")])
     .optional()

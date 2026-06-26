@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { InvitationDetails } from "@/components/dashboard/invitation-details";
 import { InvitationGallery } from "@/components/dashboard/invitation-gallery";
 import { InvitationMusic } from "@/components/dashboard/invitation-music";
 import { InvitationSchedule } from "@/components/dashboard/invitation-schedule";
@@ -13,7 +14,7 @@ import { formatEventDate, formatEventTime } from "@/lib/format";
 import { buildGuestInviteMessage, buildWhatsAppUrl } from "@/lib/whatsapp";
 import { EVENT_TYPES } from "@/types";
 import Link from "next/link";
-import { Copy, ExternalLink, MessageCircle, Trash2 } from "lucide-react";
+import { ArrowLeft, Copy, ExternalLink, MessageCircle, Trash2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
@@ -52,6 +53,11 @@ type Props = {
     slug: string;
     groomName: string;
     brideName: string;
+    groomFullName: string | null;
+    brideFullName: string | null;
+    groomParents: string | null;
+    brideParents: string | null;
+    loveStory: string | null;
     isPublished: boolean;
     opensAt: string | null;
     seatQuota: number | null;
@@ -235,6 +241,14 @@ export function ManageInvitation({ invitation, rsvpStats, appUrl }: Props) {
 
   return (
     <div className="space-y-8">
+      <Link
+        href="/dashboard"
+        className="inline-flex items-center gap-1.5 text-sm text-stone-500 transition hover:text-brand-amaranth md:hidden"
+      >
+        <ArrowLeft className="h-4 w-4" />
+        Kembali ke daftar undangan
+      </Link>
+
       <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
         <div>
           <h1 className="font-invitation text-2xl font-semibold text-brand-ink">
@@ -307,6 +321,18 @@ export function ManageInvitation({ invitation, rsvpStats, appUrl }: Props) {
         </Card>
       )}
 
+      <InvitationDetails
+        invitationId={invitation.id}
+        groomName={invitation.groomName}
+        brideName={invitation.brideName}
+        groomFullName={invitation.groomFullName}
+        brideFullName={invitation.brideFullName}
+        groomParents={invitation.groomParents}
+        brideParents={invitation.brideParents}
+        loveStory={invitation.loveStory}
+        templateId={invitation.templateId}
+      />
+
       <InvitationSchedule
         invitationId={invitation.id}
         isPublished={invitation.isPublished}
@@ -317,6 +343,7 @@ export function ManageInvitation({ invitation, rsvpStats, appUrl }: Props) {
         invitationId={invitation.id}
         photos={invitation.photos}
         coverPhotoUrl={invitation.coverPhotoUrl}
+        templateId={invitation.templateId}
       />
 
       <InvitationMusic

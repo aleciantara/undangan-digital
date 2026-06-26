@@ -199,14 +199,14 @@ export function RsvpSection({ invitationId, seatQuota, events, guest }: Props) {
 
   if (events.length === 0) {
     return (
-      <p className="text-center text-sm text-batik-brown/70">Belum ada acara untuk dikonfirmasi.</p>
+      <p className="text-center text-sm text-inv-muted">Belum ada acara untuk dikonfirmasi.</p>
     );
   }
 
   return (
     <div className="space-y-6">
       {seatQuota != null && (
-        <p className="rounded-lg bg-batik-cream/50 px-3 py-2 text-center text-xs text-batik-brown">
+        <p className="rounded-lg bg-inv-cream-muted px-3 py-2 text-center text-xs text-inv-muted">
           Kuota undangan: maks. {seatQuota} tamu hadir
           {lookup?.seatsRemaining != null && verified
             ? ` · Sisa ${lookup.seatsRemaining} kursi`
@@ -215,12 +215,12 @@ export function RsvpSection({ invitationId, seatQuota, events, guest }: Props) {
       )}
 
       {isPersonalLink ? (
-        <p className="text-center font-invitation text-lg text-batik-dark">
+        <p className="text-center font-invitation text-lg text-inv-ink">
           Yth. <span className="font-semibold">{guest.name}</span>
         </p>
       ) : (
-        <div className="rounded-xl border border-batik-brown/10 bg-white/80 p-5 space-y-4">
-          <p className="text-center text-sm text-batik-brown/90">
+        <div className="rounded-xl border border-inv bg-inv-surface p-5 space-y-4">
+          <p className="text-center text-sm text-inv-soft">
             Isi nama dan nomor WhatsApp Anda. Jika nomor sudah ada di daftar tamu, konfirmasi
             akan dicatat untuk tamu tersebut. Jika belum, Anda akan ditambahkan sebagai tamu
             baru.
@@ -284,7 +284,7 @@ export function RsvpSection({ invitationId, seatQuota, events, guest }: Props) {
       )}
 
       {verified && (
-        <div className="rounded-xl border border-batik-brown/10 bg-white/80 p-5">
+        <div className="rounded-xl border border-inv bg-inv-surface p-5">
           <Label htmlFor="rsvp-email">Email (opsional)</Label>
           <Input
             id="rsvp-email"
@@ -299,8 +299,8 @@ export function RsvpSection({ invitationId, seatQuota, events, guest }: Props) {
 
       {verified &&
         events.map((event) => (
-          <div key={event.id} className="rounded-xl border border-batik-brown/10 bg-white/80 p-5">
-            <h4 className="font-medium text-batik-dark">{event.name}</h4>
+          <div key={event.id} className="rounded-xl border border-inv bg-inv-surface p-5">
+            <h4 className="font-medium text-inv-ink">{event.name}</h4>
 
             {done[event.id] ? (
               <p className="mt-2 text-sm text-green-700">
@@ -386,12 +386,6 @@ export function RsvpSection({ invitationId, seatQuota, events, guest }: Props) {
 
       {error && (
         <p className="rounded-lg bg-red-50 px-3 py-2 text-center text-sm text-red-700">{error}</p>
-      )}
-
-      {!isPersonalLink && !verified && (
-        <p className="text-center text-xs text-batik-brown/60">
-          Cocok untuk link grup (alumni, kantor, dll). Ucapan & doa ada di bagian bawah.
-        </p>
       )}
     </div>
   );

@@ -14,6 +14,18 @@ export interface TemplateConfig {
 
 export const TEMPLATES: TemplateConfig[] = [
   {
+    id: "botanical-garden",
+    name: "Botanical Garden",
+    nameId: "Taman Botani",
+    motif: "floral",
+    primaryColor: "#3A7A62",
+    accentColor: "#C9617F",
+    fontFamily: "playfair",
+    previewUrl: "/templates/previews/botanical-garden.jpg",
+    isPremium: false,
+    region: "Umum",
+  },
+  {
     id: "javanese-classic",
     name: "Javanese Classic",
     nameId: "Jawa Klasik",
@@ -71,6 +83,18 @@ export const TEMPLATES: TemplateConfig[] = [
     fontFamily: "inter",
     previewUrl: "/templates/previews/modern-elegant.jpg",
     isPremium: false,
+  },
+  {
+    id: "phantom-opera",
+    name: "Phantom of the Opera",
+    nameId: "Phantom of the Opera",
+    motif: "modern",
+    primaryColor: "#1A0F14",
+    accentColor: "#A4163A",
+    fontFamily: "cormorant",
+    previewUrl: "/erik-christine/head-bg.jpg",
+    isPremium: false,
+    region: "Tema Khusus",
   },
 ];
 

@@ -4,7 +4,7 @@ import { EnvelopeCover } from "@/components/invitation/envelope-cover";
 import { landingCopy } from "@/lib/landing-copy";
 
 /** Pink wax seal / stamp accent on bold green envelope */
-const GARDEN_ACCENT = "#9b4062";
+const GARDEN_ACCENT = "#c9617f";
 
 export function LandingEnvelopeDemo() {
   const demo = landingCopy.envelopeDemo;

@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
+import { deleteMedia } from "@/lib/media-storage";
 import { prisma } from "@/lib/prisma";
-import { deleteFromR2, isR2Configured, keyFromPublicUrl } from "@/lib/r2";
 
 type Params = { params: Promise<{ id: string; photoId: string }> };
 
@@ -21,15 +21,10 @@ export async function DELETE(_req: Request, { params }: Params) {
   });
   if (!photo) return NextResponse.json({ error: "Foto tidak ditemukan" }, { status: 404 });
 
-  if (isR2Configured()) {
-    const key = keyFromPublicUrl(photo.url);
-    if (key) {
-      try {
-        await deleteFromR2(key);
-      } catch {
-        // Continue — DB record is source of truth for UI
-      }
-    }
+  try {
+    await deleteMedia(photo.url);
+  } catch {
+    // Continue — DB record is source of truth for UI
   }
 
   await prisma.photo.delete({ where: { id: photoId } });

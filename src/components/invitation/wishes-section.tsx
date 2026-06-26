@@ -53,7 +53,7 @@ export function WishesSection({ invitationId, initialWishes, defaultGuestName = 
 
   return (
     <div className="space-y-8">
-      <form onSubmit={handleSubmit} className="space-y-4 rounded-xl border border-batik-brown/10 bg-white/80 p-5">
+      <form onSubmit={handleSubmit} className="space-y-4 rounded-xl border border-inv bg-inv-surface p-5">
         <div>
           <Label htmlFor="wish-name">Nama</Label>
           <Input
@@ -83,14 +83,14 @@ export function WishesSection({ invitationId, initialWishes, defaultGuestName = 
 
       <ul className="space-y-3">
         {wishes.length === 0 && (
-          <p className="text-center text-sm text-batik-brown/60">Belum ada ucapan. Jadilah yang pertama!</p>
+          <p className="text-center text-sm text-inv-faint">Belum ada ucapan. Jadilah yang pertama!</p>
         )}
         {wishes.map((w) => (
           <li
             key={w.id}
-            className="rounded-xl border border-batik-brown/10 bg-white/70 px-4 py-3 shadow-sm"
+            className="rounded-xl border border-inv bg-inv-surface px-4 py-3 shadow-sm"
           >
-            <p className="font-medium text-batik-dark">
+            <p className="font-medium text-inv-ink">
               {w.emoji && <span className="mr-1">{w.emoji}</span>}
               {w.guestName}
             </p>

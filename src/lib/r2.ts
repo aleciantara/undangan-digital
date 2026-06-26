@@ -1,12 +1,19 @@
 import { DeleteObjectCommand, PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
 
+const PLACEHOLDER_RE = /^(your-|xxxxxxxx|re_x+$)/i;
+
+function isRealEnvValue(value: string | undefined): boolean {
+  if (!value?.trim()) return false;
+  return !PLACEHOLDER_RE.test(value.trim());
+}
+
 export function isR2Configured(): boolean {
-  return !!(
-    process.env.R2_ACCOUNT_ID &&
-    process.env.R2_ACCESS_KEY_ID &&
-    process.env.R2_SECRET_ACCESS_KEY &&
-    process.env.R2_BUCKET_NAME &&
-    process.env.R2_PUBLIC_URL
+  return (
+    isRealEnvValue(process.env.R2_ACCOUNT_ID) &&
+    isRealEnvValue(process.env.R2_ACCESS_KEY_ID) &&
+    isRealEnvValue(process.env.R2_SECRET_ACCESS_KEY) &&
+    isRealEnvValue(process.env.R2_BUCKET_NAME) &&
+    isRealEnvValue(process.env.R2_PUBLIC_URL)
   );
 }
 

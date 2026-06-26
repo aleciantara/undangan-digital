@@ -36,3 +36,7 @@ next-env.d.ts
 .DS_Store
 *.pem
 .vercel
+
+# local dev uploads (see src/lib/local-media.ts)
+/public/uploads/**
+!/public/uploads/.gitkeep

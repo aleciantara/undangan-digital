@@ -37,7 +37,7 @@ export function JavaneseClassicTemplate({ invitation, guest }: Props) {
       }
     >
       <div
-        className="batik-pattern min-h-screen"
+        className="invitation-shell batik-pattern min-h-screen"
         style={
           {
             "--inv-primary": primaryColor,
@@ -52,30 +52,30 @@ export function JavaneseClassicTemplate({ invitation, guest }: Props) {
               background: `radial-gradient(ellipse at top, ${accentColor}40, transparent 60%)`,
             }}
           />
-          <p className="animate-fade-in text-xs uppercase tracking-[0.35em] text-batik-brown/80">
+          <p className="animate-fade-in text-xs uppercase tracking-[0.35em] text-inv-muted">
             Undangan Pernikahan
           </p>
           <div className="mt-6 flex items-center justify-center gap-4">
-            <span className="h-px w-12 bg-batik-brown/30" />
+            <span className="h-px w-12 bg-inv-cream-muted" />
             <Heart className="h-5 w-5" style={{ color: accentColor }} fill={accentColor} />
-            <span className="h-px w-12 bg-batik-brown/30" />
+            <span className="h-px w-12 bg-inv-cream-muted" />
           </div>
-          <h1 className="font-invitation mt-6 text-4xl font-semibold leading-tight text-batik-dark sm:text-5xl md:text-6xl">
+          <h1 className="font-invitation mt-6 text-4xl font-semibold leading-tight text-inv-ink sm:text-5xl md:text-6xl">
             {invitation.groomName}
-            <span className="mx-3 block text-2xl font-normal text-batik-brown/80 sm:inline sm:text-3xl">
+            <span className="mx-3 block text-2xl font-normal text-inv-soft sm:inline sm:text-3xl">
               &
             </span>
             {invitation.brideName}
           </h1>
           {nextEvent && (
-            <p className="mt-4 text-sm text-batik-brown/80">
+            <p className="mt-4 text-sm text-inv-soft">
               {displayGroom} & {displayBride}
             </p>
           )}
         </header>
 
         <section className="mx-auto max-w-2xl px-4 pb-12 text-center">
-          <p className="font-invitation text-lg leading-relaxed text-batik-brown/90">
+          <p className="font-invitation text-lg leading-relaxed text-inv-soft">
             Dengan memohon rahmat dan ridho Allah SWT, kami bermaksud mengundang Bapak/Ibu/Saudara/i untuk
             hadir pada acara pernikahan putra-putri kami.
           </p>
@@ -83,20 +83,20 @@ export function JavaneseClassicTemplate({ invitation, guest }: Props) {
             <div className="mt-10 grid gap-8 sm:grid-cols-2">
               {invitation.groomParents && (
                 <div>
-                  <p className="text-xs uppercase tracking-widest text-batik-brown/60">Keluarga mempelai pria</p>
-                  <p className="font-invitation mt-2 text-lg text-batik-dark">{invitation.groomParents}</p>
+                  <p className="text-xs uppercase tracking-widest text-inv-faint">Keluarga mempelai pria</p>
+                  <p className="font-invitation mt-2 text-lg text-inv-ink">{invitation.groomParents}</p>
                 </div>
               )}
               {invitation.brideParents && (
                 <div>
-                  <p className="text-xs uppercase tracking-widest text-batik-brown/60">Keluarga mempelai wanita</p>
-                  <p className="font-invitation mt-2 text-lg text-batik-dark">{invitation.brideParents}</p>
+                  <p className="text-xs uppercase tracking-widest text-inv-faint">Keluarga mempelai wanita</p>
+                  <p className="font-invitation mt-2 text-lg text-inv-ink">{invitation.brideParents}</p>
                 </div>
               )}
             </div>
           )}
           {invitation.loveStory && (
-            <p className="mt-8 rounded-2xl border border-batik-brown/10 bg-white/60 px-6 py-5 text-sm leading-relaxed text-stone-700">
+            <p className="mt-8 rounded-2xl border border-inv bg-inv-surface px-6 py-5 text-sm leading-relaxed text-stone-700">
               {invitation.loveStory}
             </p>
           )}
@@ -110,7 +110,7 @@ export function JavaneseClassicTemplate({ invitation, guest }: Props) {
 
         {invitation.events.length > 0 && (
           <section className="mx-auto max-w-2xl px-4 pb-20">
-            <h2 className="font-invitation mb-8 text-center text-2xl font-semibold text-batik-dark">
+            <h2 className="font-invitation mb-8 text-center text-2xl font-semibold text-inv-ink">
               Rangkaian Acara
             </h2>
             <div className="space-y-6">
@@ -123,12 +123,12 @@ export function JavaneseClassicTemplate({ invitation, guest }: Props) {
 
         {invitation.photos.length > 0 && (
           <section className="mx-auto max-w-4xl px-4 pb-20">
-            <h2 className="font-invitation mb-6 text-center text-2xl font-semibold text-batik-dark">
+            <h2 className="font-invitation mb-6 text-center text-2xl font-semibold text-inv-ink">
               Galeri
             </h2>
             <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
               {invitation.photos.map((photo) => (
-                <div key={photo.id} className="aspect-square overflow-hidden rounded-xl bg-batik-cream">
+                <div key={photo.id} className="aspect-square overflow-hidden rounded-xl bg-inv-cream">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img src={photo.url} alt={photo.caption ?? ""} className="h-full w-full object-cover" />
                 </div>
@@ -160,7 +160,7 @@ export function JavaneseClassicTemplate({ invitation, guest }: Props) {
           />
         </section>
 
-        <footer className="border-t border-batik-brown/10 py-8 text-center text-xs text-batik-brown/60">
+        <footer className="border-t border-inv py-8 text-center text-xs text-inv-faint">
           <p>Undangan Digital — motif Jawa Klasik</p>
         </footer>
       </div>

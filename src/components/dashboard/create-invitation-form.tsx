@@ -11,7 +11,7 @@ export function CreateInvitationForm() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [templateId, setTemplateId] = useState("javanese-classic");
+  const [templateId, setTemplateId] = useState("botanical-garden");
 
   const selected = TEMPLATES.find((t) => t.id === templateId) ?? TEMPLATES[0];
 
