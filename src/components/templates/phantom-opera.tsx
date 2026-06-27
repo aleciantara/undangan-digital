@@ -1,3 +1,4 @@
+import { FooterPhotoSection } from "@/components/invitation/footer-photo-section";
 import { InvitationExperience } from "@/components/invitation/invitation-experience";
 import { RsvpSection } from "@/components/invitation/rsvp-section";
 import { WishesSection } from "@/components/invitation/wishes-section";
@@ -7,12 +8,16 @@ import { GardenCountdown } from "@/components/templates/garden/garden-countdown"
 import { GardenReveal } from "@/components/templates/garden/garden-reveal";
 import { PhantomCoupleShowcase } from "@/components/templates/phantom/phantom-couple-showcase";
 import { PhantomEventCard } from "@/components/templates/phantom/phantom-event-card";
+import { PhantomDresscodeSection } from "@/components/templates/phantom/phantom-dresscode-section";
+import { eventsWithDresscode } from "@/lib/dresscode-colors";
 import { PhantomGallery } from "@/components/templates/phantom/phantom-gallery";
+import { PhantomGiftSection } from "@/components/templates/phantom/phantom-gift-section";
 import { PhantomHero } from "@/components/templates/phantom/phantom-hero";
 import { PhantomInviteVerse } from "@/components/templates/phantom/phantom-invite-verse";
 import { PhantomQuote } from "@/components/templates/phantom/phantom-quote";
 import { PhantomSection } from "@/components/templates/phantom/phantom-section";
 import { PhantomSectionHeading } from "@/components/templates/phantom/phantom-section-heading";
+import { PhantomVideoSection } from "@/components/templates/phantom/phantom-video-section";
 
 type Props = {
   invitation: SerializedInvitation;
@@ -24,6 +29,7 @@ export function PhantomOperaTemplate({ invitation, guest }: Props) {
   const nextEvent = invitation.events[0];
   const displayGroom = invitation.groomFullName ?? invitation.groomName;
   const displayBride = invitation.brideFullName ?? invitation.brideName;
+  const coupleNames = `${invitation.groomName} & ${invitation.brideName}`;
 
   const { heroBg, coupleBg, accentBg, footerBg, groomPhoto, bridePhoto, galleryPhotos } =
     resolvePhantomMedia({
@@ -103,8 +109,9 @@ export function PhantomOperaTemplate({ invitation, guest }: Props) {
           />
 
           <PhantomInviteVerse
-            groomParents={invitation.groomParents}
-            brideParents={invitation.brideParents}
+            inviteVerseTitle={invitation.inviteVerseTitle}
+            inviteVersePreset={invitation.inviteVersePreset}
+            inviteVerseText={invitation.inviteVerseText}
             accentColor={accentColor}
             primaryColor={primaryColor}
           />
@@ -139,11 +146,22 @@ export function PhantomOperaTemplate({ invitation, guest }: Props) {
                       accentColor={accentColor}
                       primaryColor={primaryColor}
                       index={i}
+                      coupleNames={coupleNames}
                     />
                   </GardenReveal>
                 ))}
               </div>
             </div>
+          </PhantomSection>
+        )}
+
+        {eventsWithDresscode(invitation.events).length > 0 && (
+          <PhantomSection className="px-4 pb-20 sm:px-6">
+            <PhantomDresscodeSection
+              events={invitation.events}
+              accentColor={accentColor}
+              primaryColor={primaryColor}
+            />
           </PhantomSection>
         )}
 
@@ -154,6 +172,27 @@ export function PhantomOperaTemplate({ invitation, guest }: Props) {
             primaryColor={primaryColor}
           />
         </PhantomSection>
+
+        {(invitation.prewedVideoUrl || invitation.liveStreamUrl) && (
+          <PhantomSection>
+            <PhantomVideoSection
+              prewed={{ url: invitation.prewedVideoUrl, title: invitation.prewedVideoTitle }}
+              live={{ url: invitation.liveStreamUrl, title: invitation.liveStreamTitle }}
+              accentColor={accentColor}
+              primaryColor={primaryColor}
+            />
+          </PhantomSection>
+        )}
+
+        {invitation.giftEnabled && (
+          <PhantomSection>
+            <PhantomGiftSection
+              invitation={invitation}
+              accentColor={accentColor}
+              primaryColor={primaryColor}
+            />
+          </PhantomSection>
+        )}
 
         <PhantomSection
           bgImage={accentBg}
@@ -197,16 +236,10 @@ export function PhantomOperaTemplate({ invitation, guest }: Props) {
           </div>
         </PhantomSection>
 
-        <PhantomSection
-          bgImage={footerBg}
-          scrim="heavy"
-          blendTop
-          className="phantom-footer-wrap min-h-[85svh] sm:min-h-[90svh]"
-          bgPosition="center 40%"
-        >
+        <FooterPhotoSection theme="phantom" bgImage={footerBg} scrim="heavy" blendTop>
           <GardenReveal variant="up">
             <footer
-              className="phantom-footer flex min-h-[inherit] flex-col items-center justify-center px-4 py-20 text-center"
+              className="phantom-footer text-center"
               style={{ "--ft-accent": accentColor, "--ft-primary": primaryColor } as React.CSSProperties}
             >
               <p className="phantom-footer__ornament" aria-hidden>
@@ -219,7 +252,7 @@ export function PhantomOperaTemplate({ invitation, guest }: Props) {
               <p className="phantom-footer__tagline font-invitation italic">Till the end of time</p>
             </footer>
           </GardenReveal>
-        </PhantomSection>
+        </FooterPhotoSection>
       </div>
     </InvitationExperience>
   );

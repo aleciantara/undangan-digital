@@ -1,6 +1,7 @@
 "use client";
 
 import { PhantomPhotoUploader } from "@/components/dashboard/phantom-photo-uploader";
+import { RaoulPhotoUploader } from "@/components/dashboard/raoul-photo-uploader";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ImagePlus, Star, Trash2 } from "lucide-react";
@@ -24,6 +25,16 @@ export function InvitationGallery({ invitationId, photos, coverPhotoUrl, templat
   if (templateId === "phantom-opera") {
     return (
       <PhantomPhotoUploader
+        invitationId={invitationId}
+        photos={photos}
+        coverPhotoUrl={coverPhotoUrl}
+      />
+    );
+  }
+
+  if (templateId === "phantom-opera-daylight") {
+    return (
+      <RaoulPhotoUploader
         invitationId={invitationId}
         photos={photos}
         coverPhotoUrl={coverPhotoUrl}

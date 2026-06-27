@@ -1,3 +1,4 @@
+import { AddToCalendarButtons } from "@/components/invitation/add-to-calendar-buttons";
 import { formatEventTime } from "@/lib/format";
 import type { SerializedEvent } from "@/lib/invitation-types";
 
@@ -6,6 +7,7 @@ type Props = {
   accentColor: string;
   primaryColor: string;
   index: number;
+  coupleNames?: string;
 };
 
 function parseDateParts(iso: string) {
@@ -17,7 +19,7 @@ function parseDateParts(iso: string) {
   return { day, month, year, weekday };
 }
 
-export function PhantomEventCard({ event, accentColor, primaryColor, index }: Props) {
+export function PhantomEventCard({ event, accentColor, primaryColor, index, coupleNames }: Props) {
   const { day, month, year, weekday } = parseDateParts(event.date);
   const time = formatEventTime(event.date);
 
@@ -53,16 +55,14 @@ export function PhantomEventCard({ event, accentColor, primaryColor, index }: Pr
           <p className="phantom-event__venue font-invitation">{event.venue}</p>
           <p className="phantom-event__address">{event.address}</p>
 
-          {event.dresscode && (
-            <p className="phantom-event__meta">
-              <span className="phantom-event__meta-label">Dress code</span>
-              {event.dresscode}
-            </p>
-          )}
-
           {event.notes && <p className="phantom-event__notes">{event.notes}</p>}
 
           <div className="phantom-event__actions">
+            <AddToCalendarButtons
+              event={event}
+              coupleNames={coupleNames}
+              linkClassName="phantom-event__link"
+            />
             {event.mapsUrl && (
               <a href={event.mapsUrl} target="_blank" rel="noopener noreferrer" className="phantom-event__link">
                 Maps →

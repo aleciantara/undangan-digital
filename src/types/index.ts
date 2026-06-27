@@ -3,7 +3,7 @@ export interface TemplateConfig {
   id: string;
   name: string;
   nameId: string;
-  motif: "javanese" | "sundanese" | "batak" | "minang" | "betawi" | "modern" | "floral";
+  motif: "modern";
   primaryColor: string;
   accentColor: string;
   fontFamily: string;
@@ -14,87 +14,28 @@ export interface TemplateConfig {
 
 export const TEMPLATES: TemplateConfig[] = [
   {
-    id: "botanical-garden",
-    name: "Botanical Garden",
-    nameId: "Taman Botani",
-    motif: "floral",
-    primaryColor: "#3A7A62",
-    accentColor: "#C9617F",
-    fontFamily: "playfair",
-    previewUrl: "/templates/previews/botanical-garden.jpg",
-    isPremium: false,
-    region: "Umum",
-  },
-  {
-    id: "javanese-classic",
-    name: "Javanese Classic",
-    nameId: "Jawa Klasik",
-    motif: "javanese",
-    primaryColor: "#8B5E3C",
-    accentColor: "#D4AF37",
-    fontFamily: "playfair",
-    previewUrl: "/templates/previews/javanese-classic.jpg",
-    isPremium: false,
-    region: "Jawa",
-  },
-  {
-    id: "sundanese-floral",
-    name: "Sundanese Floral",
-    nameId: "Sunda Floral",
-    motif: "sundanese",
-    primaryColor: "#4A7C59",
-    accentColor: "#F0C040",
-    fontFamily: "cormorant",
-    previewUrl: "/templates/previews/sundanese-floral.jpg",
-    isPremium: false,
-    region: "Sunda",
-  },
-  {
-    id: "batak-ulos",
-    name: "Batak Ulos",
-    nameId: "Batak Ulos",
-    motif: "batak",
-    primaryColor: "#8B0000",
-    accentColor: "#FFD700",
-    fontFamily: "playfair",
-    previewUrl: "/templates/previews/batak-ulos.jpg",
-    isPremium: true,
-    region: "Batak",
-  },
-  {
-    id: "minang-songket",
-    name: "Minang Songket",
-    nameId: "Minang Songket",
-    motif: "minang",
-    primaryColor: "#722F37",
-    accentColor: "#C5A028",
-    fontFamily: "cormorant",
-    previewUrl: "/templates/previews/minang-songket.jpg",
-    isPremium: true,
-    region: "Minang",
-  },
-  {
-    id: "modern-elegant",
-    name: "Modern Elegant",
-    nameId: "Modern Elegan",
-    motif: "modern",
-    primaryColor: "#2C2C2C",
-    accentColor: "#C9A96E",
-    fontFamily: "inter",
-    previewUrl: "/templates/previews/modern-elegant.jpg",
-    isPremium: false,
-  },
-  {
     id: "phantom-opera",
-    name: "Phantom of the Opera",
-    nameId: "Phantom of the Opera",
+    name: "Erik & Christine — Night",
+    nameId: "Erik & Christine",
     motif: "modern",
     primaryColor: "#1A0F14",
     accentColor: "#A4163A",
     fontFamily: "cormorant",
     previewUrl: "/erik-christine/head-bg.jpg",
     isPremium: false,
-    region: "Tema Khusus",
+    region: "Phantom of the Opera",
+  },
+  {
+    id: "phantom-opera-daylight",
+    name: "Raoul & Christine — Daylight",
+    nameId: "Raoul & Christine",
+    motif: "modern",
+    primaryColor: "#F5F0E8",
+    accentColor: "#B8860B",
+    fontFamily: "cormorant",
+    previewUrl: "/raoul-christine/head-bg.jpg",
+    isPremium: false,
+    region: "Phantom of the Opera",
   },
 ];
 

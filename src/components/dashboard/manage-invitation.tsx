@@ -5,10 +5,14 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { DresscodeColorPicker } from "@/components/dashboard/dresscode-color-picker";
 import { InvitationDetails } from "@/components/dashboard/invitation-details";
 import { InvitationGallery } from "@/components/dashboard/invitation-gallery";
+import { InvitationGift } from "@/components/dashboard/invitation-gift";
 import { InvitationMusic } from "@/components/dashboard/invitation-music";
 import { InvitationSchedule } from "@/components/dashboard/invitation-schedule";
+import { InvitationVerse } from "@/components/dashboard/invitation-verse";
+import { InvitationVideos } from "@/components/dashboard/invitation-videos";
 import { InviteQr } from "@/components/dashboard/invite-qr";
 import { formatEventDate, formatEventTime } from "@/lib/format";
 import { buildGuestInviteMessage, buildWhatsAppUrl } from "@/lib/whatsapp";
@@ -67,6 +71,26 @@ type Props = {
     musicTitle: string | null;
     musicAutoplay: boolean;
     musicStartSec: number;
+    inviteVerseTitle: string | null;
+    inviteVersePreset: string | null;
+    inviteVerseText: string | null;
+    prewedVideoUrl: string | null;
+    prewedVideoTitle: string | null;
+    liveStreamUrl: string | null;
+    liveStreamTitle: string | null;
+    giftEnabled: boolean;
+    giftTitle: string | null;
+    giftMessage: string | null;
+    giftGroomAccountName: string | null;
+    giftGroomBank: string | null;
+    giftGroomAccountNumber: string | null;
+    giftBrideAccountName: string | null;
+    giftBrideBank: string | null;
+    giftBrideAccountNumber: string | null;
+    giftGroomAddressTitle: string | null;
+    giftGroomAddressFull: string | null;
+    giftBrideAddressTitle: string | null;
+    giftBrideAddressFull: string | null;
     photos: Photo[];
     events: Event[];
     guests: Guest[];
@@ -94,6 +118,7 @@ export function ManageInvitation({ invitation, rsvpStats, appUrl }: Props) {
   const [eventError, setEventError] = useState<string | null>(null);
   const [guestError, setGuestError] = useState<string | null>(null);
   const [eventSuccess, setEventSuccess] = useState(false);
+  const [eventFormKey, setEventFormKey] = useState(0);
   const [guestSuccess, setGuestSuccess] = useState(false);
   const [eventName, setEventName] = useState("");
   const [seatQuotaInput, setSeatQuotaInput] = useState(
@@ -144,6 +169,9 @@ export function ManageInvitation({ invitation, rsvpStats, appUrl }: Props) {
         address: form.get("address"),
         mapsUrl: form.get("mapsUrl") || "",
         wazeUrl: form.get("wazeUrl") || "",
+        dresscodeColor: form.get("dresscodeColor") || "",
+        dresscodeAttire: form.get("dresscodeAttire") || "",
+        notes: form.get("notes") || "",
       }),
     });
 
@@ -157,6 +185,7 @@ export function ManageInvitation({ invitation, rsvpStats, appUrl }: Props) {
 
     setEventSuccess(true);
     setEventName("");
+    setEventFormKey((k) => k + 1);
     (e.target as HTMLFormElement).reset();
     router.refresh();
   }
@@ -354,6 +383,40 @@ export function ManageInvitation({ invitation, rsvpStats, appUrl }: Props) {
         musicStartSec={invitation.musicStartSec}
       />
 
+      <InvitationVerse
+        invitationId={invitation.id}
+        inviteVerseTitle={invitation.inviteVerseTitle}
+        inviteVersePreset={invitation.inviteVersePreset}
+        inviteVerseText={invitation.inviteVerseText}
+      />
+
+      <InvitationVideos
+        invitationId={invitation.id}
+        prewedVideoUrl={invitation.prewedVideoUrl}
+        prewedVideoTitle={invitation.prewedVideoTitle}
+        liveStreamUrl={invitation.liveStreamUrl}
+        liveStreamTitle={invitation.liveStreamTitle}
+      />
+
+      <InvitationGift
+        invitationId={invitation.id}
+        groomName={invitation.groomName}
+        brideName={invitation.brideName}
+        giftEnabled={invitation.giftEnabled}
+        giftTitle={invitation.giftTitle}
+        giftMessage={invitation.giftMessage}
+        giftGroomAccountName={invitation.giftGroomAccountName}
+        giftGroomBank={invitation.giftGroomBank}
+        giftGroomAccountNumber={invitation.giftGroomAccountNumber}
+        giftBrideAccountName={invitation.giftBrideAccountName}
+        giftBrideBank={invitation.giftBrideBank}
+        giftBrideAccountNumber={invitation.giftBrideAccountNumber}
+        giftGroomAddressTitle={invitation.giftGroomAddressTitle}
+        giftGroomAddressFull={invitation.giftGroomAddressFull}
+        giftBrideAddressTitle={invitation.giftBrideAddressTitle}
+        giftBrideAddressFull={invitation.giftBrideAddressFull}
+      />
+
       {invitation.isPublished && (
         <Card>
           <CardContent className="flex flex-col gap-4 py-5 sm:flex-row sm:items-center">
@@ -454,6 +517,17 @@ export function ManageInvitation({ invitation, rsvpStats, appUrl }: Props) {
             <div>
               <Label>Waze URL</Label>
               <Input name="wazeUrl" type="url" placeholder="https://waze.com/..." />
+            </div>
+            <div className="sm:col-span-2">
+              <DresscodeColorPicker key={eventFormKey} name="dresscodeColor" />
+            </div>
+            <div>
+              <Label>Jenis pakaian</Label>
+              <Input name="dresscodeAttire" placeholder="Batik formal / Kebaya" />
+            </div>
+            <div className="sm:col-span-2">
+              <Label>Catatan acara</Label>
+              <Input name="notes" placeholder="Opsional" />
             </div>
             {eventError && (
               <p className="text-sm text-red-600 sm:col-span-2">{eventError}</p>

@@ -91,6 +91,32 @@ model Invitation {
   // Story
   loveStory      String?
 
+  // Walimatul Urs / invite verse
+  inviteVerseTitle   String?   @default("Walimatul Urs")
+  inviteVersePreset  String?   @default("islam")
+  inviteVerseText    String?
+
+  // YouTube videos (pre-wedding cinematic + live stream)
+  prewedVideoUrl     String?
+  prewedVideoTitle   String?   @default("Pre-Wedding Film")
+  liveStreamUrl      String?
+  liveStreamTitle    String?   @default("Siaran Langsung")
+
+  // Gift section
+  giftEnabled        Boolean   @default(false)
+  giftTitle          String?   @default("Kirim Kado")
+  giftMessage        String?
+  giftGroomAccountName    String?
+  giftGroomBank           String?
+  giftGroomAccountNumber  String?
+  giftBrideAccountName    String?
+  giftBrideBank           String?
+  giftBrideAccountNumber  String?
+  giftGroomAddressTitle    String?
+  giftGroomAddressFull     String?
+  giftBrideAddressTitle    String?
+  giftBrideAddressFull     String?
+
   // Capacity
   seatQuota      Int?          // Max total tamu hadir (kosong = tanpa batas)
 
@@ -123,6 +149,8 @@ model WeddingEvent {
   mapsUrl      String?
   wazeUrl      String?
   dresscode    String?
+  dresscodeColor String?
+  dresscodeAttire String?
   notes        String?
   order        Int        @default(0)
 

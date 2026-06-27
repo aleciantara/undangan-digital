@@ -18,7 +18,7 @@ export const createInvitationSchema = z.object({
   brideFullName: z.string().optional(),
   groomParents: z.string().optional(),
   brideParents: z.string().optional(),
-  templateId: z.string().default("javanese-classic"),
+  templateId: z.string().default("phantom-opera"),
   primaryColor: z.string().default("#8B5E3C"),
   accentColor: z.string().default("#D4AF37"),
   fontFamily: z.string().default("playfair"),
@@ -53,6 +53,14 @@ export const createEventSchema = z.object({
   mapsUrl: optionalUrlField(),
   wazeUrl: optionalUrlField(),
   dresscode: z.string().optional(),
+  dresscodeColor: z
+    .union([z.string().max(500), z.literal("")])
+    .optional()
+    .transform((v) => {
+      const s = typeof v === "string" ? v.trim() : "";
+      return s === "" ? undefined : s;
+    }),
+  dresscodeAttire: z.string().optional(),
   notes: z.string().optional(),
   order: z.number().optional(),
 });
@@ -166,6 +174,64 @@ export const updateInvitationSchema = z.object({
       const d = new Date(v);
       return Number.isNaN(d.getTime()) ? undefined : d;
     }),
+  inviteVerseTitle: z
+    .union([z.string().max(80), z.literal("")])
+    .optional()
+    .transform((v) => {
+      const s = typeof v === "string" ? v.trim() : "";
+      return s === "" ? null : s;
+    }),
+  inviteVersePreset: z
+    .enum(["islam", "kristen", "katolik", "hindu", "buddha", "konghucu", "custom"])
+    .optional(),
+  inviteVerseText: z
+    .union([z.string().max(2000), z.literal("")])
+    .optional()
+    .transform((v) => {
+      const s = typeof v === "string" ? v.trim() : "";
+      return s === "" ? null : s;
+    }),
+  prewedVideoUrl: optionalUrlField(),
+  prewedVideoTitle: z
+    .union([z.string().max(100), z.literal("")])
+    .optional()
+    .transform((v) => {
+      const s = typeof v === "string" ? v.trim() : "";
+      return s === "" ? null : s;
+    }),
+  liveStreamUrl: optionalUrlField(),
+  liveStreamTitle: z
+    .union([z.string().max(100), z.literal("")])
+    .optional()
+    .transform((v) => {
+      const s = typeof v === "string" ? v.trim() : "";
+      return s === "" ? null : s;
+    }),
+  giftEnabled: z.boolean().optional(),
+  giftTitle: z
+    .union([z.string().max(80), z.literal("")])
+    .optional()
+    .transform((v) => {
+      const s = typeof v === "string" ? v.trim() : "";
+      return s === "" ? null : s;
+    }),
+  giftMessage: z
+    .union([z.string().max(2000), z.literal("")])
+    .optional()
+    .transform((v) => {
+      const s = typeof v === "string" ? v.trim() : "";
+      return s === "" ? null : s;
+    }),
+  giftGroomAccountName: z.union([z.string().max(120), z.literal("")]).optional(),
+  giftGroomBank: z.union([z.string().max(80), z.literal("")]).optional(),
+  giftGroomAccountNumber: z.union([z.string().max(40), z.literal("")]).optional(),
+  giftBrideAccountName: z.union([z.string().max(120), z.literal("")]).optional(),
+  giftBrideBank: z.union([z.string().max(80), z.literal("")]).optional(),
+  giftBrideAccountNumber: z.union([z.string().max(40), z.literal("")]).optional(),
+  giftGroomAddressTitle: z.union([z.string().max(120), z.literal("")]).optional(),
+  giftGroomAddressFull: z.union([z.string().max(500), z.literal("")]).optional(),
+  giftBrideAddressTitle: z.union([z.string().max(120), z.literal("")]).optional(),
+  giftBrideAddressFull: z.union([z.string().max(500), z.literal("")]).optional(),
 });
 
 export type CreateInvitationInput = z.infer<typeof createInvitationSchema>;

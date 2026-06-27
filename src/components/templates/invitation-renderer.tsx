@@ -1,7 +1,6 @@
 import type { SerializedGuest, SerializedInvitation } from "@/lib/invitation-types";
-import { BotanicalGardenTemplate } from "./botanical-garden";
-import { JavaneseClassicTemplate } from "./javanese-classic";
 import { PhantomOperaTemplate } from "./phantom-opera";
+import { RaoulOperaTemplate } from "./raoul-opera";
 
 type Props = {
   invitation: SerializedInvitation;
@@ -10,13 +9,10 @@ type Props = {
 
 export function InvitationRenderer({ invitation, guest }: Props) {
   switch (invitation.templateId) {
-    case "botanical-garden":
-      return <BotanicalGardenTemplate invitation={invitation} guest={guest} />;
-    case "javanese-classic":
-      return <JavaneseClassicTemplate invitation={invitation} guest={guest} />;
+    case "phantom-opera-daylight":
+      return <RaoulOperaTemplate invitation={invitation} guest={guest} />;
     case "phantom-opera":
-      return <PhantomOperaTemplate invitation={invitation} guest={guest} />;
     default:
-      return <BotanicalGardenTemplate invitation={invitation} guest={guest} />;
+      return <PhantomOperaTemplate invitation={invitation} guest={guest} />;
   }
 }

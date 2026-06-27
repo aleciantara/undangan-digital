@@ -11,7 +11,7 @@ export function CreateInvitationForm() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [templateId, setTemplateId] = useState("botanical-garden");
+  const [templateId, setTemplateId] = useState("phantom-opera");
 
   const selected = TEMPLATES.find((t) => t.id === templateId) ?? TEMPLATES[0];
 
@@ -104,7 +104,6 @@ export function CreateInvitationForm() {
             </button>
           ))}
         </div>
-        <p className="mt-2 text-xs text-stone-500">Template premium akan tersedia di fase berikutnya.</p>
       </div>
 
       {error && <p className="text-sm text-red-600">{error}</p>}

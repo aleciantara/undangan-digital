@@ -20,7 +20,7 @@ type Props = {
   brideName: string;
   recipientName: string;
   accentColor: string;
-  envelopeTheme?: "default" | "garden" | "phantom";
+  envelopeTheme?: "default" | "garden" | "phantom" | "raoul";
   headerText?: string;
   hintText?: string;
   music?: MusicConfig | null;
@@ -74,18 +74,22 @@ export function InvitationExperience({
         className={`flex min-h-screen items-center justify-center ${
           envelopeTheme === "phantom"
             ? "env-overlay env-theme-phantom"
-            : envelopeTheme === "garden"
-              ? "env-overlay env-theme-garden"
-              : "env-marble"
+            : envelopeTheme === "raoul"
+              ? "env-overlay env-theme-raoul"
+              : envelopeTheme === "garden"
+                ? "env-overlay env-theme-garden"
+                : "env-marble"
         }`}
       >
         <p
           className={`text-sm ${
             envelopeTheme === "phantom"
               ? "text-[#8a6a72]"
-              : envelopeTheme === "garden"
-                ? "text-brand-brook-dark"
-                : "text-stone-500"
+              : envelopeTheme === "raoul"
+                ? "text-[#7a6e58]"
+                : envelopeTheme === "garden"
+                  ? "text-brand-brook-dark"
+                  : "text-stone-500"
           }`}
         >
           Memuat undangan…
@@ -132,7 +136,9 @@ export function InvitationExperience({
                 ? "invitation-content--garden-reveal"
                 : envelopeTheme === "phantom"
                   ? "invitation-content--phantom-reveal invitation-content--snap-mobile"
-                  : "invitation-content--revealed"
+                  : envelopeTheme === "raoul"
+                    ? "invitation-content--raoul-reveal invitation-content--snap-mobile"
+                    : "invitation-content--revealed"
               : "pointer-events-none fixed inset-0 overflow-hidden opacity-0"
           }
           aria-hidden={phase !== "open"}

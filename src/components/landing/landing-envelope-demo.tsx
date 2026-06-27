@@ -3,8 +3,8 @@
 import { EnvelopeCover } from "@/components/invitation/envelope-cover";
 import { landingCopy } from "@/lib/landing-copy";
 
-/** Pink wax seal / stamp accent on bold green envelope */
-const GARDEN_ACCENT = "#c9617f";
+/** Burgundy velvet + gold wax seal accent on Phantom envelope */
+const PHANTOM_ACCENT = "#a4163a";
 
 export function LandingEnvelopeDemo() {
   const demo = landingCopy.envelopeDemo;
@@ -12,13 +12,13 @@ export function LandingEnvelopeDemo() {
   return (
     <EnvelopeCover
       variant="embedded"
-      embedTheme="garden"
+      embedTheme="phantom"
       loop
       activateOn="hover"
       groomName={demo.groomName}
       brideName={demo.brideName}
       recipientName={demo.recipientName}
-      accentColor={GARDEN_ACCENT}
+      accentColor={PHANTOM_ACCENT}
       headerText={demo.headerText}
       hintText={demo.hintText}
     />

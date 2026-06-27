@@ -1,19 +1,27 @@
-import { GardenParents } from "@/components/templates/garden/garden-parents";
+import { resolveInviteVerse } from "@/lib/invite-verse-presets";
 import { GardenReveal } from "@/components/templates/garden/garden-reveal";
 
 type Props = {
-  groomParents?: string | null;
-  brideParents?: string | null;
+  inviteVerseTitle?: string | null;
+  inviteVersePreset?: string | null;
+  inviteVerseText?: string | null;
   accentColor: string;
   primaryColor: string;
 };
 
 export function PhantomInviteVerse({
-  groomParents,
-  brideParents,
+  inviteVerseTitle,
+  inviteVersePreset,
+  inviteVerseText,
   accentColor,
   primaryColor,
 }: Props) {
+  const verse = resolveInviteVerse({
+    inviteVerseTitle,
+    inviteVersePreset,
+    inviteVerseText,
+  });
+
   return (
     <div
       className="phantom-verse px-4 py-12 sm:py-16"
@@ -21,22 +29,8 @@ export function PhantomInviteVerse({
     >
       <GardenReveal variant="up">
         <div className="phantom-verse__panel mx-auto max-w-3xl px-6 py-10 sm:px-10 sm:py-12">
-          <p className="phantom-verse__eyebrow">Walimatul Urs</p>
-          <p className="phantom-verse__text font-invitation">
-            Dengan memohon rahmat dan ridho Allah SWT, kami bermaksud mengundang Bapak/Ibu/Saudara/i
-            untuk hadir pada acara pernikahan putra-putri kami — sebuah malam penuh musik, cinta, dan keajaiban.
-          </p>
-        </div>
-      </GardenReveal>
-
-      <GardenReveal variant="up" delay={120}>
-        <div className="phantom-parents-wrap mx-auto max-w-3xl">
-          <GardenParents
-            groomParents={groomParents}
-            brideParents={brideParents}
-            accentColor={accentColor}
-            primaryColor={primaryColor}
-          />
+          <p className="phantom-verse__eyebrow">{verse.title}</p>
+          <p className="phantom-verse__text font-invitation">{verse.text}</p>
         </div>
       </GardenReveal>
     </div>

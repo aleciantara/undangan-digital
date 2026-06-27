@@ -31,6 +31,17 @@ export function parseYoutubeStartFromUrl(url: string): number {
   }
 }
 
+export function parseYoutubeVideoId(url: string): string | null {
+  const trimmed = url.trim();
+  if (!trimmed) return null;
+  const yt = trimmed.match(YOUTUBE_ID);
+  return yt ? yt[1] : null;
+}
+
+export function youtubeEmbedUrl(videoId: string): string {
+  return `https://www.youtube.com/embed/${videoId}`;
+}
+
 export function parseMusicUrl(url: string): ParsedMusicEmbed | null {
   const trimmed = url.trim();
   if (!trimmed) return null;

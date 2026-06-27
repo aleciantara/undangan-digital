@@ -37,6 +37,8 @@ export async function POST(req: Request, { params }: Params) {
       mapsUrl: parsed.data.mapsUrl || null,
       wazeUrl: parsed.data.wazeUrl || null,
       dresscode: parsed.data.dresscode,
+      dresscodeColor: parsed.data.dresscodeColor || null,
+      dresscodeAttire: parsed.data.dresscodeAttire || null,
       notes: parsed.data.notes,
       order: parsed.data.order ?? count,
     },
