@@ -20,7 +20,7 @@ type Props = {
   brideName: string;
   recipientName: string;
   accentColor: string;
-  envelopeTheme?: "default" | "garden" | "phantom" | "raoul";
+  envelopeTheme?: "default" | "garden" | "phantom" | "raoul" | "himmel";
   headerText?: string;
   hintText?: string;
   music?: MusicConfig | null;
@@ -76,6 +76,8 @@ export function InvitationExperience({
             ? "env-overlay env-theme-phantom"
             : envelopeTheme === "raoul"
               ? "env-overlay env-theme-raoul"
+              : envelopeTheme === "himmel"
+                ? "env-overlay env-theme-himmel"
               : envelopeTheme === "garden"
                 ? "env-overlay env-theme-garden"
                 : "env-marble"
@@ -87,6 +89,8 @@ export function InvitationExperience({
               ? "text-[#8a6a72]"
               : envelopeTheme === "raoul"
                 ? "text-[#7a6e58]"
+                : envelopeTheme === "himmel"
+                  ? "text-[#6b8ab0]"
                 : envelopeTheme === "garden"
                   ? "text-brand-brook-dark"
                   : "text-stone-500"
@@ -138,6 +142,8 @@ export function InvitationExperience({
                   ? "invitation-content--phantom-reveal invitation-content--snap-mobile"
                   : envelopeTheme === "raoul"
                     ? "invitation-content--raoul-reveal invitation-content--snap-mobile"
+                    : envelopeTheme === "himmel"
+                      ? "invitation-content--himmel-reveal"
                     : "invitation-content--revealed"
               : "pointer-events-none fixed inset-0 overflow-hidden opacity-0"
           }

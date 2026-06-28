@@ -1,10 +1,13 @@
 @import "tailwindcss";
 @import "../styles/raoul-theme.css";
+@import "../styles/himmel-theme.css";
 
 /* Tell Tailwind v4 which files contain utility classes */
 @source "../**/*.{js,ts,jsx,tsx,mdx}";
 @source inline("raoul-*");
 @source inline("env-theme-raoul");
+@source inline("himmel-*");
+@source inline("env-theme-himmel");
 
 :root {
   /* Platform brand — pink & sage, tuned for UI contrast */
@@ -133,6 +136,31 @@ body {
   --raoul-radius-lg: 1.75rem;
   --raoul-shadow-soft: 0 16px 48px rgba(28, 37, 53, 0.07);
   --raoul-shadow-card: 0 20px 52px rgba(28, 37, 53, 0.1);
+}
+
+.invitation-shell--himmel {
+  --inv-primary: #1a2f4a;
+  --inv-accent: #4a7fd4;
+  --inv-ink: #1a2433;
+  --inv-muted: #5a6d85;
+  --inv-cream: #e8f0fa;
+  --himmel-ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --himmel-gold: #c9a86c;
+  --himmel-gold-light: #e8d5b8;
+  --himmel-gold-deep: #8a7040;
+  --himmel-navy: #1a2f4a;
+  --himmel-navy-soft: #2d4a6f;
+  --himmel-ivory: #e8f0fa;
+  --himmel-pearl: #f4f8fc;
+  --himmel-panel: #f0f6fc;
+  --himmel-sky: #6b9fd4;
+  --himmel-magic: #4a7fd4;
+  --himmel-blush: #a8c8f0;
+  --himmel-radius-sm: 1rem;
+  --himmel-radius: 1.375rem;
+  --himmel-radius-lg: 1.75rem;
+  --himmel-shadow-soft: 0 16px 48px rgba(26, 47, 74, 0.08);
+  --himmel-shadow-card: 0 20px 52px rgba(26, 47, 74, 0.12);
 }
 
 .text-inv-ink {
@@ -4012,6 +4040,10 @@ body {
   animation: raoul-content-reveal 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
+.invitation-content--himmel-reveal {
+  animation: himmel-content-reveal 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
 @keyframes raoul-content-reveal {
   from { opacity: 0; }
   to { opacity: 1; }
@@ -4069,3 +4101,61 @@ body {
     0 4px 18px rgba(184, 134, 11, 0.35);
 }
 .env-theme-raoul .env-wax-seal__icon { color: #fff8e8; }
+
+/* Himmel & Frieren envelope — blue meadow, gold seal */
+.env-theme-himmel {
+  --env-backdrop: #1a2f4a;
+  --env-paper-light: #f4f8fc;
+  --env-paper-mid: #e8f0fa;
+  --env-paper-deep: #d4e4f4;
+  --env-paper-shadow: #a8c0d8;
+  --env-gold: #c9a86c;
+  --env-sky: #4a7fd4;
+}
+
+.env-overlay.env-theme-himmel {
+  --env-backdrop: #1a2f4a;
+  isolation: isolate;
+  overflow: hidden;
+  background-color: var(--env-backdrop);
+  background-image:
+    radial-gradient(ellipse 70% 50% at 50% 0%, rgba(74, 127, 212, 0.22), transparent 58%),
+    radial-gradient(ellipse 48% 32% at 50% 112%, color-mix(in srgb, var(--env-sky) 12%, transparent), transparent 58%),
+    linear-gradient(175deg, #2d4a6f 0%, var(--env-backdrop) 42%, #0f1a28 100%);
+}
+
+.env-theme-himmel .env-paper--back {
+  background: linear-gradient(160deg, var(--env-paper-light) 0%, var(--env-paper-mid) 100%);
+  border: 1px solid color-mix(in srgb, var(--env-sky) 30%, transparent);
+}
+.env-theme-himmel .env-back-label { color: color-mix(in srgb, var(--env-sky) 80%, #1a2f4a); }
+.env-theme-himmel .env-back-recipient { color: #1a2433; }
+.env-theme-himmel .env-postmark { color: color-mix(in srgb, var(--env-sky) 70%, #1a2433); }
+.env-theme-himmel .env-paper--front {
+  background: linear-gradient(180deg, var(--env-paper-light) 0%, var(--env-paper-mid) 100%);
+}
+.env-theme-himmel .env-flap-side--left,
+.env-theme-himmel .env-flap-side--right,
+.env-theme-himmel .env-flap-bottom,
+.env-theme-himmel .env-flap-closed,
+.env-theme-himmel .env-flap-open {
+  background: linear-gradient(180deg, var(--env-paper-mid) 0%, var(--env-paper-deep) 100%);
+}
+.env-theme-himmel .env-letter {
+  background: linear-gradient(180deg, #fafcff 0%, var(--env-paper-light) 100%);
+  border: 2px solid color-mix(in srgb, var(--env-sky) 35%, transparent);
+}
+.env-theme-himmel .env-letter__name { color: #1a2433 !important; }
+.env-theme-himmel .env-letter__amp { color: var(--env-sky) !important; }
+.env-theme-himmel .env-wax-seal {
+  background-color: color-mix(in srgb, var(--env-gold) 75%, #fff8e8);
+  box-shadow:
+    inset 0 2px 0 rgba(255, 255, 255, 0.5),
+    0 4px 18px rgba(74, 127, 212, 0.35);
+}
+.env-theme-himmel .env-wax-seal__icon { color: #fff8e8; }
+
+@keyframes himmel-content-reveal {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}

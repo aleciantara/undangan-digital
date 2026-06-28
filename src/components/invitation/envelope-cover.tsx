@@ -21,9 +21,9 @@ type Props = {
   /** click for invitations; hover for landing demo */
   activateOn?: "click" | "hover";
   /** landing: bare on page + green envelope / pink accents; invitations: same garden styling on fullscreen */
-  embedTheme?: "default" | "garden" | "phantom" | "raoul";
+  embedTheme?: "default" | "garden" | "phantom" | "raoul" | "himmel";
   /** use garden envelope on fullscreen overlay (invitation templates) */
-  envelopeTheme?: "default" | "garden" | "phantom" | "raoul";
+  envelopeTheme?: "default" | "garden" | "phantom" | "raoul" | "himmel";
 };
 
 const FLIP_MS = 1000;
@@ -63,7 +63,10 @@ export function EnvelopeCover({
   const isRaoul =
     (isEmbedded && embedTheme === "raoul") ||
     (!isEmbedded && (envelopeTheme === "raoul" || embedTheme === "raoul"));
-  const isThemed = isGarden || isPhantom || isRaoul;
+  const isHimmel =
+    (isEmbedded && embedTheme === "himmel") ||
+    (!isEmbedded && (envelopeTheme === "himmel" || embedTheme === "himmel"));
+  const isThemed = isGarden || isPhantom || isRaoul || isHimmel;
   const shouldLoop = loop ?? isEmbedded;
 
   const isFlapOpen = step === "open" || step === "pull" || step === "exit";
@@ -116,13 +119,15 @@ export function EnvelopeCover({
 
   const wrapperClass =
     variant === "overlay"
-      ? `env-overlay fixed inset-0 z-50 flex flex-col items-center justify-center px-4 ${isGarden ? "env-theme-garden" : ""} ${isPhantom ? "env-theme-phantom" : ""} ${isRaoul ? "env-theme-raoul" : ""} ${step === "exit" && !shouldLoop ? "env-overlay--exit" : ""}`
+      ? `env-overlay fixed inset-0 z-50 flex flex-col items-center justify-center px-4 ${isGarden ? "env-theme-garden" : ""} ${isPhantom ? "env-theme-phantom" : ""} ${isRaoul ? "env-theme-raoul" : ""} ${isHimmel ? "env-theme-himmel" : ""} ${step === "exit" && !shouldLoop ? "env-overlay--exit" : ""}`
       : isGarden
         ? "env-embedded-bare env-theme-garden relative flex flex-col items-center justify-center py-4 sm:py-6"
         : isPhantom
           ? "env-embedded-bare env-theme-phantom relative flex flex-col items-center justify-center py-4 sm:py-6"
           : isRaoul
             ? "env-embedded-bare env-theme-raoul relative flex flex-col items-center justify-center py-4 sm:py-6"
+            : isHimmel
+              ? "env-embedded-bare env-theme-himmel relative flex flex-col items-center justify-center py-4 sm:py-6"
             : "env-embedded relative flex min-h-[min(420px,70vw)] flex-col items-center justify-center overflow-hidden rounded-[2rem] px-4 py-10 sm:rounded-[3rem] sm:py-12";
 
   return (
@@ -135,6 +140,8 @@ export function EnvelopeCover({
         className={`relative mb-6 text-center text-xs uppercase tracking-[0.35em] sm:mb-8 ${
           isRaoul
             ? "text-[#8a7a5a]"
+            : isHimmel
+              ? "text-[#6b8ab0]"
             : isPhantom
               ? "text-[#c9929a]"
               : isGarden
@@ -261,6 +268,8 @@ export function EnvelopeCover({
         className={`relative z-10 mt-8 min-h-[1.25rem] text-center text-sm transition-opacity duration-300 sm:mt-10 ${
           isRaoul
             ? "text-[#7a6e58]"
+            : isHimmel
+              ? "text-[#6b8ab0]"
             : isPhantom
               ? "text-[#8a6a72]"
               : isGarden

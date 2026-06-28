@@ -3,7 +3,7 @@
 type Scrim = "light" | "medium" | "heavy";
 
 type Props = {
-  theme: "raoul" | "phantom";
+  theme: "raoul" | "phantom" | "himmel";
   bgImage: string;
   scrim?: Scrim;
   blendTop?: boolean;

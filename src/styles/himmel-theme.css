@@ -1,0 +1,1666 @@
+/* Himmel & Frieren — blue meadow magic (Frieren: Beyond Journey's End) */
+
+@layer components {
+  .himmel-invite {
+    position: relative;
+    isolation: isolate;
+    background-color: transparent;
+    color: var(--inv-ink);
+  }
+
+  .himmel-invite .font-invitation {
+    font-family: var(--font-playfair), Georgia, serif;
+  }
+
+  .himmel-invite > *:not(.himmel-atmosphere-wrap) {
+    position: relative;
+    z-index: 10;
+  }
+
+  /* Full-screen flower wallpaper — always underneath invitation UI */
+  .himmel-atmosphere-wrap {
+    position: fixed;
+    inset: 0;
+    z-index: 5;
+    overflow: hidden;
+    pointer-events: none;
+    contain: strict;
+    transform: translate3d(0, 0, 0);
+    backface-visibility: hidden;
+  }
+
+  /* Pause expensive meadow animations while the guest scrolls */
+  .himmel-invite--scrolling .himmel-meadow__flower,
+  .himmel-invite--scrolling .himmel-petal-drift__item,
+  .himmel-invite--scrolling .himmel-hero__card-glow,
+  .himmel-invite--scrolling .himmel-hero__crest-petal {
+    animation-play-state: paused !important;
+  }
+
+  /* After the hero, drop only the fixed atmosphere sprites (section blooms stay) */
+  .himmel-invite--past-hero .himmel-atmosphere-wrap .himmel-meadow,
+  .himmel-invite--past-hero .himmel-atmosphere-wrap .himmel-meadow-front {
+    visibility: hidden;
+  }
+
+  /* Cards & panels: topmost layer above section blooms */
+  .himmel-surface {
+    position: relative;
+    z-index: 5;
+    isolation: isolate;
+  }
+
+  /* ── Atmosphere & meadow ── */
+  .himmel-atmosphere {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    overflow: hidden;
+    pointer-events: none;
+  }
+  .himmel-meadow-front {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    overflow: hidden;
+  }
+  .himmel-atmosphere__sky {
+    position: absolute;
+    inset: 0;
+    background:
+      linear-gradient(180deg, #d4e8ff 0%, #a8c8f0 28%, #6b9fd4 55%, #2d4a6f 100%);
+    opacity: 0.42;
+  }
+  .himmel-atmosphere__glow {
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 60% 40% at 20% 15%, rgba(168, 200, 240, 0.35), transparent 70%),
+      radial-gradient(ellipse 50% 35% at 85% 25%, rgba(74, 127, 212, 0.2), transparent 68%),
+      radial-gradient(ellipse 70% 50% at 50% 100%, rgba(45, 74, 111, 0.25), transparent 65%);
+  }
+  .himmel-atmosphere__grain {
+    position: absolute;
+    inset: 0;
+    opacity: 0.22;
+    background-image:
+      url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.5'/%3E%3C/svg%3E");
+    background-size: 180px 180px;
+    mix-blend-mode: soft-light;
+  }
+  .himmel-atmosphere__vignette {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse 90% 75% at 50% 50%, transparent 35%, rgba(26, 47, 74, 0.18) 100%);
+  }
+
+  .himmel-meadow {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+  }
+  .himmel-meadow__flower {
+    position: absolute;
+    transform-origin: center bottom;
+    opacity: 0;
+    contain: layout style paint;
+    backface-visibility: hidden;
+    animation:
+      himmel-flower-bloom 1.4s var(--himmel-ease) var(--flower-bloom-delay, 0s) forwards,
+      himmel-flower-sway-left var(--flower-duration, 6s) ease-in-out var(--flower-delay, 0s) infinite;
+  }
+  .himmel-meadow__flower--back {
+    width: calc(3.25rem * var(--flower-scale, 1));
+  }
+  .himmel-meadow__flower--mid {
+    width: calc(5rem * var(--flower-scale, 1));
+  }
+  .himmel-meadow__flower--front {
+    width: calc(6.5rem * var(--flower-scale, 1));
+  }
+  .himmel-meadow__flower--anchor-top {
+    transform-origin: center top;
+  }
+  .himmel-meadow__flower--anchor-top .himmel-meadow__img {
+    transform: scaleY(-1) rotate(var(--flower-tilt, 0deg));
+  }
+  .himmel-meadow__flower--anchor-top.himmel-meadow__flower--sway-left {
+    animation:
+      himmel-flower-bloom 1.4s var(--himmel-ease) var(--flower-bloom-delay, 0s) forwards,
+      himmel-flower-sway-left-top var(--flower-duration, 6s) ease-in-out var(--flower-delay, 0s) infinite;
+  }
+  .himmel-meadow__flower--anchor-top.himmel-meadow__flower--sway-right {
+    animation:
+      himmel-flower-bloom 1.4s var(--himmel-ease) var(--flower-bloom-delay, 0s) forwards,
+      himmel-flower-sway-right-top var(--flower-duration, 6s) ease-in-out var(--flower-delay, 0s) infinite;
+  }
+  .himmel-meadow-front .himmel-meadow__flower--front {
+    width: calc(7.5rem * var(--flower-scale, 1));
+  }
+  .himmel-meadow__flower--sway-right {
+    animation:
+      himmel-flower-bloom 1.4s var(--himmel-ease) var(--flower-bloom-delay, 0s) forwards,
+      himmel-flower-sway-right var(--flower-duration, 6s) ease-in-out var(--flower-delay, 0s) infinite;
+  }
+  .himmel-meadow__flower--still {
+    animation: himmel-flower-bloom 0.01s forwards;
+    opacity: 0.75;
+  }
+  .himmel-meadow__img {
+    display: block;
+    width: 100%;
+    height: auto;
+    object-fit: contain;
+    mix-blend-mode: screen;
+    filter: drop-shadow(0 2px 8px rgba(26, 47, 74, 0.12));
+    transform: rotate(var(--flower-tilt, 0deg));
+  }
+
+  .himmel-petal-drift {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    overflow: hidden;
+  }
+  .himmel-petal-drift__item {
+    position: absolute;
+    top: -8%;
+    width: var(--drift-size, 36px);
+    height: var(--drift-size, 36px);
+    opacity: 0;
+    contain: layout style paint;
+    animation: himmel-petal-fall var(--drift-duration, 16s) linear var(--drift-delay, 0s) infinite;
+  }
+  .himmel-petal-drift__img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    mix-blend-mode: screen;
+    opacity: 0.55;
+    transform: rotate(var(--drift-rot, 0deg));
+    filter: hue-rotate(-10deg) brightness(1.1);
+  }
+
+  @keyframes himmel-flower-bloom {
+    from {
+      opacity: 0;
+      transform: scale(0.2) translateY(12px);
+    }
+    to {
+      opacity: var(--flower-opacity, 0.88);
+      transform: scale(1) translateY(0);
+    }
+  }
+  @keyframes himmel-flower-sway-left {
+    0%, 100% { transform: rotate(-4deg); }
+    50% { transform: rotate(5deg) translateX(3px); }
+  }
+  @keyframes himmel-flower-sway-right {
+    0%, 100% { transform: rotate(4deg); }
+    50% { transform: rotate(-5deg) translateX(-3px); }
+  }
+  @keyframes himmel-flower-sway-left-top {
+    0%, 100% { transform: rotate(3deg); }
+    50% { transform: rotate(-4deg) translateX(2px); }
+  }
+  @keyframes himmel-flower-sway-right-top {
+    0%, 100% { transform: rotate(-3deg); }
+    50% { transform: rotate(4deg) translateX(-2px); }
+  }
+  @keyframes himmel-petal-fall {
+    0% {
+      opacity: 0;
+      transform: translate3d(0, -4vh, 0) rotate(var(--drift-rot, 0deg));
+    }
+    10% { opacity: 0.7; }
+    90% { opacity: 0.5; }
+    100% {
+      opacity: 0;
+      transform: translate3d(24px, 105vh, 0) rotate(calc(var(--drift-rot, 0deg) + 180deg));
+    }
+  }
+
+  @media (max-width: 767px) {
+    .himmel-meadow__img {
+      mix-blend-mode: normal;
+      filter: drop-shadow(0 1px 4px rgba(26, 47, 74, 0.1));
+    }
+    .himmel-atmosphere__grain {
+      display: none;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .himmel-meadow__flower:not(.himmel-meadow__flower--still) {
+      animation: himmel-flower-bloom 0.01s forwards !important;
+    }
+    .himmel-petal-drift__item {
+      display: none;
+    }
+  }
+
+  .himmel-reveal {
+    opacity: 0;
+    transition:
+      opacity 0.9s var(--himmel-ease) var(--himmel-reveal-delay, 0ms),
+      transform 0.9s var(--himmel-ease) var(--himmel-reveal-delay, 0ms);
+  }
+  .himmel-reveal--in { opacity: 1; transform: none !important; }
+  .himmel-reveal--up:not(.himmel-reveal--in) { transform: translateY(44px); }
+  .himmel-reveal--clip:not(.himmel-reveal--in) { transform: translateY(16px); }
+
+  .himmel-hero { isolation: isolate; }
+
+  .himmel-hero__parallax {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    overflow: hidden;
+  }
+
+  .himmel-hero--flowers .himmel-hero__veil {
+    z-index: 1;
+    background:
+      linear-gradient(180deg, rgba(232, 242, 255, 0.08) 0%, rgba(26, 47, 74, 0.12) 45%, rgba(26, 47, 74, 0.38) 100%),
+      radial-gradient(ellipse 55% 40% at 50% 55%, rgba(255, 255, 255, 0.12), transparent 70%);
+  }
+  .himmel-hero--flowers .himmel-hero__sun-glow {
+    z-index: 1;
+    background:
+      radial-gradient(ellipse 55% 35% at 50% 0%, rgba(212, 232, 255, 0.45), transparent 58%),
+      radial-gradient(ellipse 35% 25% at 82% 18%, color-mix(in srgb, var(--himmel-magic) 22%, transparent), transparent 68%);
+  }
+  .himmel-hero--photo .himmel-hero__veil {
+    z-index: 1;
+    background:
+      linear-gradient(180deg, rgba(26, 47, 74, 0.2) 0%, rgba(26, 47, 74, 0.45) 55%, rgba(26, 47, 74, 0.78) 100%),
+      radial-gradient(ellipse 70% 50% at 50% 20%, rgba(212, 232, 255, 0.2), transparent 65%);
+  }
+  .himmel-hero--photo .himmel-hero__sun-glow {
+    z-index: 1;
+    background:
+      radial-gradient(ellipse 50% 40% at 50% 0%, rgba(168, 200, 240, 0.35), transparent 62%),
+      radial-gradient(ellipse 40% 28% at 85% 25%, color-mix(in srgb, var(--himmel-magic) 28%, transparent), transparent 70%);
+  }
+  .himmel-hero__meadow {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    overflow: hidden;
+  }
+  .himmel-hero__meadow-sky {
+    position: absolute;
+    inset: 0;
+    background:
+      linear-gradient(180deg, #e8f2ff 0%, #b8d4f5 22%, #7eb0e0 48%, #3d628f 78%, #1a2f4a 100%);
+  }
+  .himmel-hero__meadow-glow {
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 65% 45% at 50% 8%, rgba(255, 255, 255, 0.55), transparent 62%),
+      radial-gradient(ellipse 50% 40% at 15% 30%, rgba(168, 200, 240, 0.4), transparent 68%),
+      radial-gradient(ellipse 45% 35% at 88% 22%, rgba(74, 127, 212, 0.28), transparent 65%),
+      radial-gradient(ellipse 80% 55% at 50% 100%, rgba(26, 47, 74, 0.2), transparent 70%);
+  }
+  .himmel-hero__meadow-layer {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+  }
+
+  .himmel-hero__veil {
+    z-index: 1;
+    background:
+      linear-gradient(180deg, rgba(232, 242, 255, 0.08) 0%, rgba(26, 47, 74, 0.12) 45%, rgba(26, 47, 74, 0.38) 100%),
+      radial-gradient(ellipse 55% 40% at 50% 55%, rgba(255, 255, 255, 0.12), transparent 70%);
+  }
+  .himmel-hero__sun-glow {
+    z-index: 1;
+    background:
+      radial-gradient(ellipse 55% 35% at 50% 0%, rgba(212, 232, 255, 0.45), transparent 58%),
+      radial-gradient(ellipse 35% 25% at 82% 18%, color-mix(in srgb, var(--himmel-magic) 22%, transparent), transparent 68%);
+  }
+  .himmel-hero::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 3;
+    height: clamp(4rem, 10vh, 7rem);
+    pointer-events: none;
+    background: linear-gradient(
+      to bottom,
+      transparent 0%,
+      color-mix(in srgb, var(--himmel-navy) 12%, transparent) 40%,
+      color-mix(in srgb, var(--himmel-navy) 35%, transparent) 75%,
+      color-mix(in srgb, var(--himmel-navy) 70%, transparent) 100%
+    );
+  }
+
+  .himmel-hero__card {
+    position: relative;
+    z-index: 2;
+    width: min(100%, 28rem);
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity 1.1s var(--himmel-ease), transform 1.1s var(--himmel-ease);
+  }
+  .himmel-hero__card-glow {
+    position: absolute;
+    inset: -20px;
+    border-radius: 2rem;
+    background: radial-gradient(ellipse 80% 60% at 50% 50%, rgba(74, 127, 212, 0.35), transparent 70%);
+    filter: blur(16px);
+    pointer-events: none;
+    animation: himmel-card-pulse 4s ease-in-out infinite;
+  }
+  @keyframes himmel-card-pulse {
+    0%, 100% { opacity: 0.5; transform: scale(0.98); }
+    50% { opacity: 0.85; transform: scale(1.02); }
+  }
+  .himmel-hero__card--in {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  .himmel-hero__card-frame {
+    position: absolute;
+    inset: -2px;
+    border-radius: 1.75rem;
+    pointer-events: none;
+    background: linear-gradient(
+      135deg,
+      rgba(168, 200, 240, 0.9) 0%,
+      rgba(74, 127, 212, 0.85) 35%,
+      rgba(201, 168, 108, 0.5) 65%,
+      rgba(168, 200, 240, 0.9) 100%
+    );
+    padding: 2px;
+    -webkit-mask:
+      linear-gradient(#fff 0 0) content-box,
+      linear-gradient(#fff 0 0);
+    mask:
+      linear-gradient(#fff 0 0) content-box,
+      linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    box-shadow:
+      0 0 24px rgba(74, 127, 212, 0.35),
+      0 0 48px rgba(168, 200, 240, 0.15);
+  }
+  .himmel-hero__card-petal {
+    position: absolute;
+    font-size: 0.65rem;
+    color: color-mix(in srgb, var(--himmel-magic) 80%, white);
+    opacity: 0.7;
+    text-shadow: 0 0 8px rgba(168, 200, 240, 0.8);
+  }
+  .himmel-hero__card-petal--tl { top: 0.35rem; left: 0.5rem; }
+  .himmel-hero__card-petal--tr { top: 0.35rem; right: 0.5rem; }
+  .himmel-hero__card-petal--bl { bottom: 0.35rem; left: 0.5rem; }
+  .himmel-hero__card-petal--br { bottom: 0.35rem; right: 0.5rem; }
+  .himmel-hero__card-inner {
+    position: relative;
+    padding: clamp(1.75rem, 5vw, 2.75rem) clamp(1.5rem, 4vw, 2.5rem);
+    background: linear-gradient(
+      165deg,
+      rgba(248, 251, 255, 0.97) 0%,
+      rgba(236, 244, 252, 0.96) 50%,
+      rgba(228, 238, 250, 0.95) 100%
+    );
+    -webkit-backdrop-filter: blur(12px) saturate(1.2);
+    backdrop-filter: blur(12px) saturate(1.2);
+    border-radius: 1.65rem;
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.95),
+      0 20px 48px rgba(26, 47, 74, 0.15);
+    border: 1px solid rgba(255, 255, 255, 0.75);
+  }
+  .himmel-hero__crest {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    margin-top: 1.25rem;
+  }
+  .himmel-hero__crest-petal {
+    font-size: 0.75rem;
+    color: var(--himmel-magic);
+    opacity: 0.85;
+    animation: himmel-crest-sparkle 3s ease-in-out infinite;
+  }
+  .himmel-hero__crest-petal:last-child { animation-delay: 1.5s; }
+  @keyframes himmel-crest-sparkle {
+    0%, 100% { opacity: 0.5; transform: scale(0.9); }
+    50% { opacity: 1; transform: scale(1.1); }
+  }
+  .himmel-hero__crest-monogram {
+    font-size: 0.85rem;
+    font-weight: 600;
+    letter-spacing: 0.35em;
+    color: var(--himmel-magic);
+  }
+  .himmel-hero__pretitle {
+    margin-top: 1rem;
+    font-size: 0.58rem;
+    font-weight: 600;
+    letter-spacing: 0.55em;
+    text-transform: uppercase;
+    color: var(--inv-muted);
+    opacity: 0;
+    transform: translateY(8px);
+    transition: opacity 0.9s var(--himmel-ease) 0.1s, transform 0.9s var(--himmel-ease) 0.1s;
+  }
+  .himmel-hero__pretitle--in { opacity: 1; transform: translateY(0); }
+  .himmel-hero__rule {
+    width: 3rem;
+    height: 1px;
+    margin: 1.25rem auto 0;
+    background: linear-gradient(90deg, transparent, var(--himmel-gold), transparent);
+  }
+  .himmel-hero__dot {
+    margin-inline: 0.65rem;
+    font-size: 0.45rem;
+    color: var(--himmel-gold);
+    vertical-align: middle;
+  }
+  .himmel-hero__eyebrow {
+    color: var(--himmel-magic);
+    font-size: 0.58rem;
+    font-weight: 700;
+    letter-spacing: 0.5em;
+    text-transform: uppercase;
+  }
+  .himmel-hero__title {
+    font-size: clamp(2.5rem, 12vw, 4.25rem);
+    color: var(--himmel-navy);
+    letter-spacing: 0.01em;
+  }
+  .himmel-hero__name {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 1s var(--himmel-ease), transform 1s var(--himmel-ease);
+  }
+  .himmel-hero__name--in { opacity: 1; transform: translateY(0); }
+  .himmel-hero__name--delay-1 { transition-delay: 0.15s; }
+  .himmel-hero__name--delay-2 { transition-delay: 0.3s; }
+  .himmel-hero__amp {
+    font-size: clamp(1.75rem, 7vw, 2.75rem);
+    color: var(--himmel-magic);
+    font-style: italic;
+  }
+  .himmel-hero__subtitle {
+    color: var(--inv-muted);
+    opacity: 0;
+    transition: opacity 1s var(--himmel-ease) 0.45s;
+  }
+  .himmel-hero__subtitle--in { opacity: 1; }
+  .himmel-hero__tagline {
+    color: color-mix(in srgb, var(--himmel-navy) 75%, var(--himmel-gold));
+    font-size: clamp(0.95rem, 3vw, 1.1rem);
+    opacity: 0;
+    transition: opacity 1s var(--himmel-ease) 0.6s;
+  }
+  .himmel-hero__tagline--in { opacity: 0.92; }
+  .himmel-hero__scroll-line {
+    display: block;
+    width: 1px;
+    height: 48px;
+    margin: 0 auto;
+    background: linear-gradient(180deg, transparent, var(--himmel-gold-light), transparent);
+    animation: himmel-scroll-pulse 2s ease-in-out infinite;
+  }
+
+  .himmel-section--solid {
+    position: relative;
+    isolation: isolate;
+    padding-top: clamp(3.5rem, 9vh, 5.5rem);
+    padding-bottom: clamp(3.5rem, 9vh, 5.5rem);
+  }
+  .himmel-section__solid-bg {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+  }
+  .himmel-section__solid-bg--ivory {
+    background-color: color-mix(in srgb, var(--himmel-ivory) 92%, transparent);
+    background-image:
+      radial-gradient(ellipse 90% 55% at 50% 0%, color-mix(in srgb, var(--inv-accent) 6%, transparent), transparent 70%);
+  }
+  .himmel-section__solid-bg--pearl {
+    background-color: color-mix(in srgb, var(--himmel-pearl) 90%, transparent);
+    background-image:
+      radial-gradient(ellipse 80% 50% at 50% 100%, color-mix(in srgb, var(--himmel-magic) 6%, transparent), transparent 65%);
+  }
+  .himmel-section__solid-bg--dark {
+    background-color: var(--himmel-navy);
+    background-image:
+      radial-gradient(ellipse 70% 45% at 50% 0%, color-mix(in srgb, var(--himmel-gold) 12%, transparent), transparent 68%),
+      radial-gradient(ellipse 55% 40% at 100% 100%, color-mix(in srgb, var(--himmel-sky) 10%, transparent), transparent 70%),
+      linear-gradient(180deg, var(--himmel-navy) 0%, var(--himmel-navy-soft) 100%);
+  }
+  .himmel-section__meadow {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    overflow: hidden;
+    pointer-events: none;
+  }
+  .himmel-section__meadow-front {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    overflow: hidden;
+    pointer-events: none;
+  }
+  .himmel-section--solid.himmel-section--ivory {
+    background: none;
+  }
+  .himmel-section--solid.himmel-section--pearl {
+    background: none;
+  }
+  .himmel-section--solid.himmel-section--dark {
+    --inv-ink: #f7f2ea;
+    --inv-muted: #b8ad9c;
+    background: none;
+  }
+  .himmel-section--feathered {
+    isolation: isolate;
+  }
+  .himmel-section--solid.himmel-section--feathered .himmel-section__blend {
+    position: absolute;
+    left: 0;
+    right: 0;
+    z-index: 2;
+    pointer-events: none;
+  }
+  .himmel-section--dark .himmel-heading__title { color: var(--inv-ink); }
+  .himmel-section--dark .himmel-heading__index { color: color-mix(in srgb, var(--himmel-gold) 75%, var(--inv-muted)); }
+  .himmel-section--dark .himmel-heading__line {
+    background: linear-gradient(90deg, transparent, color-mix(in srgb, var(--himmel-gold) 50%, transparent), transparent);
+  }
+  .himmel-section--dark .himmel-heading__gem { color: var(--himmel-gold); }
+  .himmel-section--has-bg {
+    isolation: isolate;
+    content-visibility: auto;
+    contain-intrinsic-size: auto 600px;
+  }
+  .himmel-section--has-bg.himmel-section--sticky-bg {
+    isolation: auto;
+    content-visibility: visible;
+    contain: none;
+    overflow: visible;
+  }
+  .himmel-section__bg {
+    contain: strict;
+  }
+  .himmel-section__bg .himmel-section__blend {
+    position: absolute;
+    left: 0;
+    right: 0;
+    z-index: 2;
+  }
+  .himmel-section__bg-img {
+    transform: translate3d(0, 0, 0) scale(1.04);
+    filter: saturate(1.05) brightness(1.03);
+  }
+  .himmel-section--sticky-bg .himmel-section__sticky-stack {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .himmel-section--sticky-bg .himmel-section__bg-sticky,
+  .himmel-section--sticky-bg .himmel-section__content {
+    grid-column: 1;
+    grid-row: 1;
+  }
+  .himmel-section--sticky-bg .himmel-section__bg-sticky {
+    position: sticky;
+    top: 0;
+    z-index: 0;
+    width: 100%;
+    height: 100svh;
+    height: 100dvh;
+    align-self: start;
+    pointer-events: none;
+  }
+  .himmel-section--sticky-bg .himmel-section__bg-inner {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+  }
+  .himmel-section--sticky-bg .himmel-section__blend {
+    position: absolute;
+    left: 0;
+    right: 0;
+    z-index: 2;
+  }
+  .himmel-section--sticky-bg .himmel-section__content {
+    position: relative;
+    z-index: 1;
+  }
+  .himmel-section__blend {
+    position: absolute;
+    left: 0;
+    right: 0;
+    z-index: 2;
+    pointer-events: none;
+  }
+  .himmel-section__blend--top {
+    top: 0;
+    height: clamp(5rem, 14vh, 9rem);
+    background: linear-gradient(
+      to bottom,
+      var(--himmel-blend-top, var(--himmel-ivory)) 0%,
+      color-mix(in srgb, var(--himmel-blend-top, var(--himmel-ivory)) 55%, transparent) 38%,
+      color-mix(in srgb, var(--himmel-blend-top, var(--himmel-ivory)) 18%, transparent) 68%,
+      transparent 100%
+    );
+  }
+  .himmel-section__blend--bottom {
+    bottom: 0;
+    height: clamp(5rem, 14vh, 9rem);
+    background: linear-gradient(
+      to top,
+      var(--himmel-blend-bottom, var(--himmel-pearl)) 0%,
+      color-mix(in srgb, var(--himmel-blend-bottom, var(--himmel-pearl)) 55%, transparent) 38%,
+      color-mix(in srgb, var(--himmel-blend-bottom, var(--himmel-pearl)) 18%, transparent) 68%,
+      transparent 100%
+    );
+  }
+  .himmel-section--scrim-light .himmel-section__scrim {
+    background: linear-gradient(
+      180deg,
+      color-mix(in srgb, var(--himmel-ivory) 78%, transparent) 0%,
+      color-mix(in srgb, var(--himmel-pearl) 52%, transparent) 45%,
+      color-mix(in srgb, var(--himmel-pearl) 62%, transparent) 100%
+    );
+  }
+  .himmel-section--scrim-medium .himmel-section__scrim {
+    background: linear-gradient(
+      180deg,
+      color-mix(in srgb, var(--himmel-ivory) 84%, transparent) 0%,
+      color-mix(in srgb, var(--himmel-pearl) 58%, transparent) 48%,
+      color-mix(in srgb, var(--himmel-pearl) 72%, transparent) 100%
+    );
+  }
+  .himmel-section--scrim-heavy .himmel-section__scrim {
+    background: linear-gradient(
+      180deg,
+      color-mix(in srgb, var(--himmel-pearl) 88%, transparent) 0%,
+      color-mix(in srgb, var(--himmel-pearl) 68%, transparent) 42%,
+      color-mix(in srgb, var(--himmel-navy) 35%, transparent) 100%
+    );
+  }
+  .himmel-section--has-bg .himmel-panel {
+    background: linear-gradient(
+      160deg,
+      rgba(248, 251, 255, 0.97) 0%,
+      rgba(236, 244, 252, 0.96) 100%
+    );
+    -webkit-backdrop-filter: blur(12px);
+    backdrop-filter: blur(12px);
+  }
+
+  .himmel-quote-panel {
+    position: relative;
+    overflow: hidden;
+    border-radius: 1.5rem;
+    background: linear-gradient(
+      155deg,
+      rgba(248, 251, 255, 0.97) 0%,
+      rgba(236, 244, 252, 0.96) 50%,
+      rgba(228, 238, 250, 0.95) 100%
+    );
+    border: 1px solid color-mix(in srgb, var(--quote-accent, var(--himmel-magic)) 28%, transparent);
+    box-shadow:
+      0 20px 48px rgba(26, 47, 74, 0.12),
+      inset 0 1px 0 rgba(255, 255, 255, 0.95);
+    -webkit-backdrop-filter: blur(12px);
+    backdrop-filter: blur(12px);
+  }
+  .himmel-quote-panel::before {
+    content: "\201C";
+    position: absolute;
+    top: 0.5rem;
+    left: 1.25rem;
+    font-family: var(--font-playfair), Georgia, serif;
+    font-size: 4rem;
+    line-height: 1;
+    color: color-mix(in srgb, var(--himmel-magic) 30%, transparent);
+    pointer-events: none;
+  }
+  .himmel-quote-panel__ornament {
+    position: absolute;
+    top: 1.25rem;
+    right: 1.5rem;
+    font-size: 1.5rem;
+    opacity: 0.45;
+    color: var(--quote-accent);
+  }
+  .himmel-quote-panel__label {
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 0.55em;
+    text-transform: uppercase;
+    color: var(--himmel-magic);
+  }
+  .himmel-quote-panel__text {
+    font-size: clamp(1.5rem, 5vw, 2.35rem);
+    font-style: italic;
+    font-weight: 500;
+    line-height: 1.45;
+    color: var(--inv-ink);
+  }
+  .himmel-quote-panel__author {
+    font-size: 0.8rem;
+    font-weight: 600;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: color-mix(in srgb, var(--quote-accent) 70%, var(--inv-muted));
+  }
+
+  .himmel-verse__panel {
+    border-radius: 1.25rem;
+    background: linear-gradient(165deg, rgba(244, 248, 252, 0.95), rgba(228, 238, 252, 0.9));
+    border: 1px solid color-mix(in srgb, var(--himmel-magic) 25%, transparent);
+    text-align: center;
+    box-shadow: var(--himmel-shadow-soft), 0 0 20px rgba(74, 127, 212, 0.08);
+    backdrop-filter: blur(8px);
+  }
+  .himmel-verse__panel--foil {
+    box-shadow:
+      var(--himmel-shadow-card),
+      inset 0 0 0 1px rgba(255, 255, 255, 0.85),
+      inset 0 0 0 4px color-mix(in srgb, var(--himmel-magic) 10%, transparent);
+  }
+  .himmel-verse__eyebrow {
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 0.5em;
+    text-transform: uppercase;
+    color: var(--himmel-magic);
+  }
+  .himmel-verse__text {
+    margin-top: 1.5rem;
+    font-size: clamp(1.1rem, 3.5vw, 1.35rem);
+    line-height: 1.75;
+    color: color-mix(in srgb, var(--inv-ink) 88%, var(--verse-accent));
+  }
+
+  .himmel-parents { display: grid; gap: 1rem; }
+  @media (min-width: 640px) {
+    .himmel-parents { grid-template-columns: 1fr 1fr; }
+  }
+  .himmel-parents__panel {
+    padding: 1.25rem 1.5rem;
+    border-radius: var(--himmel-radius);
+    background: color-mix(in srgb, var(--himmel-panel) 96%, white);
+    border: 1px solid color-mix(in srgb, var(--panel-color, var(--inv-accent)) 16%, transparent);
+    box-shadow: var(--himmel-shadow-soft);
+  }
+  .himmel-parents__label {
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 0.35em;
+    text-transform: uppercase;
+    color: var(--himmel-gold);
+  }
+  .himmel-parents__couple-name {
+    margin-top: 0.75rem;
+    font-size: clamp(1.25rem, 3.5vw, 1.5rem);
+    color: var(--inv-ink);
+  }
+  .himmel-parents__parents {
+    margin-top: 0.4rem;
+    font-size: 0.9rem;
+    line-height: 1.55;
+    color: var(--inv-muted);
+  }
+
+  .himmel-section--solid .himmel-section__content,
+  .himmel-section--has-bg .himmel-section__content {
+    position: relative;
+    z-index: 3;
+  }
+  .himmel-section--solid .himmel-heading {
+    margin-bottom: clamp(2rem, 5vh, 3rem);
+  }
+
+  .himmel-panel {
+    position: relative;
+    z-index: 5;
+    background: linear-gradient(
+      160deg,
+      rgba(248, 251, 255, 0.97) 0%,
+      rgba(236, 244, 252, 0.96) 100%
+    );
+    border: 1px solid color-mix(in srgb, var(--himmel-magic) 22%, transparent);
+    border-radius: 1.25rem;
+    box-shadow:
+      var(--himmel-shadow-soft),
+      inset 0 1px 0 rgba(255, 255, 255, 0.95),
+      0 8px 28px rgba(26, 47, 74, 0.1);
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+    overflow: hidden;
+  }
+  .himmel-panel::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      var(--himmel-magic),
+      color-mix(in srgb, var(--himmel-gold) 60%, var(--himmel-magic)),
+      var(--himmel-magic),
+      transparent
+    );
+    opacity: 0.65;
+  }
+
+  .himmel-heading {
+    position: relative;
+    z-index: 2;
+  }
+
+  .himmel-countdown__label {
+    text-align: center;
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 0.45em;
+    text-transform: uppercase;
+    color: var(--himmel-magic);
+    margin-bottom: 1.5rem;
+  }
+  .himmel-countdown__unit {
+    display: flex;
+    align-items: flex-start;
+  }
+  .himmel-countdown__num-wrap {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-width: 4rem;
+    padding: 0.65rem 0.5rem 0.5rem;
+    border-radius: 0.85rem;
+    background: linear-gradient(165deg, rgba(244, 248, 252, 0.9), rgba(212, 228, 248, 0.75));
+    border: 1px solid color-mix(in srgb, var(--cd-accent, var(--himmel-magic)) 30%, transparent);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.8);
+  }
+  .himmel-countdown__row {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+  .himmel-countdown__colon {
+    font-size: 2rem;
+    line-height: 1;
+    padding-top: 0.15rem;
+    color: var(--cd-accent);
+    opacity: 0.6;
+  }
+  .himmel-countdown__num {
+    display: block;
+    font-size: clamp(2.5rem, 10vw, 4rem);
+    font-weight: 600;
+    line-height: 1;
+    color: var(--inv-ink);
+  }
+  .himmel-countdown__unit-label {
+    display: block;
+    margin-top: 0.35rem;
+    font-size: 0.65rem;
+    font-weight: 600;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    text-align: center;
+    color: var(--inv-muted);
+  }
+  .himmel-countdown-done {
+    color: var(--inv-accent);
+  }
+
+  .himmel-heading__index {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-size: 0.7rem;
+    letter-spacing: 0.15em;
+    color: color-mix(in srgb, var(--hd-accent) 65%, var(--inv-muted));
+  }
+  .himmel-heading__title {
+    font-size: clamp(2rem, 7vw, 3rem);
+    font-weight: 600;
+    color: var(--inv-ink);
+    letter-spacing: 0.04em;
+  }
+  .himmel-heading--center { text-align: center; }
+  .himmel-heading__bar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.85rem;
+    margin-top: 1.25rem;
+  }
+  .himmel-heading--center .himmel-heading__bar { justify-content: center; }
+  .himmel-heading__line {
+    flex: 1;
+    max-width: 5rem;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, color-mix(in srgb, var(--hd-accent) 55%, var(--himmel-gold)), transparent);
+  }
+  .himmel-heading__gem {
+    font-size: 0.65rem;
+    color: var(--himmel-magic);
+    line-height: 1;
+  }
+
+  .himmel-event {
+    position: relative;
+    z-index: 2;
+    background: linear-gradient(
+      145deg,
+      rgba(26, 47, 74, 0.96) 0%,
+      rgba(45, 74, 111, 0.94) 55%,
+      rgba(74, 127, 212, 0.35) 100%
+    );
+    border: 1px solid color-mix(in srgb, var(--himmel-magic) 45%, transparent);
+    border-radius: 1.25rem;
+    padding: 1.75rem;
+    box-shadow:
+      var(--himmel-shadow-card),
+      0 0 28px rgba(74, 127, 212, 0.15);
+    color: #f0f6fc;
+    overflow: hidden;
+    --inv-ink: #f0f6fc;
+    --inv-muted: #a8c0d8;
+  }
+  .himmel-event::after {
+    content: "✿";
+    position: absolute;
+    top: 0.75rem;
+    right: 1rem;
+    font-size: 0.85rem;
+    opacity: 0.35;
+    color: var(--himmel-blush);
+  }
+  .himmel-event__title { color: #f7f2ea; }
+  .himmel-event__venue { color: #f7f2ea; }
+  .himmel-event__header {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid color-mix(in srgb, var(--event-accent) 15%, transparent);
+  }
+  .himmel-event__index { font-size: 0.75rem; color: var(--himmel-gold); padding-top: 0.35rem; }
+  .himmel-event__title { font-size: clamp(1.5rem, 4vw, 2rem); color: var(--inv-ink); }
+  .himmel-event__subtitle {
+    margin-top: 0.25rem;
+    font-size: 0.8rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: color-mix(in srgb, var(--event-accent) 70%, var(--inv-muted));
+  }
+  .himmel-event__body { display: grid; gap: 1.5rem; padding-top: 1.25rem; }
+  @media (min-width: 640px) {
+    .himmel-event__body { grid-template-columns: minmax(0, 7rem) 1fr; }
+  }
+  .himmel-event__weekday {
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--himmel-gold);
+  }
+  .himmel-event__day {
+    font-size: clamp(2.5rem, 8vw, 3.5rem);
+    line-height: 1;
+    color: var(--event-accent);
+  }
+  .himmel-event__month,
+  .himmel-event__time { font-size: 0.85rem; color: var(--inv-muted); }
+  .himmel-event__venue { font-size: clamp(1.15rem, 3vw, 1.4rem); color: var(--inv-ink); }
+  .himmel-event__address { margin-top: 0.35rem; font-size: 0.9rem; line-height: 1.6; color: var(--inv-muted); }
+  .himmel-event__meta { margin-top: 0.75rem; font-size: 0.85rem; color: var(--inv-muted); }
+  .himmel-event__meta-label {
+    display: block;
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--himmel-gold);
+    margin-bottom: 0.2rem;
+  }
+  .himmel-event__notes {
+    margin-top: 0.5rem;
+    font-size: 0.85rem;
+    font-style: italic;
+    color: color-mix(in srgb, var(--event-accent) 65%, var(--inv-muted));
+  }
+  .himmel-event__actions { display: flex; flex-wrap: wrap; gap: 0.75rem; margin-top: 1rem; }
+  .himmel-event__link {
+    display: inline-flex;
+    padding: 0.45rem 1rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #f7f2ea;
+    border: 1px solid color-mix(in srgb, var(--himmel-gold) 55%, transparent);
+    border-radius: 999px;
+    transition: background 0.25s ease;
+  }
+  .himmel-event__link:hover {
+    background: color-mix(in srgb, var(--himmel-gold) 18%, transparent);
+  }
+
+  .himmel-dresscode-section__intro {
+    font-size: 1.05rem;
+    line-height: 1.65;
+    color: var(--inv-muted);
+  }
+  .himmel-dresscode-grid {
+    display: grid;
+    gap: 1.25rem;
+  }
+  @media (min-width: 640px) {
+    .himmel-dresscode-grid { grid-template-columns: repeat(auto-fit, minmax(17rem, 1fr)); }
+  }
+
+  .himmel-dresscode {
+    height: 100%;
+    padding: 1.5rem 1.75rem;
+    border-radius: var(--himmel-radius-lg);
+    border: 1px solid color-mix(in srgb, var(--himmel-gold) 32%, transparent);
+    background: linear-gradient(155deg, var(--himmel-navy) 0%, var(--himmel-navy-soft) 100%);
+    box-shadow: var(--himmel-shadow-card);
+    color: #f7f2ea;
+    --inv-ink: #f7f2ea;
+    --inv-muted: #b8ad9c;
+  }
+  .himmel-dresscode__header {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.85rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid color-mix(in srgb, var(--himmel-gold) 22%, transparent);
+  }
+  .himmel-dresscode__index {
+    padding-top: 0.3rem;
+    font-size: 0.72rem;
+    color: var(--himmel-gold);
+  }
+  .himmel-dresscode__event {
+    font-size: clamp(1.25rem, 3.5vw, 1.6rem);
+    line-height: 1.2;
+    color: #f7f2ea;
+  }
+  .himmel-dresscode__palette {
+    margin-top: 1.1rem;
+  }
+  .himmel-dresscode__palette-label,
+  .himmel-dresscode__attire-label {
+    font-size: 0.62rem;
+    font-weight: 700;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--himmel-gold);
+  }
+  .himmel-dresscode__colors {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem 1rem;
+    margin-top: 0.65rem;
+  }
+  .himmel-dresscode__swatch-wrap {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.35rem;
+  }
+  .himmel-dresscode__swatch {
+    display: block;
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 999px;
+    border: 2px solid color-mix(in srgb, var(--himmel-gold) 45%, transparent);
+    box-shadow:
+      0 0 0 3px color-mix(in srgb, var(--himmel-gold) 12%, transparent),
+      0 4px 14px color-mix(in srgb, black 35%, transparent);
+  }
+  .himmel-dresscode__hex {
+    font-size: 0.62rem;
+    letter-spacing: 0.04em;
+    color: color-mix(in srgb, #f7f2ea 55%, var(--himmel-gold));
+  }
+  .himmel-dresscode__color-label {
+    align-self: center;
+    font-size: 0.9rem;
+    color: var(--inv-muted);
+  }
+  .himmel-dresscode__attire-wrap {
+    margin-top: 1.1rem;
+    padding-top: 1rem;
+    border-top: 1px solid color-mix(in srgb, var(--himmel-gold) 15%, transparent);
+  }
+  .himmel-dresscode__attire {
+    margin-top: 0.45rem;
+    font-size: clamp(1rem, 2.5vw, 1.15rem);
+    line-height: 1.5;
+    color: #f7f2ea;
+  }
+
+  .himmel-couple-showcase__intro { position: relative; }
+  .himmel-couple-showcase__eyebrow {
+    font-size: 0.62rem;
+    font-weight: 700;
+    letter-spacing: 0.65em;
+    text-transform: uppercase;
+    color: var(--himmel-gold);
+  }
+  .himmel-couple-showcase__rule {
+    width: 2.5rem;
+    height: 1px;
+    margin: 1rem auto;
+    background: linear-gradient(90deg, transparent, var(--himmel-gold), transparent);
+  }
+  .himmel-couple-showcase__sub {
+    font-size: clamp(1rem, 3vw, 1.2rem);
+    color: color-mix(in srgb, var(--inv-ink) 88%, var(--himmel-gold-light));
+    line-height: 1.5;
+  }
+  .himmel-couple-showcase__grid--duo {
+    display: grid;
+    gap: 3rem;
+    align-items: end;
+  }
+  @media (min-width: 640px) {
+    .himmel-couple-showcase__grid--duo { grid-template-columns: 1fr 1fr; gap: 3.5rem; }
+  }
+
+  /* Moon-wreath portraits — blue magic ring, not Raoul gilded arch */
+  .himmel-portrait--wreath { text-align: center; }
+  .himmel-portrait__wreath-wrap {
+    position: relative;
+    display: inline-block;
+    width: 100%;
+    max-width: 14rem;
+    padding: 0.5rem;
+  }
+  .himmel-portrait__ring {
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    border: 2px solid color-mix(in srgb, var(--himmel-magic) 55%, transparent);
+    box-shadow:
+      0 0 20px rgba(74, 127, 212, 0.35),
+      inset 0 0 16px rgba(168, 200, 240, 0.25);
+    animation: himmel-ring-pulse 5s ease-in-out infinite;
+  }
+  @keyframes himmel-ring-pulse {
+    0%, 100% { opacity: 0.7; transform: scale(1); }
+    50% { opacity: 1; transform: scale(1.02); }
+  }
+  .himmel-portrait__bloom-ring {
+    position: absolute;
+    inset: -4px;
+    pointer-events: none;
+  }
+  .himmel-portrait__bloom-ring span {
+    position: absolute;
+    width: 0.45rem;
+    height: 0.45rem;
+    border-radius: 50%;
+    background: color-mix(in srgb, var(--himmel-magic) 70%, white);
+    box-shadow: 0 0 6px rgba(168, 200, 240, 0.8);
+  }
+  .himmel-portrait__bloom-ring span:nth-child(1) { top: 2%; left: 50%; transform: translateX(-50%); }
+  .himmel-portrait__bloom-ring span:nth-child(2) { top: 18%; right: 8%; }
+  .himmel-portrait__bloom-ring span:nth-child(3) { bottom: 18%; right: 8%; }
+  .himmel-portrait__bloom-ring span:nth-child(4) { bottom: 2%; left: 50%; transform: translateX(-50%); }
+  .himmel-portrait__bloom-ring span:nth-child(5) { bottom: 18%; left: 8%; }
+  .himmel-portrait__bloom-ring span:nth-child(6) { top: 18%; left: 8%; }
+  .himmel-portrait__frame {
+    position: relative;
+    overflow: hidden;
+    border-radius: 50%;
+    border: 3px solid rgba(255, 255, 255, 0.85);
+    box-shadow: 0 16px 40px rgba(26, 47, 74, 0.25);
+  }
+  .himmel-portrait__img {
+    display: block;
+    width: 100%;
+    aspect-ratio: 1;
+    object-fit: cover;
+    transition: transform 0.6s var(--himmel-ease);
+  }
+  .himmel-portrait:hover .himmel-portrait__img { transform: scale(1.05); }
+  .himmel-portrait__sheen {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      135deg,
+      rgba(255, 255, 255, 0.35) 0%,
+      transparent 42%,
+      transparent 58%,
+      rgba(168, 200, 240, 0.15) 100%
+    );
+    pointer-events: none;
+  }
+  .himmel-portrait__name {
+    margin-top: 1.25rem;
+    font-size: clamp(1.35rem, 4vw, 1.65rem);
+    color: #e8f0fa;
+  }
+  .himmel-portrait__role {
+    display: block;
+    margin-top: 0.35rem;
+    font-size: 0.65rem;
+    font-weight: 600;
+    letter-spacing: 0.35em;
+    text-transform: uppercase;
+    color: var(--himmel-blush);
+  }
+
+  /* Legacy gilded arch — unused, kept for reference */
+  .himmel-portrait--gilded { text-align: center; }
+  .himmel-portrait__pedestal-wrap {
+    position: relative;
+    display: inline-block;
+    width: 100%;
+    max-width: 15rem;
+  }
+  .himmel-portrait__arch {
+    position: relative;
+    padding: 3px;
+    border-radius: 50% 50% 1rem 1rem / 22% 22% 1rem 1rem;
+    background: linear-gradient(
+      165deg,
+      var(--himmel-gold-light) 0%,
+      var(--himmel-gold) 35%,
+      var(--himmel-gold-deep) 70%,
+      var(--himmel-gold-light) 100%
+    );
+    box-shadow:
+      0 20px 48px rgba(0, 0, 0, 0.28),
+      inset 0 1px 0 rgba(255, 255, 255, 0.45);
+  }
+  .himmel-portrait__gilt {
+    border-radius: inherit;
+    padding: 4px;
+    background: var(--himmel-navy);
+  }
+  .himmel-portrait__mat {
+    position: relative;
+    overflow: hidden;
+    border-radius: 50% 50% 0.85rem 0.85rem / 20% 20% 0.85rem 0.85rem;
+  }
+  .himmel-portrait__img {
+    display: block;
+    width: 100%;
+    aspect-ratio: 3 / 4;
+    object-fit: cover;
+    transition: transform 0.6s var(--himmel-ease);
+  }
+  .himmel-portrait:hover .himmel-portrait__img { transform: scale(1.04); }
+  .himmel-portrait__sheen {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      125deg,
+      rgba(255, 255, 255, 0.22) 0%,
+      transparent 42%,
+      transparent 58%,
+      rgba(255, 255, 255, 0.08) 100%
+    );
+    pointer-events: none;
+  }
+  .himmel-portrait__plinth {
+    width: 70%;
+    height: 6px;
+    margin: 0.65rem auto 0;
+    border-radius: 999px;
+    background: linear-gradient(90deg, transparent, var(--himmel-gold), transparent);
+    opacity: 0.65;
+  }
+  .himmel-portrait__name {
+    margin-top: 1.25rem;
+    font-size: clamp(1.5rem, 4vw, 2rem);
+    color: var(--inv-ink);
+    letter-spacing: 0.02em;
+  }
+  .himmel-portrait__role {
+    display: block;
+    margin-top: 0.35rem;
+    font-size: 0.62rem;
+    font-weight: 600;
+    letter-spacing: 0.35em;
+    text-transform: uppercase;
+    color: var(--himmel-gold);
+  }
+
+  .himmel-gallery__track {
+    display: flex;
+    gap: 1rem;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+    padding: 0.5rem 0 1rem;
+  }
+  .himmel-gallery__track::-webkit-scrollbar { display: none; }
+  .himmel-gallery__slide {
+    flex: 0 0 min(78vw, 18rem);
+    scroll-snap-align: center;
+    position: relative;
+    overflow: hidden;
+    border: 1px solid color-mix(in srgb, var(--himmel-gold) 32%, transparent);
+    border-radius: var(--himmel-radius);
+    background: var(--himmel-navy);
+    cursor: pointer;
+    transition: transform 0.35s var(--himmel-ease), box-shadow 0.35s ease;
+    box-shadow: var(--himmel-shadow-soft);
+  }
+  .himmel-gallery__slide:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--himmel-shadow-card);
+  }
+  .himmel-gallery__img {
+    display: block;
+    width: 100%;
+    aspect-ratio: 3 / 4;
+    object-fit: cover;
+  }
+  .himmel-gallery__caption {
+    position: absolute;
+    inset-inline: 0;
+    bottom: 0;
+    padding: 2rem 1rem 0.85rem;
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    text-align: center;
+    color: #fff;
+    background: linear-gradient(180deg, transparent, rgba(44, 36, 25, 0.75));
+  }
+  .himmel-gallery__nav {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    margin-top: 1rem;
+  }
+  .himmel-gallery__arrow {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 50%;
+    border: 1px solid color-mix(in srgb, var(--gal-accent) 35%, transparent);
+    color: var(--inv-ink);
+    background: var(--himmel-panel);
+  }
+  .himmel-gallery__arrow:disabled { opacity: 0.3; }
+  .himmel-gallery__dots { display: flex; gap: 0.4rem; }
+  .himmel-gallery__dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: color-mix(in srgb, var(--gal-accent) 25%, #ccc);
+  }
+  .himmel-gallery__dot--active { background: var(--gal-accent); transform: scale(1.3); }
+
+  .himmel-lightbox {
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(245, 240, 232, 0.97);
+    padding: 1rem;
+  }
+  .himmel-lightbox__img {
+    max-width: min(90vw, 36rem);
+    max-height: 80vh;
+    object-fit: contain;
+    border-radius: var(--himmel-radius);
+    border: 1px solid color-mix(in srgb, var(--inv-accent) 24%, transparent);
+    box-shadow: var(--himmel-shadow-card);
+  }
+  .himmel-lightbox__close,
+  .himmel-lightbox__prev,
+  .himmel-lightbox__next {
+    position: absolute;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--inv-ink);
+    opacity: 0.75;
+  }
+  .himmel-lightbox__close { top: 1rem; right: 1rem; }
+  .himmel-lightbox__prev { left: 1rem; }
+  .himmel-lightbox__next { right: 1rem; }
+  .himmel-lightbox__caption {
+    position: absolute;
+    bottom: 1.5rem;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 0.75rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--inv-muted);
+  }
+
+  .himmel-interactive label { color: var(--inv-muted) !important; }
+  .himmel-interactive input,
+  .himmel-interactive textarea,
+  .himmel-interactive select {
+    background: #fff !important;
+    border-color: color-mix(in srgb, var(--inv-accent) 20%, transparent) !important;
+    border-radius: var(--himmel-radius-sm) !important;
+    color: var(--inv-ink) !important;
+  }
+  .himmel-interactive .inv-btn-primary {
+    background: linear-gradient(135deg, var(--himmel-navy), var(--himmel-navy-soft)) !important;
+    border: 1px solid color-mix(in srgb, var(--himmel-gold) 40%, transparent) !important;
+    border-radius: 999px !important;
+    color: #f7f2ea !important;
+  }
+
+  .himmel-footer__ornament {
+    font-size: 0.55rem;
+    letter-spacing: 0.65em;
+    color: var(--himmel-gold);
+    margin-bottom: 1.25rem;
+  }
+  .himmel-footer__ornament::before,
+  .himmel-footer__ornament::after {
+    content: "◆";
+    margin-inline: 0.75rem;
+    font-size: 0.4rem;
+    vertical-align: middle;
+  }
+  .himmel-footer__names {
+    font-size: clamp(2rem, 7vw, 3.25rem);
+    color: #fdfbf7;
+    text-shadow: 0 4px 24px rgba(28, 37, 53, 0.45);
+    letter-spacing: 0.02em;
+  }
+  .himmel-footer__thanks {
+    margin-top: 0.75rem;
+    font-size: 0.72rem;
+    letter-spacing: 0.35em;
+    text-transform: uppercase;
+    color: color-mix(in srgb, #f7f2ea 70%, transparent);
+  }
+  .himmel-footer__tagline {
+    margin-top: 1rem;
+    font-size: 1.05rem;
+    color: color-mix(in srgb, var(--himmel-gold-light) 85%, #f7f2ea);
+  }
+
+  .himmel-footer-photo__frame {
+    position: relative;
+    width: 100%;
+    min-height: clamp(22rem, 85svh, 52rem);
+    overflow: hidden;
+  }
+  .himmel-footer-photo__img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center center;
+    transform: scale(1.02);
+    filter: saturate(1.05) brightness(1.02);
+  }
+  .himmel-footer-photo__scrim {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+  }
+  .himmel-footer-photo__scrim--heavy {
+    background: linear-gradient(
+      180deg,
+      color-mix(in srgb, var(--himmel-pearl) 88%, transparent) 0%,
+      color-mix(in srgb, var(--himmel-pearl) 68%, transparent) 42%,
+      color-mix(in srgb, var(--himmel-navy) 35%, transparent) 100%
+    );
+  }
+  .himmel-footer-photo__blend-top {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 2;
+    height: clamp(5rem, 14vh, 9rem);
+    pointer-events: none;
+    background: linear-gradient(
+      to bottom,
+      var(--himmel-pearl) 0%,
+      color-mix(in srgb, var(--himmel-pearl) 55%, transparent) 38%,
+      color-mix(in srgb, var(--himmel-pearl) 18%, transparent) 68%,
+      transparent 100%
+    );
+  }
+  .himmel-footer-photo__content {
+    position: absolute;
+    inset: 0;
+    z-index: 3;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: clamp(1.5rem, 5vw, 3rem) 1rem;
+  }
+  .himmel-footer-photo .himmel-footer {
+    width: min(100%, 40rem);
+    background: transparent;
+    border-top: none;
+  }
+
+  .himmel-footer-wrap .himmel-footer {
+    background: transparent;
+    border-top: none;
+  }
+
+  .himmel-video__label,
+  .himmel-gift__text {
+    color: var(--inv-ink);
+  }
+  .himmel-video__label {
+    margin-bottom: 0.75rem;
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 0.35em;
+    text-transform: uppercase;
+    text-align: center;
+    color: var(--himmel-gold);
+  }
+  .himmel-video__frame {
+    position: relative;
+    overflow: hidden;
+    border-radius: var(--himmel-radius);
+    border: 1px solid color-mix(in srgb, var(--himmel-gold) 30%, transparent);
+    box-shadow: var(--himmel-shadow-card);
+    aspect-ratio: 16 / 9;
+    background: var(--himmel-navy);
+  }
+  .himmel-video__iframe {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    border: 0;
+  }
+  .himmel-gift__icon {
+    color: var(--himmel-gold);
+  }
+  .himmel-gift__intro {
+    margin-bottom: 1.5rem;
+    text-align: center;
+    font-size: 1.05rem;
+    line-height: 1.65;
+    color: var(--inv-muted);
+  }
+  .himmel-gift__grid {
+    display: grid;
+    gap: 1rem;
+  }
+  @media (min-width: 640px) {
+    .himmel-gift__grid { grid-template-columns: 1fr 1fr; }
+  }
+  .himmel-gift__card {
+    padding: 1.25rem;
+    border-radius: var(--himmel-radius-sm);
+    border: 1px solid color-mix(in srgb, var(--himmel-gold) 22%, transparent);
+    background: color-mix(in srgb, var(--himmel-pearl) 92%, white);
+  }
+  .himmel-gift__card-label {
+    margin-bottom: 0.75rem;
+    font-size: 0.62rem;
+    font-weight: 700;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--himmel-gold);
+  }
+  .himmel-gift__row {
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+    margin-top: 0.65rem;
+  }
+  .himmel-gift__key {
+    font-size: 0.65rem;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--inv-muted);
+  }
+  .himmel-gift__val {
+    font-size: 1rem;
+    color: var(--inv-ink);
+  }
+  .himmel-gift__address {
+    font-size: 0.95rem;
+    line-height: 1.6;
+    color: var(--inv-ink);
+    white-space: pre-line;
+  }
+}
+
+@keyframes himmel-scroll-pulse {
+  0%, 100% { opacity: 0.3; transform: scaleY(0.8); }
+  50% { opacity: 1; transform: scaleY(1); }
+}

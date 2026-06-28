@@ -37,6 +37,18 @@ export const TEMPLATES: TemplateConfig[] = [
     isPremium: false,
     region: "Phantom of the Opera",
   },
+  {
+    id: "himmel-frieren",
+    name: "Himmel & Frieren",
+    nameId: "Himmel & Frieren",
+    motif: "modern",
+    primaryColor: "#1A2F4A",
+    accentColor: "#4A7FD4",
+    fontFamily: "cormorant",
+    previewUrl: "/himmel/head-bg.jpg",
+    isPremium: false,
+    region: "Frieren: Beyond Journey's End",
+  },
 ];
 
 export const EVENT_TYPES = [

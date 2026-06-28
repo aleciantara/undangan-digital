@@ -6,7 +6,7 @@ import {
 import type { SerializedEvent } from "@/lib/invitation-types";
 
 type Props = {
-  theme: "raoul" | "phantom";
+  theme: "raoul" | "phantom" | "himmel";
   event: SerializedEvent;
   accentColor: string;
   primaryColor: string;

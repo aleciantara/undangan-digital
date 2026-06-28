@@ -4,7 +4,7 @@ import type { GiftAddressInfo, GiftBankInfo } from "@/lib/gift-types";
 import { hasGiftAddress, hasGiftBank } from "@/lib/gift-types";
 
 type Props = {
-  theme: "raoul" | "phantom";
+  theme: "raoul" | "phantom" | "himmel";
   groomName: string;
   brideName: string;
   intro: string;
@@ -19,7 +19,7 @@ function BankCard({
   label,
   info,
 }: {
-  theme: "raoul" | "phantom";
+  theme: "raoul" | "phantom" | "himmel";
   label: string;
   info: GiftBankInfo;
 }) {
@@ -55,7 +55,7 @@ function AddressCard({
   fallbackLabel,
   info,
 }: {
-  theme: "raoul" | "phantom";
+  theme: "raoul" | "phantom" | "himmel";
   fallbackLabel: string;
   info: GiftAddressInfo;
 }) {
