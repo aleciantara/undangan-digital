@@ -1,4 +1,7 @@
 import type { NextAuthConfig } from "next-auth";
+import { assertAuthEnv } from "@/lib/env";
+
+assertAuthEnv();
 
 /**
  * Shared config for middleware (edge) and auth.ts (Node).
@@ -18,6 +21,7 @@ export const authConfig = {
       if (user) {
         token.sub = user.id;
         token.role = user.role ?? "USER";
+        token.plan = user.plan ?? "FREE";
       }
       return token;
     },
@@ -25,6 +29,7 @@ export const authConfig = {
       if (session.user && token.sub) {
         session.user.id = token.sub;
         session.user.role = (token.role as "USER" | "ADMIN") ?? "USER";
+        session.user.plan = (token.plan as "FREE" | "PRO" | "PREMIUM") ?? "FREE";
       }
       return session;
     },

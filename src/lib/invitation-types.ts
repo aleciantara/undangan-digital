@@ -62,6 +62,7 @@ export type SerializedInvitation = {
   accentColor: string;
   fontFamily: string;
   coverPhotoUrl: string | null;
+  landscapeBackdropFill: boolean;
   loveStory: string | null;
   musicUrl: string | null;
   musicTitle: string | null;

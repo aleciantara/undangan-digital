@@ -1,5 +1,7 @@
 "use client";
 
+import { ResponsiveMediaImage } from "@/components/invitation/responsive-media-image";
+import type { ResponsiveSlotMedia } from "@/lib/responsive-media";
 import { useEffect, useState } from "react";
 
 type Props = {
@@ -9,7 +11,7 @@ type Props = {
   displayBride: string;
   accentColor: string;
   primaryColor: string;
-  heroBg: string;
+  heroBg: ResponsiveSlotMedia;
 };
 
 export function PhantomHero({
@@ -33,8 +35,12 @@ export function PhantomHero({
       style={{ "--hero-accent": accentColor, "--hero-primary": primaryColor } as React.CSSProperties}
     >
       <div className="phantom-hero__parallax absolute inset-0">
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src={heroBg} alt="" className="h-[115%] w-full object-cover object-center" fetchPriority="high" />
+        <ResponsiveMediaImage
+          media={heroBg}
+          alt=""
+          className="h-[115%] w-full object-cover object-center"
+          fetchPriority="high"
+        />
       </div>
       <div className="phantom-hero__veil absolute inset-0" aria-hidden />
       <div className="phantom-hero__rose-glow absolute inset-0" aria-hidden />

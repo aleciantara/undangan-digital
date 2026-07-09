@@ -4,7 +4,7 @@ import { auth } from "@/lib/auth";
 import { isMediaUploadAvailable, uploadMedia } from "@/lib/media-storage";
 import { prisma } from "@/lib/prisma";
 
-const MAX_PHOTOS = 20;
+const MAX_PHOTOS = 32;
 const MAX_BYTES = 5 * 1024 * 1024;
 const ALLOWED_TYPES = new Set(["image/jpeg", "image/png", "image/webp"]);
 

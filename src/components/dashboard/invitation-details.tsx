@@ -5,6 +5,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { TEMPLATES } from "@/types";
+import { filterTemplatesForPlan } from "@/lib/plans";
+import type { AppPlan } from "@/types/auth";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
@@ -18,6 +20,7 @@ type Props = {
   brideParents: string | null;
   loveStory: string | null;
   templateId: string;
+  userPlan?: AppPlan;
 };
 
 function parseApiError(data: { error?: unknown; fields?: Record<string, string[]> }): string {
@@ -39,8 +42,10 @@ export function InvitationDetails({
   brideParents: initialBrideParents,
   loveStory: initialLoveStory,
   templateId: initialTemplateId,
+  userPlan = "FREE",
 }: Props) {
   const router = useRouter();
+  const availableTemplates = filterTemplatesForPlan(TEMPLATES, userPlan);
   const [groomName, setGroomName] = useState(initialGroom);
   const [brideName, setBrideName] = useState(initialBride);
   const [groomFullName, setGroomFullName] = useState(initialGroomFull ?? "");
@@ -182,7 +187,7 @@ export function InvitationDetails({
           <div>
             <Label>Template</Label>
             <div className="mt-2 grid gap-3 sm:grid-cols-2">
-              {TEMPLATES.filter((t) => !t.isPremium).map((t) => (
+              {availableTemplates.map((t) => (
                 <button
                   key={t.id}
                   type="button"

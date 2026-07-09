@@ -1,10 +1,13 @@
 "use client";
 
+import { ResponsiveMediaImage } from "@/components/invitation/responsive-media-image";
+import type { ResponsiveSlotMedia } from "@/lib/responsive-media";
+
 type Scrim = "light" | "medium" | "heavy";
 
 type Props = {
   theme: "raoul" | "phantom" | "himmel";
-  bgImage: string;
+  bgImage: ResponsiveSlotMedia;
   scrim?: Scrim;
   blendTop?: boolean;
   children: React.ReactNode;
@@ -20,9 +23,8 @@ export function FooterPhotoSection({
   return (
     <section className={`${theme}-footer-photo`} aria-label="Penutup undangan">
       <div className={`${theme}-footer-photo__frame`}>
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
-          src={bgImage}
+        <ResponsiveMediaImage
+          media={bgImage}
           alt=""
           className={`${theme}-footer-photo__img`}
           loading="lazy"

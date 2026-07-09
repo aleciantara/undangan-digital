@@ -7,6 +7,14 @@ const { auth } = NextAuth(authConfig);
 export default auth((req) => {
   const { pathname } = req.nextUrl;
   const isLoggedIn = !!req.auth;
+  const role = req.auth?.user?.role;
+
+  if (pathname.startsWith("/admin") && (!isLoggedIn || role !== "ADMIN")) {
+    if (!isLoggedIn) {
+      return NextResponse.redirect(new URL("/masuk", req.url));
+    }
+    return NextResponse.redirect(new URL("/dashboard", req.url));
+  }
 
   if (pathname.startsWith("/dashboard") && !isLoggedIn) {
     return NextResponse.redirect(new URL("/masuk", req.url));

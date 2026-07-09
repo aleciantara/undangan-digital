@@ -1,24 +1,26 @@
 "use client";
 
+import { ResponsiveMediaImage } from "@/components/invitation/responsive-media-image";
+import type { ResponsiveSlotMedia } from "@/lib/responsive-media";
 import { RaoulReveal } from "./raoul-reveal";
 
 type Props = {
   groomName: string;
   brideName: string;
-  groomPhoto: string;
-  bridePhoto: string;
+  groomPhoto: ResponsiveSlotMedia;
+  bridePhoto: ResponsiveSlotMedia;
   accentColor: string;
   primaryColor: string;
 };
 
 function PortraitCard({
-  src,
+  media,
   alt,
   name,
   role,
   variant,
 }: {
-  src: string;
+  media: ResponsiveSlotMedia;
   alt: string;
   name: string;
   role: string;
@@ -30,8 +32,7 @@ function PortraitCard({
         <div className="raoul-portrait__arch">
           <div className="raoul-portrait__gilt">
             <div className="raoul-portrait__mat">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={src} alt={alt} className="raoul-portrait__img" />
+              <ResponsiveMediaImage media={media} alt={alt} className="raoul-portrait__img" />
               <div className="raoul-portrait__sheen" aria-hidden />
             </div>
           </div>
@@ -71,7 +72,7 @@ export function RaoulCoupleShowcase({
       <div className="raoul-couple-showcase__grid raoul-couple-showcase__grid--duo mx-auto mt-14 max-w-4xl">
         <RaoulReveal variant="up" delay={80}>
           <PortraitCard
-            src={groomPhoto}
+            media={groomPhoto}
             alt={groomName}
             name={groomName}
             role="Mempelai Pria"
@@ -80,7 +81,7 @@ export function RaoulCoupleShowcase({
         </RaoulReveal>
         <RaoulReveal variant="up" delay={180}>
           <PortraitCard
-            src={bridePhoto}
+            media={bridePhoto}
             alt={brideName}
             name={brideName}
             role="Mempelai Wanita"

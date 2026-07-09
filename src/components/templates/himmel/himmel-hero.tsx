@@ -1,7 +1,9 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { ResponsiveMediaImage } from "@/components/invitation/responsive-media-image";
 import type { HimmelHeroMode } from "@/lib/himmel-media";
+import type { ResponsiveSlotMedia } from "@/lib/responsive-media";
+import { useEffect, useState } from "react";
 import { HimmelHeroMeadow } from "./himmel-hero-meadow";
 
 type Props = {
@@ -12,7 +14,7 @@ type Props = {
   accentColor: string;
   primaryColor: string;
   heroMode: HimmelHeroMode;
-  heroBg?: string | null;
+  heroBg?: ResponsiveSlotMedia | null;
 };
 
 export function HimmelHero({
@@ -43,9 +45,8 @@ export function HimmelHero({
         <HimmelHeroMeadow />
       ) : (
         <div className="himmel-hero__parallax absolute inset-0">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src={heroBg!}
+          <ResponsiveMediaImage
+            media={heroBg!}
             alt=""
             className="h-[115%] w-full object-cover object-center"
             fetchPriority="high"

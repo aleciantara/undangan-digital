@@ -14,11 +14,12 @@ import { InvitationSchedule } from "@/components/dashboard/invitation-schedule";
 import { InvitationVerse } from "@/components/dashboard/invitation-verse";
 import { InvitationVideos } from "@/components/dashboard/invitation-videos";
 import { InviteQr } from "@/components/dashboard/invite-qr";
-import { formatEventDate, formatEventTime } from "@/lib/format";
+import { formatEventDate, formatEventTime, toDatetimeLocalInput } from "@/lib/format";
 import { buildGuestInviteMessage, buildWhatsAppUrl } from "@/lib/whatsapp";
 import { EVENT_TYPES } from "@/types";
+import type { AppPlan } from "@/types/auth";
 import Link from "next/link";
-import { ArrowLeft, Copy, ExternalLink, MessageCircle, Trash2 } from "lucide-react";
+import { ArrowLeft, Copy, ExternalLink, MessageCircle, Pencil, Trash2, X } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
@@ -28,7 +29,34 @@ type Event = {
   date: string;
   venue: string;
   address: string;
+  mapsUrl: string | null;
+  wazeUrl: string | null;
+  dresscodeColor: string | null;
+  dresscodeAttire: string | null;
+  notes: string | null;
 };
+
+type EventFormDefaults = {
+  date: string;
+  venue: string;
+  address: string;
+  mapsUrl: string;
+  wazeUrl: string;
+  dresscodeColor: string;
+  dresscodeAttire: string;
+  notes: string;
+};
+
+const emptyEventFormDefaults = (): EventFormDefaults => ({
+  date: "",
+  venue: "",
+  address: "",
+  mapsUrl: "",
+  wazeUrl: "",
+  dresscodeColor: "",
+  dresscodeAttire: "",
+  notes: "",
+});
 
 type Guest = {
   id: string;
@@ -67,6 +95,7 @@ type Props = {
     seatQuota: number | null;
     templateId: string;
     coverPhotoUrl: string | null;
+    landscapeBackdropFill: boolean;
     musicUrl: string | null;
     musicTitle: string | null;
     musicAutoplay: boolean;
@@ -98,6 +127,7 @@ type Props = {
   };
   rsvpStats: RsvpStats;
   appUrl: string;
+  userPlan?: AppPlan;
 };
 
 function parseApiError(data: { error?: unknown; fields?: Record<string, string[]> }): string {
@@ -109,7 +139,7 @@ function parseApiError(data: { error?: unknown; fields?: Record<string, string[]
   return "Terjadi kesalahan. Coba lagi.";
 }
 
-export function ManageInvitation({ invitation, rsvpStats, appUrl }: Props) {
+export function ManageInvitation({ invitation, rsvpStats, appUrl, userPlan = "FREE" }: Props) {
   const router = useRouter();
   const [publishing, setPublishing] = useState(false);
   const [copied, setCopied] = useState<string | null>(null);
@@ -118,7 +148,10 @@ export function ManageInvitation({ invitation, rsvpStats, appUrl }: Props) {
   const [eventError, setEventError] = useState<string | null>(null);
   const [guestError, setGuestError] = useState<string | null>(null);
   const [eventSuccess, setEventSuccess] = useState(false);
+  const [eventSuccessMessage, setEventSuccessMessage] = useState<string | null>(null);
   const [eventFormKey, setEventFormKey] = useState(0);
+  const [editingEventId, setEditingEventId] = useState<string | null>(null);
+  const [eventFormDefaults, setEventFormDefaults] = useState<EventFormDefaults>(emptyEventFormDefaults);
   const [guestSuccess, setGuestSuccess] = useState(false);
   const [eventName, setEventName] = useState("");
   const [seatQuotaInput, setSeatQuotaInput] = useState(
@@ -144,7 +177,7 @@ export function ManageInvitation({ invitation, rsvpStats, appUrl }: Props) {
     router.refresh();
   }
 
-  async function addEvent(e: React.FormEvent<HTMLFormElement>) {
+  async function saveEvent(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setEventError(null);
     setEventSuccess(false);
@@ -159,21 +192,29 @@ export function ManageInvitation({ invitation, rsvpStats, appUrl }: Props) {
       return;
     }
 
-    const res = await fetch(`/api/invitations/${invitation.id}/events`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        name: form.get("name"),
-        date: parsed.toISOString(),
-        venue: form.get("venue"),
-        address: form.get("address"),
-        mapsUrl: form.get("mapsUrl") || "",
-        wazeUrl: form.get("wazeUrl") || "",
-        dresscodeColor: form.get("dresscodeColor") || "",
-        dresscodeAttire: form.get("dresscodeAttire") || "",
-        notes: form.get("notes") || "",
-      }),
-    });
+    const payload = {
+      name: form.get("name"),
+      date: parsed.toISOString(),
+      venue: form.get("venue"),
+      address: form.get("address"),
+      mapsUrl: form.get("mapsUrl") || "",
+      wazeUrl: form.get("wazeUrl") || "",
+      dresscodeColor: form.get("dresscodeColor") || "",
+      dresscodeAttire: form.get("dresscodeAttire") || "",
+      notes: form.get("notes") || "",
+    };
+
+    const isEditing = editingEventId !== null;
+    const res = await fetch(
+      isEditing
+        ? `/api/invitations/${invitation.id}/events/${editingEventId}`
+        : `/api/invitations/${invitation.id}/events`,
+      {
+        method: isEditing ? "PATCH" : "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      }
+    );
 
     const data = await res.json().catch(() => ({}));
     setEventLoading(false);
@@ -183,11 +224,39 @@ export function ManageInvitation({ invitation, rsvpStats, appUrl }: Props) {
       return;
     }
 
+    setEventSuccessMessage(
+      isEditing ? "Acara berhasil diperbarui." : "Acara berhasil ditambahkan."
+    );
     setEventSuccess(true);
-    setEventName("");
-    setEventFormKey((k) => k + 1);
-    (e.target as HTMLFormElement).reset();
+    resetEventForm();
     router.refresh();
+  }
+
+  function resetEventForm() {
+    setEditingEventId(null);
+    setEventName("");
+    setEventFormDefaults(emptyEventFormDefaults());
+    setEventFormKey((k) => k + 1);
+    setEventError(null);
+  }
+
+  function startEditEvent(ev: Event) {
+    setEditingEventId(ev.id);
+    setEventName(ev.name);
+    setEventFormDefaults({
+      date: toDatetimeLocalInput(ev.date),
+      venue: ev.venue,
+      address: ev.address,
+      mapsUrl: ev.mapsUrl ?? "",
+      wazeUrl: ev.wazeUrl ?? "",
+      dresscodeColor: ev.dresscodeColor ?? "",
+      dresscodeAttire: ev.dresscodeAttire ?? "",
+      notes: ev.notes ?? "",
+    });
+    setEventFormKey((k) => k + 1);
+    setEventError(null);
+    setEventSuccess(false);
+    setEventSuccessMessage(null);
   }
 
   async function saveSeatQuota(e: React.FormEvent) {
@@ -225,7 +294,7 @@ export function ManageInvitation({ invitation, rsvpStats, appUrl }: Props) {
       body: JSON.stringify({
         name: form.get("name"),
         phone: form.get("phone"),
-        reservedSeats: form.get("reservedSeats") || 1,
+        reservedSeats: form.get("reservedSeats") || 2,
       }),
     });
 
@@ -244,6 +313,7 @@ export function ManageInvitation({ invitation, rsvpStats, appUrl }: Props) {
 
   async function deleteEvent(eventId: string) {
     if (!confirm("Hapus acara ini?")) return;
+    if (editingEventId === eventId) resetEventForm();
     await fetch(`/api/invitations/${invitation.id}/events/${eventId}`, { method: "DELETE" });
     router.refresh();
   }
@@ -360,6 +430,7 @@ export function ManageInvitation({ invitation, rsvpStats, appUrl }: Props) {
         brideParents={invitation.brideParents}
         loveStory={invitation.loveStory}
         templateId={invitation.templateId}
+        userPlan={userPlan}
       />
 
       <InvitationSchedule
@@ -372,6 +443,7 @@ export function ManageInvitation({ invitation, rsvpStats, appUrl }: Props) {
         invitationId={invitation.id}
         photos={invitation.photos}
         coverPhotoUrl={invitation.coverPhotoUrl}
+        landscapeBackdropFill={invitation.landscapeBackdropFill}
         templateId={invitation.templateId}
       />
 
@@ -460,16 +532,30 @@ export function ManageInvitation({ invitation, rsvpStats, appUrl }: Props) {
                     {formatEventDate(ev.date)} · {formatEventTime(ev.date)} · {ev.venue}
                   </p>
                   <p className="text-xs text-stone-500">{ev.address}</p>
+                  {ev.notes && (
+                    <p className="mt-1 text-xs text-stone-500">{ev.notes}</p>
+                  )}
                 </div>
-                <Button
-                  type="button"
-                  size="sm"
-                  variant="ghost"
-                  onClick={() => deleteEvent(ev.id)}
-                  aria-label="Hapus acara"
-                >
-                  <Trash2 className="h-4 w-4 text-stone-400" />
-                </Button>
+                <div className="flex shrink-0 gap-1">
+                  <Button
+                    type="button"
+                    size="sm"
+                    variant="ghost"
+                    onClick={() => startEditEvent(ev)}
+                    aria-label="Edit acara"
+                  >
+                    <Pencil className="h-4 w-4 text-stone-400" />
+                  </Button>
+                  <Button
+                    type="button"
+                    size="sm"
+                    variant="ghost"
+                    onClick={() => deleteEvent(ev.id)}
+                    aria-label="Hapus acara"
+                  >
+                    <Trash2 className="h-4 w-4 text-stone-400" />
+                  </Button>
+                </div>
               </li>
             ))}
           </ul>
@@ -487,7 +573,20 @@ export function ManageInvitation({ invitation, rsvpStats, appUrl }: Props) {
             ))}
           </div>
 
-          <form onSubmit={addEvent} className="grid gap-3 border-t border-stone-100 pt-6 sm:grid-cols-2">
+          <form
+            key={eventFormKey}
+            onSubmit={saveEvent}
+            className="grid gap-3 border-t border-stone-100 pt-6 sm:grid-cols-2"
+          >
+            {editingEventId && (
+              <div className="flex items-center justify-between rounded-lg bg-brand-chalk/60 px-3 py-2 sm:col-span-2">
+                <p className="text-sm font-medium text-brand-ink">Mengedit acara</p>
+                <Button type="button" size="sm" variant="ghost" onClick={resetEventForm}>
+                  <X className="h-4 w-4" />
+                  Batal
+                </Button>
+              </div>
+            )}
             <div className="sm:col-span-2">
               <Label>Nama acara</Label>
               <Input
@@ -500,44 +599,82 @@ export function ManageInvitation({ invitation, rsvpStats, appUrl }: Props) {
             </div>
             <div>
               <Label>Tanggal & waktu</Label>
-              <Input name="date" type="datetime-local" required />
+              <Input
+                name="date"
+                type="datetime-local"
+                required
+                defaultValue={eventFormDefaults.date}
+              />
             </div>
             <div>
               <Label>Tempat</Label>
-              <Input name="venue" required placeholder="Masjid / Gedung" />
+              <Input
+                name="venue"
+                required
+                placeholder="Masjid / Gedung"
+                defaultValue={eventFormDefaults.venue}
+              />
             </div>
             <div className="sm:col-span-2">
               <Label>Alamat</Label>
-              <Input name="address" required />
+              <Input name="address" required defaultValue={eventFormDefaults.address} />
             </div>
             <div>
               <Label>Google Maps URL</Label>
-              <Input name="mapsUrl" type="url" placeholder="https://maps.google.com/..." />
+              <Input
+                name="mapsUrl"
+                type="url"
+                placeholder="https://maps.google.com/..."
+                defaultValue={eventFormDefaults.mapsUrl}
+              />
             </div>
             <div>
               <Label>Waze URL</Label>
-              <Input name="wazeUrl" type="url" placeholder="https://waze.com/..." />
+              <Input
+                name="wazeUrl"
+                type="url"
+                placeholder="https://waze.com/..."
+                defaultValue={eventFormDefaults.wazeUrl}
+              />
             </div>
             <div className="sm:col-span-2">
-              <DresscodeColorPicker key={eventFormKey} name="dresscodeColor" />
+              <DresscodeColorPicker
+                name="dresscodeColor"
+                defaultValue={eventFormDefaults.dresscodeColor}
+              />
             </div>
             <div>
               <Label>Jenis pakaian</Label>
-              <Input name="dresscodeAttire" placeholder="Batik formal / Kebaya" />
+              <Input
+                name="dresscodeAttire"
+                placeholder="Batik formal / Kebaya"
+                defaultValue={eventFormDefaults.dresscodeAttire}
+              />
             </div>
             <div className="sm:col-span-2">
               <Label>Catatan acara</Label>
-              <Input name="notes" placeholder="Opsional" />
+              <Input name="notes" placeholder="Opsional" defaultValue={eventFormDefaults.notes} />
             </div>
             {eventError && (
               <p className="text-sm text-red-600 sm:col-span-2">{eventError}</p>
             )}
-            {eventSuccess && (
-              <p className="text-sm text-green-700 sm:col-span-2">Acara berhasil ditambahkan.</p>
+            {eventSuccess && eventSuccessMessage && (
+              <p className="text-sm text-green-700 sm:col-span-2">{eventSuccessMessage}</p>
             )}
-            <Button type="submit" className="sm:col-span-2" disabled={eventLoading}>
-              {eventLoading ? "Menyimpan..." : "Tambah acara"}
-            </Button>
+            <div className="flex flex-wrap gap-2 sm:col-span-2">
+              <Button type="submit" disabled={eventLoading}>
+                {eventLoading
+                  ? "Menyimpan..."
+                  : editingEventId
+                    ? "Simpan perubahan"
+                    : "Tambah acara"}
+              </Button>
+              {editingEventId && (
+                <Button type="button" variant="outline" onClick={resetEventForm}>
+                  Batal
+                </Button>
+              )}
+            </div>
           </form>
         </CardContent>
       </Card>
@@ -667,7 +804,7 @@ export function ManageInvitation({ invitation, rsvpStats, appUrl }: Props) {
                 type="number"
                 min={1}
                 max={20}
-                defaultValue={1}
+                defaultValue={2}
                 className="mt-1"
               />
             </div>

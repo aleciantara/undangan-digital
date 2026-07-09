@@ -1,5 +1,6 @@
 import { FooterPhotoSection } from "@/components/invitation/footer-photo-section";
 import { InvitationExperience } from "@/components/invitation/invitation-experience";
+import { InvitationResponsiveShell } from "@/components/invitation/invitation-responsive-shell";
 import { RsvpSection } from "@/components/invitation/rsvp-section";
 import { WishesSection } from "@/components/invitation/wishes-section";
 import type { SerializedGuest, SerializedInvitation } from "@/lib/invitation-types";
@@ -10,6 +11,7 @@ import { RaoulCountdown } from "@/components/templates/raoul/raoul-countdown";
 import { RaoulEventCard } from "@/components/templates/raoul/raoul-event-card";
 import { RaoulDresscodeSection } from "@/components/templates/raoul/raoul-dresscode-section";
 import { eventsWithDresscode } from "@/lib/dresscode-colors";
+import { buildInvitationSectionNumbers } from "@/lib/invitation-section-numbers";
 import { RaoulGallery } from "@/components/templates/raoul/raoul-gallery";
 import { RaoulGiftSection } from "@/components/templates/raoul/raoul-gift-section";
 import { RaoulHero } from "@/components/templates/raoul/raoul-hero";
@@ -31,11 +33,31 @@ export function RaoulOperaTemplate({ invitation, guest }: Props) {
   const displayGroom = invitation.groomFullName ?? invitation.groomName;
   const displayBride = invitation.brideFullName ?? invitation.brideName;
 
-  const { heroBg, coupleBg, accentBg, footerBg, groomPhoto, bridePhoto, galleryPhotos } =
-    resolveRaoulMedia({
-      coverPhotoUrl: invitation.coverPhotoUrl,
-      photos: invitation.photos,
-    });
+  const media = resolveRaoulMedia({
+    coverPhotoUrl: invitation.coverPhotoUrl,
+    photos: invitation.photos,
+    landscapeBackdropFill: invitation.landscapeBackdropFill,
+  });
+
+  const {
+    heroBg,
+    coupleBg,
+    accentBg,
+    footerBg,
+    groomPhoto,
+    bridePhoto,
+    galleryPhotos,
+    useLandscapeBackdrop,
+    landscapeBackdropUrl,
+  } = media;
+
+  const sectionNo = buildInvitationSectionNumbers({
+    events: invitation.events,
+    photos: galleryPhotos,
+    prewedVideoUrl: invitation.prewedVideoUrl,
+    liveStreamUrl: invitation.liveStreamUrl,
+    giftEnabled: invitation.giftEnabled,
+  });
 
   const afterCoupleTone = invitation.events.length > 0 ? "pearl" : "ivory";
   const coupleNames = `${invitation.groomName} & ${invitation.brideName}`;
@@ -62,8 +84,12 @@ export function RaoulOperaTemplate({ invitation, guest }: Props) {
           : null
       }
     >
+      <InvitationResponsiveShell
+        backdropUrl={landscapeBackdropUrl}
+        enabled={useLandscapeBackdrop}
+      >
       <div
-        className="raoul-invite invitation-shell invitation-shell--raoul invitation-shell--snap-mobile min-h-screen font-[family-name:var(--font-playfair)]"
+        className={`raoul-invite invitation-shell invitation-shell--raoul invitation-shell--snap-mobile min-h-screen font-[family-name:var(--font-playfair)] ${useLandscapeBackdrop ? "invitation-shell--desktop-portrait-column" : ""}`}
         style={
           {
             "--inv-primary": primaryColor,
@@ -140,7 +166,7 @@ export function RaoulOperaTemplate({ invitation, guest }: Props) {
         {invitation.events.length > 0 && (
           <RaoulSection tone="pearl" blendTop blendFrom={afterCoupleTone} blendBottom blendTo="ivory" className="px-4 pb-20 sm:px-6">
             <div className="mx-auto max-w-4xl">
-              <RaoulSectionHeading index="01" accentColor={accentColor} primaryColor={primaryColor}>
+              <RaoulSectionHeading index={sectionNo.events} accentColor={accentColor} primaryColor={primaryColor}>
                 Rangkaian Acara
               </RaoulSectionHeading>
               <div className="space-y-5">
@@ -172,6 +198,7 @@ export function RaoulOperaTemplate({ invitation, guest }: Props) {
               events={invitation.events}
               accentColor={accentColor}
               primaryColor={primaryColor}
+              sectionIndex={sectionNo.dresscode}
             />
           </RaoulSection>
         )}
@@ -187,6 +214,7 @@ export function RaoulOperaTemplate({ invitation, guest }: Props) {
             photos={galleryPhotos}
             accentColor={accentColor}
             primaryColor={primaryColor}
+            sectionIndex={sectionNo.gallery}
           />
         </RaoulSection>
 
@@ -197,6 +225,7 @@ export function RaoulOperaTemplate({ invitation, guest }: Props) {
               live={{ url: invitation.liveStreamUrl, title: invitation.liveStreamTitle }}
               accentColor={accentColor}
               primaryColor={primaryColor}
+              sectionIndex={sectionNo.video}
             />
           </RaoulSection>
         )}
@@ -207,6 +236,7 @@ export function RaoulOperaTemplate({ invitation, guest }: Props) {
               invitation={invitation}
               accentColor={accentColor}
               primaryColor={primaryColor}
+              sectionIndex={sectionNo.gift}
             />
           </RaoulSection>
         )}
@@ -222,14 +252,13 @@ export function RaoulOperaTemplate({ invitation, guest }: Props) {
           className="pb-20"
         >
           <div className="mx-auto max-w-2xl px-4 pt-10 sm:px-6 sm:pt-14">
-            <RaoulSectionHeading index="03" accentColor={accentColor} primaryColor={primaryColor}>
+            <RaoulSectionHeading index={sectionNo.rsvp} accentColor={accentColor} primaryColor={primaryColor}>
               Konfirmasi Kehadiran
             </RaoulSectionHeading>
             <RaoulReveal variant="up">
               <div className="raoul-panel raoul-interactive px-5 py-8 sm:px-8 sm:py-10">
                 <RsvpSection
                   invitationId={invitation.id}
-                  seatQuota={invitation.seatQuota}
                   events={invitation.events}
                   guest={guest}
                 />
@@ -240,7 +269,7 @@ export function RaoulOperaTemplate({ invitation, guest }: Props) {
 
         <RaoulSection tone="pearl" blendTop blendFrom="pearl" blendBottom blendTo="pearl" className="px-4 pb-28 sm:px-6">
           <div className="mx-auto max-w-2xl">
-            <RaoulSectionHeading index="04" accentColor={accentColor} primaryColor={primaryColor}>
+            <RaoulSectionHeading index={sectionNo.wishes} accentColor={accentColor} primaryColor={primaryColor}>
               Ucapan & Doa
             </RaoulSectionHeading>
             <RaoulReveal variant="up" delay={80}>
@@ -275,6 +304,7 @@ export function RaoulOperaTemplate({ invitation, guest }: Props) {
           </RaoulReveal>
         </FooterPhotoSection>
       </div>
+      </InvitationResponsiveShell>
     </InvitationExperience>
   );
 }

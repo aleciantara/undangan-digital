@@ -31,9 +31,10 @@ type Props = {
   >;
   accentColor: string;
   primaryColor: string;
+  sectionIndex?: string;
 };
 
-export function PhantomGiftSection({ invitation, accentColor, primaryColor }: Props) {
+export function PhantomGiftSection({ invitation, accentColor, primaryColor, sectionIndex }: Props) {
   const { groom: groomBank, bride: brideBank } = giftBankFromInvitation(invitation);
   const { groom: groomAddress, bride: brideAddress } = giftAddressFromInvitation(invitation);
   const intro = invitation.giftMessage?.trim() || DEFAULT_GIFT_INTRO;
@@ -52,7 +53,12 @@ export function PhantomGiftSection({ invitation, accentColor, primaryColor }: Pr
 
   return (
     <div className="phantom-gift px-4 py-16 sm:py-20">
-      <PhantomSectionHeading accentColor={accentColor} primaryColor={primaryColor} align="center">
+      <PhantomSectionHeading
+        index={sectionIndex}
+        accentColor={accentColor}
+        primaryColor={primaryColor}
+        align="center"
+      >
         {invitation.giftTitle?.trim() || "Kirim Kado"}
       </PhantomSectionHeading>
       <GardenReveal variant="up">

@@ -10,6 +10,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
     <DashboardShell
       userName={session.user.name}
       userRole={session.user.role ?? "USER"}
+      userPlan={session.user.plan ?? "FREE"}
     >
       {children}
     </DashboardShell>

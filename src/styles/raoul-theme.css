@@ -48,13 +48,32 @@
 
   .raoul-reveal {
     opacity: 0;
-    transition:
-      opacity 0.9s var(--raoul-ease) var(--raoul-reveal-delay, 0ms),
-      transform 0.9s var(--raoul-ease) var(--raoul-reveal-delay, 0ms);
   }
-  .raoul-reveal--in { opacity: 1; transform: none !important; }
-  .raoul-reveal--up:not(.raoul-reveal--in) { transform: translateY(44px); }
-  .raoul-reveal--clip:not(.raoul-reveal--in) { transform: translateY(16px); }
+
+  .raoul-reveal--up.raoul-reveal--in {
+    animation: inv-present-fly-up var(--inv-present-duration, 1.6s) var(--inv-present-ease) both;
+    animation-delay: var(--inv-present-delay, 0ms);
+  }
+
+  .raoul-reveal--clip.raoul-reveal--in {
+    animation: inv-present-wipe var(--inv-present-duration, 1.6s) var(--inv-present-ease) both;
+    animation-delay: var(--inv-present-delay, 0ms);
+  }
+
+  .raoul-reveal--left.raoul-reveal--in {
+    animation: inv-present-fly-left var(--inv-present-duration, 1.6s) var(--inv-present-ease) both;
+    animation-delay: var(--inv-present-delay, 0ms);
+  }
+
+  .raoul-reveal--right.raoul-reveal--in {
+    animation: inv-present-fly-right var(--inv-present-duration, 1.6s) var(--inv-present-ease) both;
+    animation-delay: var(--inv-present-delay, 0ms);
+  }
+
+  .raoul-reveal--scale.raoul-reveal--in {
+    animation: inv-present-zoom var(--inv-present-duration, 1.6s) var(--inv-present-ease) both;
+    animation-delay: var(--inv-present-delay, 0ms);
+  }
 
   .raoul-hero { isolation: isolate; }
   .raoul-hero__veil {

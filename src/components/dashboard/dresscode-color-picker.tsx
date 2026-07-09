@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { parseDresscodeColors, serializeDresscodeColors } from "@/lib/dresscode-colors";
 import { Plus, X } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 const DEFAULT_COLOR = "#C4A35A";
 
@@ -16,6 +16,11 @@ type Props = {
 export function DresscodeColorPicker({ name, defaultValue }: Props) {
   const initial = parseDresscodeColors(defaultValue);
   const [colors, setColors] = useState<string[]>(initial.length > 0 ? initial : [DEFAULT_COLOR]);
+
+  useEffect(() => {
+    const parsed = parseDresscodeColors(defaultValue);
+    setColors(parsed.length > 0 ? parsed : [DEFAULT_COLOR]);
+  }, [defaultValue]);
 
   function updateColor(index: number, value: string) {
     setColors((prev) => prev.map((c, i) => (i === index ? value : c)));
@@ -38,7 +43,7 @@ export function DresscodeColorPicker({ name, defaultValue }: Props) {
       <div className="flex flex-wrap gap-2">
         {colors.map((color, index) => (
           <div
-            key={`${index}-${color}`}
+            key={`dresscode-color-${index}`}
             className="flex items-center gap-1 rounded-xl border border-stone-200 bg-white p-1.5 shadow-sm"
           >
             <label className="relative cursor-pointer">
@@ -50,6 +55,7 @@ export function DresscodeColorPicker({ name, defaultValue }: Props) {
                 type="color"
                 value={color}
                 onChange={(e) => updateColor(index, e.target.value)}
+                onInput={(e) => updateColor(index, e.currentTarget.value)}
                 className="absolute inset-0 h-full w-full cursor-pointer opacity-0"
                 aria-label={`Pilih warna ${index + 1}`}
               />

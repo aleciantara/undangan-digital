@@ -1,17 +1,18 @@
+import { ResponsiveMediaImage } from "@/components/invitation/responsive-media-image";
+import type { ResponsiveSlotMedia } from "@/lib/responsive-media";
+
 type BlendTone = "ivory" | "pearl" | "navy";
 
 type Props = {
   children: React.ReactNode;
   className?: string;
   tone?: "ivory" | "dark" | "pearl";
-  bgImage?: string | null;
+  bgImage?: ResponsiveSlotMedia | null;
   bgPosition?: string;
   scrim?: "light" | "medium" | "heavy";
   blendTop?: boolean;
   blendBottom?: boolean;
-  /** Surface color of the section above — feathers the top edge */
   blendFrom?: BlendTone;
-  /** Surface color of the section below — feathers the bottom edge */
   blendTo?: BlendTone;
   lazyBg?: boolean;
   stickyBg?: boolean;
@@ -58,9 +59,8 @@ export function RaoulSection({
 
   const bgImg = hasBg ? (
     <>
-      {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img
-        src={bgImage!}
+      <ResponsiveMediaImage
+        media={bgImage!}
         alt=""
         className="raoul-section__bg-img h-full w-full object-cover"
         style={{ objectPosition: bgPosition }}

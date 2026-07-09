@@ -1,7 +1,10 @@
 import { CreateInvitationForm } from "@/components/dashboard/create-invitation-form";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { requireSession } from "@/lib/authz";
 
-export default function BuatUndanganPage() {
+export default async function BuatUndanganPage() {
+  const session = await requireSession();
+
   return (
     <div className="max-w-2xl">
       <h1 className="font-invitation text-2xl font-semibold text-brand-ink">Buat undangan baru</h1>
@@ -12,7 +15,7 @@ export default function BuatUndanganPage() {
           <CardTitle>Data mempelai</CardTitle>
         </CardHeader>
         <CardContent>
-          <CreateInvitationForm />
+          <CreateInvitationForm userPlan={session.user.plan ?? "FREE"} />
         </CardContent>
       </Card>
     </div>

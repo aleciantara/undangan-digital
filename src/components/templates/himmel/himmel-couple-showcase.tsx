@@ -1,24 +1,26 @@
 "use client";
 
+import { ResponsiveMediaImage } from "@/components/invitation/responsive-media-image";
+import type { ResponsiveSlotMedia } from "@/lib/responsive-media";
 import { HimmelReveal } from "./himmel-reveal";
 
 type Props = {
   groomName: string;
   brideName: string;
-  groomPhoto: string;
-  bridePhoto: string;
+  groomPhoto: ResponsiveSlotMedia;
+  bridePhoto: ResponsiveSlotMedia;
   accentColor: string;
   primaryColor: string;
 };
 
 function PortraitCard({
-  src,
+  media,
   alt,
   name,
   role,
   variant,
 }: {
-  src: string;
+  media: ResponsiveSlotMedia;
   alt: string;
   name: string;
   role: string;
@@ -32,8 +34,7 @@ function PortraitCard({
           <span /><span /><span /><span /><span /><span />
         </div>
         <div className="himmel-portrait__frame">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={src} alt={alt} className="himmel-portrait__img" />
+          <ResponsiveMediaImage media={media} alt={alt} className="himmel-portrait__img" />
           <div className="himmel-portrait__sheen" aria-hidden />
         </div>
       </div>
@@ -70,7 +71,7 @@ export function HimmelCoupleShowcase({
       <div className="himmel-couple-showcase__grid himmel-couple-showcase__grid--duo mx-auto mt-14 max-w-4xl">
         <HimmelReveal variant="up" delay={80}>
           <PortraitCard
-            src={groomPhoto}
+            media={groomPhoto}
             alt={groomName}
             name={groomName}
             role="Mempelai Pria"
@@ -79,7 +80,7 @@ export function HimmelCoupleShowcase({
         </HimmelReveal>
         <HimmelReveal variant="up" delay={180}>
           <PortraitCard
-            src={bridePhoto}
+            media={bridePhoto}
             alt={brideName}
             name={brideName}
             role="Mempelai Wanita"

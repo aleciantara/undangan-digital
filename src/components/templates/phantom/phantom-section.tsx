@@ -1,15 +1,15 @@
+import type { ResponsiveSlotMedia } from "@/lib/responsive-media";
+import { ResponsiveMediaImage } from "@/components/invitation/responsive-media-image";
+
 type Props = {
   children: React.ReactNode;
   className?: string;
-  bgImage?: string | null;
+  bgImage?: ResponsiveSlotMedia | null;
   bgPosition?: string;
   scrim?: "light" | "medium" | "heavy";
-  /** Feather gradient into velvet when meeting another section */
   blendTop?: boolean;
   blendBottom?: boolean;
-  /** lazy-load section bg (default true; hero sections pass false via first section) */
   lazyBg?: boolean;
-  /** Pin bg while section content scrolls over it (best for tall multi-card sections) */
   stickyBg?: boolean;
 };
 
@@ -28,9 +28,8 @@ export function PhantomSection({
 
   const bgImg = hasBg ? (
     <>
-      {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img
-        src={bgImage!}
+      <ResponsiveMediaImage
+        media={bgImage!}
         alt=""
         className="phantom-section__bg-img h-full w-full object-cover"
         style={{ objectPosition: bgPosition }}

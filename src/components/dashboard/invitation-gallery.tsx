@@ -19,16 +19,24 @@ type Props = {
   invitationId: string;
   photos: Photo[];
   coverPhotoUrl: string | null;
+  landscapeBackdropFill: boolean;
   templateId?: string;
 };
 
-export function InvitationGallery({ invitationId, photos, coverPhotoUrl, templateId }: Props) {
+export function InvitationGallery({
+  invitationId,
+  photos,
+  coverPhotoUrl,
+  landscapeBackdropFill,
+  templateId,
+}: Props) {
   if (templateId === "phantom-opera") {
     return (
       <PhantomPhotoUploader
         invitationId={invitationId}
         photos={photos}
         coverPhotoUrl={coverPhotoUrl}
+        landscapeBackdropFill={landscapeBackdropFill}
       />
     );
   }
@@ -39,6 +47,7 @@ export function InvitationGallery({ invitationId, photos, coverPhotoUrl, templat
         invitationId={invitationId}
         photos={photos}
         coverPhotoUrl={coverPhotoUrl}
+        landscapeBackdropFill={landscapeBackdropFill}
       />
     );
   }
@@ -49,6 +58,7 @@ export function InvitationGallery({ invitationId, photos, coverPhotoUrl, templat
         invitationId={invitationId}
         photos={photos}
         coverPhotoUrl={coverPhotoUrl}
+        landscapeBackdropFill={landscapeBackdropFill}
       />
     );
   }

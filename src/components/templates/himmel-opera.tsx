@@ -1,10 +1,12 @@
 import { FooterPhotoSection } from "@/components/invitation/footer-photo-section";
 import { InvitationExperience } from "@/components/invitation/invitation-experience";
+import { InvitationResponsiveShell } from "@/components/invitation/invitation-responsive-shell";
 import { RsvpSection } from "@/components/invitation/rsvp-section";
 import { WishesSection } from "@/components/invitation/wishes-section";
 import type { SerializedGuest, SerializedInvitation } from "@/lib/invitation-types";
 import { resolveHimmelMedia } from "@/lib/himmel-media";
 import { eventsWithDresscode } from "@/lib/dresscode-colors";
+import { buildInvitationSectionNumbers } from "@/lib/invitation-section-numbers";
 import { HimmelAtmosphere } from "@/components/templates/himmel/himmel-atmosphere";
 import { HimmelCoupleShowcase } from "@/components/templates/himmel/himmel-couple-showcase";
 import { HimmelCountdown } from "@/components/templates/himmel/himmel-countdown";
@@ -32,11 +34,32 @@ export function HimmelFrierenTemplate({ invitation, guest }: Props) {
   const displayGroom = invitation.groomFullName ?? invitation.groomName;
   const displayBride = invitation.brideFullName ?? invitation.brideName;
 
-  const { heroMode, heroBg, coupleBg, accentBg, footerBg, groomPhoto, bridePhoto, galleryPhotos } =
-    resolveHimmelMedia({
-      coverPhotoUrl: invitation.coverPhotoUrl,
-      photos: invitation.photos,
-    });
+  const media = resolveHimmelMedia({
+    coverPhotoUrl: invitation.coverPhotoUrl,
+    photos: invitation.photos,
+    landscapeBackdropFill: invitation.landscapeBackdropFill,
+  });
+
+  const {
+    heroMode,
+    heroBg,
+    coupleBg,
+    accentBg,
+    footerBg,
+    groomPhoto,
+    bridePhoto,
+    galleryPhotos,
+    useLandscapeBackdrop,
+    landscapeBackdropUrl,
+  } = media;
+
+  const sectionNo = buildInvitationSectionNumbers({
+    events: invitation.events,
+    photos: galleryPhotos,
+    prewedVideoUrl: invitation.prewedVideoUrl,
+    liveStreamUrl: invitation.liveStreamUrl,
+    giftEnabled: invitation.giftEnabled,
+  });
 
   const afterCoupleTone = invitation.events.length > 0 ? "pearl" : "ivory";
   const coupleNames = `${invitation.groomName} & ${invitation.brideName}`;
@@ -63,8 +86,12 @@ export function HimmelFrierenTemplate({ invitation, guest }: Props) {
           : null
       }
     >
+      <InvitationResponsiveShell
+        backdropUrl={landscapeBackdropUrl}
+        enabled={useLandscapeBackdrop}
+      >
       <HimmelInviteShell
-        className="himmel-invite invitation-shell invitation-shell--himmel min-h-screen font-[family-name:var(--font-playfair)]"
+        className={`himmel-invite invitation-shell invitation-shell--himmel min-h-screen font-[family-name:var(--font-playfair)] ${useLandscapeBackdrop ? "invitation-shell--desktop-portrait-column" : ""}`}
         style={
           {
             "--inv-primary": primaryColor,
@@ -142,7 +169,7 @@ export function HimmelFrierenTemplate({ invitation, guest }: Props) {
         {invitation.events.length > 0 && (
           <HimmelSection tone="pearl" meadowSeed={221} blendTop blendFrom={afterCoupleTone} blendBottom blendTo="ivory" className="px-4 pb-20 sm:px-6">
             <div className="mx-auto max-w-4xl">
-              <HimmelSectionHeading index="01" accentColor={accentColor} primaryColor={primaryColor}>
+              <HimmelSectionHeading index={sectionNo.events} accentColor={accentColor} primaryColor={primaryColor}>
                 Rangkaian Acara
               </HimmelSectionHeading>
               <div className="space-y-5">
@@ -168,6 +195,7 @@ export function HimmelFrierenTemplate({ invitation, guest }: Props) {
               events={invitation.events}
               accentColor={accentColor}
               primaryColor={primaryColor}
+              sectionIndex={sectionNo.dresscode}
             />
           </HimmelSection>
         )}
@@ -177,6 +205,7 @@ export function HimmelFrierenTemplate({ invitation, guest }: Props) {
             photos={galleryPhotos}
             accentColor={accentColor}
             primaryColor={primaryColor}
+            sectionIndex={sectionNo.gallery}
           />
         </HimmelSection>
 
@@ -187,6 +216,7 @@ export function HimmelFrierenTemplate({ invitation, guest }: Props) {
               live={{ url: invitation.liveStreamUrl, title: invitation.liveStreamTitle }}
               accentColor={accentColor}
               primaryColor={primaryColor}
+              sectionIndex={sectionNo.video}
             />
           </HimmelSection>
         )}
@@ -197,6 +227,7 @@ export function HimmelFrierenTemplate({ invitation, guest }: Props) {
               invitation={invitation}
               accentColor={accentColor}
               primaryColor={primaryColor}
+              sectionIndex={sectionNo.gift}
             />
           </HimmelSection>
         )}
@@ -212,14 +243,13 @@ export function HimmelFrierenTemplate({ invitation, guest }: Props) {
           className="pb-20"
         >
           <div className="mx-auto max-w-2xl px-4 pt-10 sm:px-6 sm:pt-14">
-            <HimmelSectionHeading index="03" accentColor={accentColor} primaryColor={primaryColor}>
+            <HimmelSectionHeading index={sectionNo.rsvp} accentColor={accentColor} primaryColor={primaryColor}>
               Konfirmasi Kehadiran
             </HimmelSectionHeading>
             <HimmelReveal variant="up">
               <div className="himmel-panel himmel-surface himmel-interactive px-5 py-8 sm:px-8 sm:py-10">
                 <RsvpSection
                   invitationId={invitation.id}
-                  seatQuota={invitation.seatQuota}
                   events={invitation.events}
                   guest={guest}
                 />
@@ -230,7 +260,7 @@ export function HimmelFrierenTemplate({ invitation, guest }: Props) {
 
         <HimmelSection tone="pearl" meadowSeed={225} blendTop blendFrom="pearl" blendBottom blendTo="pearl" className="px-4 pb-32 pt-8 sm:px-6 sm:pt-12">
           <div className="mx-auto max-w-2xl">
-            <HimmelSectionHeading index="04" accentColor={accentColor} primaryColor={primaryColor}>
+            <HimmelSectionHeading index={sectionNo.wishes} accentColor={accentColor} primaryColor={primaryColor}>
               Ucapan & Doa
             </HimmelSectionHeading>
             <HimmelReveal variant="up" delay={80}>
@@ -265,6 +295,7 @@ export function HimmelFrierenTemplate({ invitation, guest }: Props) {
           </HimmelReveal>
         </FooterPhotoSection>
       </HimmelInviteShell>
+      </InvitationResponsiveShell>
     </InvitationExperience>
   );
 }

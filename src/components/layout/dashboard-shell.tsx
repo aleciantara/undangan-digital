@@ -1,15 +1,18 @@
 import Link from "next/link";
 import { signOut } from "@/lib/auth";
-import { Heart, LayoutDashboard, LogOut, Plus } from "lucide-react";
+import { PLAN_LABELS } from "@/lib/plans";
+import type { AppPlan, AppUserRole } from "@/types/auth";
+import { Heart, LayoutDashboard, LogOut, Plus, CreditCard, Shield } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 type Props = {
   children: React.ReactNode;
   userName?: string | null;
-  userRole?: "USER" | "ADMIN";
+  userRole?: AppUserRole;
+  userPlan?: AppPlan;
 };
 
-export function DashboardShell({ children, userName, userRole }: Props) {
+export function DashboardShell({ children, userName, userRole, userPlan = "FREE" }: Props) {
   return (
     <div className="min-h-screen bg-background">
       <header className="border-b border-brand-brook/30 bg-brand-chalk/60 backdrop-blur">
@@ -22,6 +25,9 @@ export function DashboardShell({ children, userName, userRole }: Props) {
             {userName && (
               <span className="hidden items-center gap-2 text-sm text-brand-muted sm:inline-flex">
                 Halo, {userName}
+                <span className="rounded-full bg-brand-brook/30 px-2 py-0.5 text-xs font-medium text-brand-muted">
+                  {PLAN_LABELS[userPlan]}
+                </span>
                 {userRole && (
                   <span
                     className={
@@ -67,6 +73,22 @@ export function DashboardShell({ children, userName, userRole }: Props) {
               <Plus className="h-4 w-4" />
               Buat undangan
             </Link>
+            <Link
+              href="/dashboard/billing"
+              className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium text-brand-ink hover:bg-white hover:shadow-sm"
+            >
+              <CreditCard className="h-4 w-4" />
+              Billing
+            </Link>
+            {userRole === "ADMIN" && (
+              <Link
+                href="/admin"
+                className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium text-brand-amaranth hover:bg-white hover:shadow-sm"
+              >
+                <Shield className="h-4 w-4" />
+                Admin
+              </Link>
+            )}
           </nav>
         </aside>
         <main className="min-w-0 flex-1">{children}</main>

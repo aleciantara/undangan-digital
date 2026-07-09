@@ -242,13 +242,32 @@
 
   .himmel-reveal {
     opacity: 0;
-    transition:
-      opacity 0.9s var(--himmel-ease) var(--himmel-reveal-delay, 0ms),
-      transform 0.9s var(--himmel-ease) var(--himmel-reveal-delay, 0ms);
   }
-  .himmel-reveal--in { opacity: 1; transform: none !important; }
-  .himmel-reveal--up:not(.himmel-reveal--in) { transform: translateY(44px); }
-  .himmel-reveal--clip:not(.himmel-reveal--in) { transform: translateY(16px); }
+
+  .himmel-reveal--up.himmel-reveal--in {
+    animation: inv-present-fly-up var(--inv-present-duration, 1.6s) var(--inv-present-ease) both;
+    animation-delay: var(--inv-present-delay, 0ms);
+  }
+
+  .himmel-reveal--clip.himmel-reveal--in {
+    animation: inv-present-wipe var(--inv-present-duration, 1.6s) var(--inv-present-ease) both;
+    animation-delay: var(--inv-present-delay, 0ms);
+  }
+
+  .himmel-reveal--left.himmel-reveal--in {
+    animation: inv-present-fly-left var(--inv-present-duration, 1.6s) var(--inv-present-ease) both;
+    animation-delay: var(--inv-present-delay, 0ms);
+  }
+
+  .himmel-reveal--right.himmel-reveal--in {
+    animation: inv-present-fly-right var(--inv-present-duration, 1.6s) var(--inv-present-ease) both;
+    animation-delay: var(--inv-present-delay, 0ms);
+  }
+
+  .himmel-reveal--scale.himmel-reveal--in {
+    animation: inv-present-zoom var(--inv-present-duration, 1.6s) var(--inv-present-ease) both;
+    animation-delay: var(--inv-present-delay, 0ms);
+  }
 
   .himmel-hero { isolation: isolate; }
 

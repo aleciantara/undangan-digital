@@ -1,13 +1,14 @@
 import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { canAddGuest } from "@/lib/plans";
 import { z } from "zod";
 
 const guestSchema = z.object({
   name: z.string().min(1, "Nama wajib diisi"),
   phone: z.string().min(9, "Nomor WhatsApp wajib untuk verifikasi RSVP"),
   email: z.string().email().optional().or(z.literal("")),
-  reservedSeats: z.coerce.number().min(1).max(20).default(1),
+  reservedSeats: z.coerce.number().min(1).max(20).default(2),
 });
 
 type Params = { params: Promise<{ id: string }> };
@@ -27,6 +28,17 @@ export async function POST(req: Request, { params }: Params) {
     const fieldErrors = parsed.error.flatten().fieldErrors;
     const first = Object.values(fieldErrors).flat()[0] ?? "Data tamu tidak valid";
     return NextResponse.json({ error: first, fields: fieldErrors }, { status: 400 });
+  }
+
+  const plan = session.user.plan ?? "FREE";
+  const guestCount = await prisma.guest.count({ where: { invitationId: id } });
+  if (!canAddGuest(plan, guestCount)) {
+    return NextResponse.json(
+      {
+        error: "Batas tamu untuk paket Anda sudah tercapai. Upgrade paket di halaman Billing.",
+      },
+      { status: 403 }
+    );
   }
 
   const guest = await prisma.guest.create({

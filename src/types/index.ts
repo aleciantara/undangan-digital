@@ -49,6 +49,18 @@ export const TEMPLATES: TemplateConfig[] = [
     isPremium: false,
     region: "Frieren: Beyond Journey's End",
   },
+  {
+    id: "golden-javanese",
+    name: "Golden Javanese",
+    nameId: "Golden Javanese",
+    motif: "modern",
+    primaryColor: "#5C4033",
+    accentColor: "#D4AF37",
+    fontFamily: "playfair",
+    previewUrl: "/erik-christine/head-bg.jpg",
+    isPremium: true,
+    region: "Premium",
+  },
 ];
 
 export const EVENT_TYPES = [

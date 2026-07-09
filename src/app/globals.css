@@ -96,6 +96,13 @@ body {
   --inv-ink: var(--batik-dark);
   --inv-muted: var(--batik-brown);
   --inv-cream: var(--batik-cream);
+  --inv-reveal-duration: 1.65s;
+  --inv-reveal-duration-move: 1.85s;
+  --inv-reveal-ease: cubic-bezier(0.12, 1, 0.22, 1);
+  --inv-reveal-ease-out: cubic-bezier(0.08, 0.82, 0.17, 1);
+  --inv-content-reveal-duration: 3.5s;
+  --inv-present-duration: 3.4s;
+  --inv-present-ease: cubic-bezier(0.08, 0.82, 0.17, 1);
 }
 
 .invitation-shell--garden {
@@ -1253,39 +1260,91 @@ body {
   opacity: 0.75;
 }
 
-/* Scroll reveals */
+/* PowerPoint-style entrance animations — fly / float / wipe / zoom on scroll-into-view */
+@keyframes inv-present-fly-up {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 72px, 0);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@keyframes inv-present-fly-left {
+  from {
+    opacity: 0;
+    transform: translate3d(-56px, 0, 0);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@keyframes inv-present-fly-right {
+  from {
+    opacity: 0;
+    transform: translate3d(56px, 0, 0);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@keyframes inv-present-wipe {
+  from {
+    opacity: 0;
+    clip-path: inset(0 100% 0 0);
+    transform: translate3d(0, 18px, 0);
+  }
+  to {
+    opacity: 1;
+    clip-path: inset(0 0 0 0);
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@keyframes inv-present-zoom {
+  from {
+    opacity: 0;
+    transform: scale(0.88);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
 .garden-reveal {
-  transition:
-    opacity 0.9s var(--garden-ease),
-    transform 0.95s var(--garden-ease-out),
-    filter 0.9s var(--garden-ease);
-  transition-delay: var(--garden-reveal-delay, 0ms);
-}
-.garden-reveal--up:not(.garden-reveal--in) {
   opacity: 0;
-  transform: translateY(56px);
 }
-.garden-reveal--left:not(.garden-reveal--in) {
-  opacity: 0;
-  transform: translateX(-64px) rotate(-1deg);
+
+.garden-reveal--up.garden-reveal--in {
+  animation: inv-present-fly-up var(--inv-present-duration, 1.6s) var(--inv-present-ease) both;
+  animation-delay: var(--inv-present-delay, 0ms);
 }
-.garden-reveal--right:not(.garden-reveal--in) {
-  opacity: 0;
-  transform: translateX(64px) rotate(1deg);
+
+.garden-reveal--left.garden-reveal--in {
+  animation: inv-present-fly-left var(--inv-present-duration, 1.6s) var(--inv-present-ease) both;
+  animation-delay: var(--inv-present-delay, 0ms);
 }
-.garden-reveal--scale:not(.garden-reveal--in) {
-  opacity: 0;
-  transform: scale(0.82);
+
+.garden-reveal--right.garden-reveal--in {
+  animation: inv-present-fly-right var(--inv-present-duration, 1.6s) var(--inv-present-ease) both;
+  animation-delay: var(--inv-present-delay, 0ms);
 }
-.garden-reveal--clip:not(.garden-reveal--in) {
-  opacity: 0;
-  clip-path: inset(0 100% 0 0);
-  transform: translateY(12px);
+
+.garden-reveal--clip.garden-reveal--in {
+  animation: inv-present-wipe var(--inv-present-duration, 1.6s) var(--inv-present-ease) both;
+  animation-delay: var(--inv-present-delay, 0ms);
 }
-.garden-reveal--in {
-  opacity: 1;
-  transform: none;
-  clip-path: inset(0 0 0 0);
+
+.garden-reveal--scale.garden-reveal--in {
+  animation: inv-present-zoom var(--inv-present-duration, 1.6s) var(--inv-present-ease) both;
+  animation-delay: var(--inv-present-delay, 0ms);
 }
 
 /* ── Momen Kami — mobile-first vertical stack ── */
@@ -1579,14 +1638,14 @@ body {
 }
 
 .invitation-content--garden-reveal {
-  animation: garden-content-reveal 1.15s var(--garden-ease-out) forwards;
+  animation: garden-content-reveal var(--inv-content-reveal-duration, 2s) var(--inv-reveal-ease-out, var(--garden-ease-out)) forwards;
 }
 
 @keyframes garden-content-reveal {
   from {
     opacity: 0;
-    transform: translateY(32px) scale(0.97);
-    filter: blur(6px);
+    transform: translateY(48px) scale(0.96);
+    filter: blur(8px);
   }
   to {
     opacity: 1;
@@ -1600,11 +1659,21 @@ body {
   .garden-hero__strip-photo {
     animation: none !important;
   }
-  .garden-reveal {
+  .garden-reveal,
+  .raoul-reveal,
+  .himmel-reveal {
     opacity: 1 !important;
     transform: none !important;
     clip-path: none !important;
-    transition: none !important;
+    animation: none !important;
+  }
+  .invitation-content--garden-reveal,
+  .invitation-content--phantom-reveal,
+  .invitation-content--raoul-reveal,
+  .invitation-content--himmel-reveal,
+  .invitation-content--revealed,
+  .invitation-content--snap-mobile {
+    scroll-behavior: auto;
   }
   .garden-hero__name,
   .garden-hero__eyebrow,
@@ -2651,7 +2720,7 @@ body {
 }
 
 .invitation-content--revealed {
-  animation: invitationReveal 0.85s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  animation: invitationReveal var(--inv-content-reveal-duration, 2s) var(--inv-reveal-ease, cubic-bezier(0.22, 1, 0.36, 1)) forwards;
 }
 
 @keyframes invitationReveal {
@@ -2670,7 +2739,7 @@ body {
    ═══════════════════════════════════════════════════════════════════════════ */
 
 .invitation-content--phantom-reveal {
-  animation: phantom-content-reveal 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation: phantom-content-reveal var(--inv-content-reveal-duration, 2s) var(--inv-reveal-ease-out, cubic-bezier(0.16, 1, 0.3, 1)) forwards;
 }
 
 /* Mobile — snap one section per swipe on invitation scroll port */
@@ -2690,7 +2759,6 @@ body {
     height: 100dvh;
     overflow-x: hidden;
     overflow-y: auto;
-    scroll-snap-type: y proximity;
     overscroll-behavior-y: contain;
     -webkit-overflow-scrolling: touch;
   }
@@ -2699,8 +2767,6 @@ body {
   .invitation-shell--snap-mobile > .phantom-section,
   .invitation-shell--snap-mobile > .raoul-hero,
   .invitation-shell--snap-mobile > .raoul-section {
-    scroll-snap-align: start;
-    scroll-snap-stop: always;
     min-height: 100svh;
     min-height: 100dvh;
   }
@@ -2709,14 +2775,6 @@ body {
 @media (max-width: 767px) and (prefers-reduced-motion: reduce) {
   .invitation-content--snap-mobile {
     scroll-snap-type: none;
-  }
-
-  .invitation-shell--snap-mobile > .phantom-hero,
-  .invitation-shell--snap-mobile > .phantom-section,
-  .invitation-shell--snap-mobile > .raoul-hero,
-  .invitation-shell--snap-mobile > .raoul-section {
-    scroll-snap-align: none;
-    scroll-snap-stop: normal;
   }
 }
 
@@ -2753,11 +2811,38 @@ body {
   --garden-ease: var(--phantom-ease);
   --garden-ease-out: cubic-bezier(0.16, 1, 0.3, 1);
 }
-.phantom-invite .garden-reveal--up:not(.garden-reveal--in) {
-  transform: translateY(44px);
+.phantom-invite .garden-reveal--up.garden-reveal--in {
+  animation: inv-present-fly-up-phantom var(--inv-present-duration, 1.6s) var(--inv-present-ease) both;
+  animation-delay: var(--inv-present-delay, 0ms);
 }
-.phantom-invite .garden-reveal--clip:not(.garden-reveal--in) {
-  transform: translateY(16px);
+
+.phantom-invite .garden-reveal--clip.garden-reveal--in {
+  animation: inv-present-wipe-phantom var(--inv-present-duration, 1.6s) var(--inv-present-ease) both;
+  animation-delay: var(--inv-present-delay, 0ms);
+}
+
+@keyframes inv-present-fly-up-phantom {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 56px, 0);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@keyframes inv-present-wipe-phantom {
+  from {
+    opacity: 0;
+    clip-path: inset(0 100% 0 0);
+    transform: translate3d(0, 14px, 0);
+  }
+  to {
+    opacity: 1;
+    clip-path: inset(0 0 0 0);
+    transform: translate3d(0, 0, 0);
+  }
 }
 
 .phantom-invite > *:not(.phantom-atmosphere) {
@@ -4037,11 +4122,11 @@ body {
    ═══════════════════════════════════════════════════════════════════════════ */
 
 .invitation-content--raoul-reveal {
-  animation: raoul-content-reveal 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation: raoul-content-reveal var(--inv-content-reveal-duration, 2s) var(--inv-reveal-ease-out, cubic-bezier(0.16, 1, 0.3, 1)) forwards;
 }
 
 .invitation-content--himmel-reveal {
-  animation: himmel-content-reveal 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation: himmel-content-reveal var(--inv-content-reveal-duration, 2s) var(--inv-reveal-ease-out, cubic-bezier(0.16, 1, 0.3, 1)) forwards;
 }
 
 @keyframes raoul-content-reveal {
@@ -4158,4 +4243,79 @@ body {
 @keyframes himmel-content-reveal {
   from { opacity: 0; }
   to { opacity: 1; }
+}
+
+/* Responsive invitation — landscape panel + portrait column (desktop) */
+.invitation-responsive-shell {
+  --inv-desktop-column-width: clamp(420px, 34vw, 520px);
+  --inv-landscape-panel-bg: #0a0608;
+  position: relative;
+  min-height: 100%;
+}
+
+.invitation-responsive-shell__backdrop {
+  display: none;
+}
+
+.invitation-responsive-shell__column {
+  position: relative;
+  z-index: 1;
+  min-height: 100%;
+}
+
+@media (min-width: 768px) {
+  .invitation-responsive-shell {
+    min-height: 100%;
+  }
+
+  /* Left panel only — stops before the invitation column */
+  .invitation-responsive-shell__backdrop {
+    display: block;
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: var(--inv-desktop-column-width);
+    z-index: 0;
+    background: var(--inv-landscape-panel-bg);
+    overflow: hidden;
+  }
+
+  .invitation-responsive-shell__backdrop-img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+  }
+
+  .invitation-responsive-shell__column {
+    display: flex;
+    justify-content: flex-end;
+    min-height: 100%;
+  }
+
+  .invitation-shell--desktop-portrait-column {
+    width: var(--inv-desktop-column-width);
+    max-width: 100vw;
+    min-height: 100%;
+    margin-left: auto;
+    margin-right: 0;
+    flex-shrink: 0;
+    box-shadow:
+      -20px 0 64px rgba(0, 0, 0, 0.45),
+      0 0 0 1px rgba(255, 255, 255, 0.05);
+  }
+}
+
+/* picture/img inside section backgrounds */
+.phantom-section__bg-img,
+.raoul-section__bg-img,
+.himmel-section__bg-img,
+.phantom-footer-photo__img,
+.raoul-footer-photo__img,
+.himmel-footer-photo__img {
+  display: block;
+  width: 100%;
+  height: 100%;
 }

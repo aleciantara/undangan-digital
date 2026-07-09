@@ -52,6 +52,7 @@ export default async function ManageInvitationPage({ params }: Props) {
         seatQuota: invitation.seatQuota,
         templateId: invitation.templateId,
         coverPhotoUrl: invitation.coverPhotoUrl,
+        landscapeBackdropFill: invitation.landscapeBackdropFill ?? true,
         musicUrl: invitation.musicUrl,
         musicTitle: invitation.musicTitle,
         musicAutoplay: invitation.musicAutoplay,
@@ -87,6 +88,11 @@ export default async function ManageInvitationPage({ params }: Props) {
           date: e.date.toISOString(),
           venue: e.venue,
           address: e.address,
+          mapsUrl: e.mapsUrl,
+          wazeUrl: e.wazeUrl,
+          dresscodeColor: e.dresscodeColor,
+          dresscodeAttire: e.dresscodeAttire,
+          notes: e.notes,
         })),
         guests: invitation.guests.map((g) => ({
           id: g.id,
@@ -99,6 +105,7 @@ export default async function ManageInvitationPage({ params }: Props) {
       }}
       rsvpStats={rsvpStats}
       appUrl={appUrl}
+      userPlan={session!.user!.plan ?? "FREE"}
     />
   );
 }

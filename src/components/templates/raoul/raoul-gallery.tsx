@@ -18,9 +18,10 @@ type Props = {
   photos: Photo[];
   accentColor: string;
   primaryColor: string;
+  sectionIndex?: string;
 };
 
-export function RaoulGallery({ photos, accentColor, primaryColor }: Props) {
+export function RaoulGallery({ photos, accentColor, primaryColor, sectionIndex }: Props) {
   const items = photos;
   const trackRef = useRef<HTMLDivElement>(null);
   const [active, setActive] = useState(0);
@@ -86,7 +87,7 @@ export function RaoulGallery({ photos, accentColor, primaryColor }: Props) {
   return (
     <div className="raoul-gallery-section relative px-4 pb-24 sm:px-6">
       <div className="mx-auto max-w-4xl">
-        <RaoulSectionHeading index="02" accentColor={accentColor} primaryColor={primaryColor}>
+        <RaoulSectionHeading index={sectionIndex} accentColor={accentColor} primaryColor={primaryColor}>
           Galeri di Bawah Sinar Matahari
         </RaoulSectionHeading>
 

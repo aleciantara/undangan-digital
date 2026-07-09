@@ -1,5 +1,6 @@
 import { FooterPhotoSection } from "@/components/invitation/footer-photo-section";
 import { InvitationExperience } from "@/components/invitation/invitation-experience";
+import { InvitationResponsiveShell } from "@/components/invitation/invitation-responsive-shell";
 import { RsvpSection } from "@/components/invitation/rsvp-section";
 import { WishesSection } from "@/components/invitation/wishes-section";
 import type { SerializedGuest, SerializedInvitation } from "@/lib/invitation-types";
@@ -10,6 +11,7 @@ import { PhantomCoupleShowcase } from "@/components/templates/phantom/phantom-co
 import { PhantomEventCard } from "@/components/templates/phantom/phantom-event-card";
 import { PhantomDresscodeSection } from "@/components/templates/phantom/phantom-dresscode-section";
 import { eventsWithDresscode } from "@/lib/dresscode-colors";
+import { buildInvitationSectionNumbers } from "@/lib/invitation-section-numbers";
 import { PhantomGallery } from "@/components/templates/phantom/phantom-gallery";
 import { PhantomGiftSection } from "@/components/templates/phantom/phantom-gift-section";
 import { PhantomHero } from "@/components/templates/phantom/phantom-hero";
@@ -31,10 +33,30 @@ export function PhantomOperaTemplate({ invitation, guest }: Props) {
   const displayBride = invitation.brideFullName ?? invitation.brideName;
   const coupleNames = `${invitation.groomName} & ${invitation.brideName}`;
 
-  const { heroBg, coupleBg, accentBg, footerBg, groomPhoto, bridePhoto, galleryPhotos } =
-    resolvePhantomMedia({
+  const media = resolvePhantomMedia({
     coverPhotoUrl: invitation.coverPhotoUrl,
     photos: invitation.photos,
+    landscapeBackdropFill: invitation.landscapeBackdropFill,
+  });
+
+  const {
+    heroBg,
+    coupleBg,
+    accentBg,
+    footerBg,
+    groomPhoto,
+    bridePhoto,
+    galleryPhotos,
+    useLandscapeBackdrop,
+    landscapeBackdropUrl,
+  } = media;
+
+  const sectionNo = buildInvitationSectionNumbers({
+    events: invitation.events,
+    photos: galleryPhotos,
+    prewedVideoUrl: invitation.prewedVideoUrl,
+    liveStreamUrl: invitation.liveStreamUrl,
+    giftEnabled: invitation.giftEnabled,
   });
 
   return (
@@ -59,8 +81,12 @@ export function PhantomOperaTemplate({ invitation, guest }: Props) {
           : null
       }
     >
+      <InvitationResponsiveShell
+        backdropUrl={landscapeBackdropUrl}
+        enabled={useLandscapeBackdrop}
+      >
       <div
-        className="phantom-invite invitation-shell invitation-shell--phantom invitation-shell--snap-mobile min-h-screen font-[family-name:var(--font-cormorant)]"
+        className={`phantom-invite invitation-shell invitation-shell--phantom invitation-shell--snap-mobile min-h-screen font-[family-name:var(--font-cormorant)] ${useLandscapeBackdrop ? "invitation-shell--desktop-portrait-column" : ""}`}
         style={
           {
             "--inv-primary": primaryColor,
@@ -135,7 +161,11 @@ export function PhantomOperaTemplate({ invitation, guest }: Props) {
         {invitation.events.length > 0 && (
           <PhantomSection className="px-4 pb-20 sm:px-6">
             <div className="mx-auto max-w-4xl">
-              <PhantomSectionHeading index="01" accentColor={accentColor} primaryColor={primaryColor}>
+              <PhantomSectionHeading
+                index={sectionNo.events}
+                accentColor={accentColor}
+                primaryColor={primaryColor}
+              >
                 Rangkaian Acara
               </PhantomSectionHeading>
               <div className="space-y-5">
@@ -161,6 +191,7 @@ export function PhantomOperaTemplate({ invitation, guest }: Props) {
               events={invitation.events}
               accentColor={accentColor}
               primaryColor={primaryColor}
+              sectionIndex={sectionNo.dresscode}
             />
           </PhantomSection>
         )}
@@ -170,6 +201,7 @@ export function PhantomOperaTemplate({ invitation, guest }: Props) {
             photos={galleryPhotos}
             accentColor={accentColor}
             primaryColor={primaryColor}
+            sectionIndex={sectionNo.gallery}
           />
         </PhantomSection>
 
@@ -180,6 +212,7 @@ export function PhantomOperaTemplate({ invitation, guest }: Props) {
               live={{ url: invitation.liveStreamUrl, title: invitation.liveStreamTitle }}
               accentColor={accentColor}
               primaryColor={primaryColor}
+              sectionIndex={sectionNo.video}
             />
           </PhantomSection>
         )}
@@ -190,6 +223,7 @@ export function PhantomOperaTemplate({ invitation, guest }: Props) {
               invitation={invitation}
               accentColor={accentColor}
               primaryColor={primaryColor}
+              sectionIndex={sectionNo.gift}
             />
           </PhantomSection>
         )}
@@ -203,14 +237,17 @@ export function PhantomOperaTemplate({ invitation, guest }: Props) {
           className="px-4 pb-20 sm:px-6"
         >
           <div className="mx-auto max-w-2xl">
-            <PhantomSectionHeading index="03" accentColor={accentColor} primaryColor={primaryColor}>
+            <PhantomSectionHeading
+              index={sectionNo.rsvp}
+              accentColor={accentColor}
+              primaryColor={primaryColor}
+            >
               Konfirmasi Kehadiran
             </PhantomSectionHeading>
             <GardenReveal variant="up">
               <div className="phantom-panel phantom-interactive px-5 py-8 sm:px-8 sm:py-10">
                 <RsvpSection
                   invitationId={invitation.id}
-                  seatQuota={invitation.seatQuota}
                   events={invitation.events}
                   guest={guest}
                 />
@@ -221,7 +258,11 @@ export function PhantomOperaTemplate({ invitation, guest }: Props) {
 
         <PhantomSection className="px-4 pb-28 sm:px-6">
           <div className="mx-auto max-w-2xl">
-            <PhantomSectionHeading index="04" accentColor={accentColor} primaryColor={primaryColor}>
+            <PhantomSectionHeading
+              index={sectionNo.wishes}
+              accentColor={accentColor}
+              primaryColor={primaryColor}
+            >
               Ucapan & Doa
             </PhantomSectionHeading>
             <GardenReveal variant="up" delay={80}>
@@ -254,6 +295,7 @@ export function PhantomOperaTemplate({ invitation, guest }: Props) {
           </GardenReveal>
         </FooterPhotoSection>
       </div>
+      </InvitationResponsiveShell>
     </InvitationExperience>
   );
 }

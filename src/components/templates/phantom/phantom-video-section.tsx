@@ -14,6 +14,7 @@ type Props = {
   live: VideoBlock;
   accentColor: string;
   primaryColor: string;
+  sectionIndex?: string;
 };
 
 function VideoEmbed({ url, title }: { url: string; title: string }) {
@@ -36,14 +37,14 @@ function VideoEmbed({ url, title }: { url: string; title: string }) {
   );
 }
 
-export function PhantomVideoSection({ prewed, live, accentColor, primaryColor }: Props) {
+export function PhantomVideoSection({ prewed, live, accentColor, primaryColor, sectionIndex }: Props) {
   const hasPrewed = prewed.url && parseYoutubeVideoId(prewed.url);
   const hasLive = live.url && parseYoutubeVideoId(live.url);
   if (!hasPrewed && !hasLive) return null;
 
   return (
     <div className="phantom-video px-4 py-16 sm:py-20">
-      <PhantomSectionHeading index="02" accentColor={accentColor} primaryColor={primaryColor} align="center">
+      <PhantomSectionHeading index={sectionIndex} accentColor={accentColor} primaryColor={primaryColor} align="center">
         Video
       </PhantomSectionHeading>
       <div className="mx-auto mt-10 flex max-w-3xl flex-col gap-10">

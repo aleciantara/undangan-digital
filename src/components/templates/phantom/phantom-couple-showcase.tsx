@@ -1,24 +1,26 @@
 "use client";
 
+import { ResponsiveMediaImage } from "@/components/invitation/responsive-media-image";
+import type { ResponsiveSlotMedia } from "@/lib/responsive-media";
 import { GardenReveal } from "@/components/templates/garden/garden-reveal";
 
 type Props = {
   groomName: string;
   brideName: string;
-  groomPhoto: string;
-  bridePhoto: string;
+  groomPhoto: ResponsiveSlotMedia;
+  bridePhoto: ResponsiveSlotMedia;
   accentColor: string;
   primaryColor: string;
 };
 
 function PortraitCard({
-  src,
+  media,
   alt,
   name,
   role,
   variant,
 }: {
-  src: string;
+  media: ResponsiveSlotMedia;
   alt: string;
   name: string;
   role: string;
@@ -43,7 +45,7 @@ function PortraitCard({
         <div className="phantom-portrait__frame">
           <div className="phantom-portrait__mat">
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={src} alt={alt} className="phantom-portrait__img" />
+            <ResponsiveMediaImage media={media} alt={alt} className="phantom-portrait__img" />
             <div className="phantom-portrait__vignette" aria-hidden />
             <div className="phantom-portrait__sheen" aria-hidden />
           </div>
@@ -79,7 +81,7 @@ export function PhantomCoupleShowcase({
       <div className="phantom-couple-showcase__grid phantom-couple-showcase__grid--duo mx-auto mt-12 max-w-3xl">
         <GardenReveal variant="up" delay={80}>
           <PortraitCard
-            src={groomPhoto}
+            media={groomPhoto}
             alt={groomName}
             name={groomName}
             role="Mempelai Pria"
@@ -88,7 +90,7 @@ export function PhantomCoupleShowcase({
         </GardenReveal>
         <GardenReveal variant="up" delay={180}>
           <PortraitCard
-            src={bridePhoto}
+            media={bridePhoto}
             alt={brideName}
             name={brideName}
             role="Mempelai Wanita"

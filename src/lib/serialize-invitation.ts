@@ -16,6 +16,7 @@ export function serializeInvitation(invitation: any): SerializedInvitation {
     accentColor: invitation.accentColor,
     fontFamily: invitation.fontFamily,
     coverPhotoUrl: invitation.coverPhotoUrl,
+    landscapeBackdropFill: invitation.landscapeBackdropFill ?? true,
     loveStory: invitation.loveStory,
     musicUrl: invitation.musicUrl,
     musicTitle: invitation.musicTitle ?? null,

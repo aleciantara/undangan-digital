@@ -4,14 +4,22 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { TEMPLATES } from "@/types";
+import { filterTemplatesForPlan } from "@/lib/plans";
+import type { AppPlan } from "@/types/auth";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
-export function CreateInvitationForm() {
+type Props = {
+  userPlan?: AppPlan;
+};
+
+export function CreateInvitationForm({ userPlan = "FREE" }: Props) {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [templateId, setTemplateId] = useState("phantom-opera");
+  const availableTemplates = filterTemplatesForPlan(TEMPLATES, userPlan);
+  const [templateId, setTemplateId] = useState(availableTemplates[0]?.id ?? TEMPLATES[0].id);
 
   const selected = TEMPLATES.find((t) => t.id === templateId) ?? TEMPLATES[0];
 
@@ -40,7 +48,7 @@ export function CreateInvitationForm() {
       });
       const data = await res.json();
       if (!res.ok) {
-        setError("Gagal membuat undangan. Periksa data yang diisi.");
+        setError(typeof data.error === "string" ? data.error : "Gagal membuat undangan. Periksa data yang diisi.");
         return;
       }
       router.push(`/dashboard/${data.id}`);
@@ -78,7 +86,7 @@ export function CreateInvitationForm() {
       <div>
         <Label>Template</Label>
         <div className="mt-2 grid gap-3 sm:grid-cols-2">
-          {TEMPLATES.filter((t) => !t.isPremium).map((t) => (
+          {availableTemplates.map((t) => (
             <button
               key={t.id}
               type="button"
@@ -104,6 +112,14 @@ export function CreateInvitationForm() {
             </button>
           ))}
         </div>
+        {userPlan === "FREE" && (
+          <p className="mt-2 text-xs text-stone-500">
+            Template premium tersedia di paket Pro.{" "}
+            <Link href="/dashboard/billing" className="font-medium text-brand-amaranth hover:underline">
+              Upgrade paket
+            </Link>
+          </p>
+        )}
       </div>
 
       {error && <p className="text-sm text-red-600">{error}</p>}

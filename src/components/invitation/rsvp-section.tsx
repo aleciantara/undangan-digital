@@ -16,7 +16,6 @@ const MEAL_OPTIONS = [
 
 type Props = {
   invitationId: string;
-  seatQuota: number | null;
   events: SerializedEvent[];
   guest: SerializedGuest | null;
 };
@@ -29,7 +28,7 @@ type LookupState = {
   isNew: boolean;
 };
 
-export function RsvpSection({ invitationId, seatQuota, events, guest }: Props) {
+export function RsvpSection({ invitationId, events, guest }: Props) {
   const isPersonalLink = !!guest;
 
   const [guestName, setGuestName] = useState(guest?.name ?? "");
@@ -205,15 +204,6 @@ export function RsvpSection({ invitationId, seatQuota, events, guest }: Props) {
 
   return (
     <div className="space-y-6">
-      {seatQuota != null && (
-        <p className="rounded-lg bg-inv-cream-muted px-3 py-2 text-center text-xs text-inv-muted">
-          Kuota undangan: maks. {seatQuota} tamu hadir
-          {lookup?.seatsRemaining != null && verified
-            ? ` · Sisa ${lookup.seatsRemaining} kursi`
-            : ""}
-        </p>
-      )}
-
       {isPersonalLink ? (
         <p className="text-center font-invitation text-lg text-inv-ink">
           Yth. <span className="font-semibold">{guest.name}</span>

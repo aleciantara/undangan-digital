@@ -1,21 +1,16 @@
 import { config } from "dotenv";
 import { resolve } from "node:path";
 import { hash } from "bcryptjs";
-import { PrismaPg } from "@prisma/adapter-pg";
-import { PrismaClient } from "../src/generated/prisma/client";
+import { prisma } from "../src/lib/prisma";
 import { phantomDefaultCover, phantomDefaultPhotos } from "../src/lib/phantom-media";
 import { raoulDefaultCover, raoulDefaultPhotos } from "../src/lib/raoul-media";
 
 config({ path: resolve(process.cwd(), ".env.local") });
 config({ path: resolve(process.cwd(), ".env") });
 
-const connectionString = process.env.DATABASE_URL;
-if (!connectionString) {
+if (!process.env.DATABASE_URL) {
   throw new Error("DATABASE_URL tidak ditemukan. Isi .env.local dulu.");
 }
-
-const adapter = new PrismaPg({ connectionString });
-const prisma = new PrismaClient({ adapter });
 
 const SEED_ACCOUNTS = [
   {

@@ -31,9 +31,10 @@ type Props = {
   >;
   accentColor: string;
   primaryColor: string;
+  sectionIndex?: string;
 };
 
-export function HimmelGiftSection({ invitation, accentColor, primaryColor }: Props) {
+export function HimmelGiftSection({ invitation, accentColor, primaryColor, sectionIndex }: Props) {
   const { groom: groomBank, bride: brideBank } = giftBankFromInvitation(invitation);
   const { groom: groomAddress, bride: brideAddress } = giftAddressFromInvitation(invitation);
   const intro = invitation.giftMessage?.trim() || DEFAULT_GIFT_INTRO;
@@ -52,7 +53,12 @@ export function HimmelGiftSection({ invitation, accentColor, primaryColor }: Pro
 
   return (
     <div className="himmel-gift px-4 py-16 sm:py-20">
-      <HimmelSectionHeading accentColor={accentColor} primaryColor={primaryColor} align="center">
+      <HimmelSectionHeading
+        index={sectionIndex}
+        accentColor={accentColor}
+        primaryColor={primaryColor}
+        align="center"
+      >
         {invitation.giftTitle?.trim() || "Kirim Kado"}
       </HimmelSectionHeading>
       <HimmelReveal variant="up">

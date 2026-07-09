@@ -1,3 +1,9 @@
+import {
+  classifyOperaDashboardPhotos,
+  resolveOperaMedia,
+  type OperaPhotoSlotDef,
+} from "@/lib/opera-media-core";
+
 export type PhantomMediaPhoto = {
   id: string;
   url: string;
@@ -10,10 +16,8 @@ function asset(filename: string) {
   return `${BASE}/${encodeURIComponent(filename)}`;
 }
 
-/** Theme defaults — Erik & Christine Phantom Opera set */
 export const phantomAssets = {
   heroBg: asset("head-bg.jpg"),
-  /** Together scene — ambient bg only, not shown as a portrait card */
   coupleBg: asset("erik-christine.jpg"),
   accentBgs: [asset("bg-1.jpg"), asset("bg-2.jpg")] as const,
   footerBg: asset("bg-3.jpg"),
@@ -23,38 +27,23 @@ export const phantomAssets = {
 
 export const phantomDefaultCover = phantomAssets.heroBg;
 
-const GROOM_CAPTION_KEYS = ["mempelai pria", "groom", "pria", "erik"];
-const BRIDE_CAPTION_KEYS = ["mempelai wanita", "bride", "wanita", "christine"];
-const COUPLE_BG_KEYS = [
-  "latar kutipan",
-  "latar isi",
-  "pasangan",
-  "couple",
-  "berdua",
-  "pre-wedding",
-  "prewedding",
-  "together",
-];
-const ACCENT_BG_KEYS = ["latar rsvp", "latar acara", "opéra garnier", "opera garnier", "masquerade"];
-const FOOTER_BG_KEYS = ["latar penutup", "latar footer", "footer", "penutup"];
-const HERO_CAPTION_KEYS = ["latar hero", "hero", "sampul", "cover"];
-
-function matchesCaption(caption: string | null | undefined, keys: string[]) {
-  if (!caption) return false;
-  const c = caption.toLowerCase();
-  return keys.some((k) => c.includes(k));
-}
-
-function pickPortrait(
-  photos: PhantomMediaPhoto[],
-  keys: string[],
-  fallback: string,
-  exclude: Set<string>
-) {
-  const match = photos.find((p) => !exclude.has(p.url) && matchesCaption(p.caption, keys));
-  if (match) return match.url;
-  return fallback;
-}
+const PHANTOM_KEYS = {
+  groom: ["mempelai pria", "groom", "pria", "erik"],
+  bride: ["mempelai wanita", "bride", "wanita", "christine"],
+  coupleBg: [
+    "latar kutipan",
+    "latar isi",
+    "pasangan",
+    "couple",
+    "berdua",
+    "pre-wedding",
+    "prewedding",
+    "together",
+  ],
+  accentBg: ["latar rsvp", "latar acara", "opéra garnier", "opera garnier", "masquerade"],
+  footerBg: ["latar penutup", "latar footer", "footer", "penutup"],
+  hero: ["latar hero", "hero", "sampul", "cover"],
+};
 
 export const phantomDefaultPhotos: PhantomMediaPhoto[] = [
   { id: "phantom-groom", url: phantomAssets.groomPortrait, caption: "Mempelai pria" },
@@ -74,176 +63,66 @@ export type PhantomPhotoSlotId =
   | "footerBg"
   | "extra";
 
-export const PHANTOM_PHOTO_SLOTS = [
+export const PHANTOM_PHOTO_SLOTS: OperaPhotoSlotDef[] = [
   {
-    id: "hero" as const,
+    id: "hero",
     label: "Latar hero",
-    hint: "Bagian pembuka undangan — nama mempelai di atas foto ini.",
+    hint: "Bagian pembuka undangan. Unggah portrait untuk HP dan landscape untuk layar lebar desktop.",
     caption: "Latar hero",
     setCover: true,
   },
   {
-    id: "groom" as const,
+    id: "groom",
     label: "Mempelai pria",
-    hint: "Foto portrait mempelai pria di bagian mempelai.",
+    hint: "Foto mempelai pria di bagian mempelai.",
     caption: "Mempelai pria",
-    setCover: false,
   },
   {
-    id: "bride" as const,
+    id: "bride",
     label: "Mempelai wanita",
-    hint: "Foto portrait mempelai wanita di bagian mempelai.",
+    hint: "Foto mempelai wanita di bagian mempelai.",
     caption: "Mempelai wanita",
-    setCover: false,
   },
   {
-    id: "coupleBg" as const,
+    id: "coupleBg",
     label: "Latar kutipan & countdown",
-    hint: "Foto latar di balik kutipan, ayat undangan, orang tua, dan countdown.",
+    hint: "Foto latar di balik kutipan, ayat undangan, dan countdown.",
     caption: "Latar kutipan",
-    setCover: false,
   },
   {
-    id: "accentBg" as const,
+    id: "accentBg",
     label: "Latar konfirmasi kehadiran",
     hint: "Foto latar di balik bagian RSVP / konfirmasi kehadiran.",
     caption: "Latar RSVP",
-    setCover: false,
   },
   {
-    id: "footerBg" as const,
+    id: "footerBg",
     label: "Latar penutup",
     hint: "Foto latar di bagian penutup — nama mempelai & ucapan terima kasih.",
     caption: "Latar penutup",
-    setCover: false,
   },
-] as const;
-
-type DashboardPhoto = { id: string; url: string; caption: string | null };
+];
 
 export function classifyPhantomDashboardPhotos(
-  photos: DashboardPhoto[],
+  photos: PhantomMediaPhoto[],
   coverPhotoUrl: string | null
 ) {
-  const groom =
-    photos.find((p) => matchesCaption(p.caption, GROOM_CAPTION_KEYS)) ?? null;
-  const bride =
-    photos.find((p) => matchesCaption(p.caption, BRIDE_CAPTION_KEYS)) ?? null;
-  const coupleBg =
-    photos.find((p) => matchesCaption(p.caption, COUPLE_BG_KEYS)) ?? null;
-  const accentBg =
-    photos.find((p) => matchesCaption(p.caption, ACCENT_BG_KEYS)) ?? null;
-  const footerBg =
-    photos.find((p) => matchesCaption(p.caption, FOOTER_BG_KEYS)) ?? null;
-
-  const heroPhoto =
-    photos.find((p) => {
-      if (matchesCaption(p.caption, HERO_CAPTION_KEYS)) return true;
-      if (!coverPhotoUrl || p.url !== coverPhotoUrl) return false;
-      return (
-        !matchesCaption(p.caption, COUPLE_BG_KEYS) &&
-        !matchesCaption(p.caption, ACCENT_BG_KEYS) &&
-        !matchesCaption(p.caption, FOOTER_BG_KEYS) &&
-        !matchesCaption(p.caption, GROOM_CAPTION_KEYS) &&
-        !matchesCaption(p.caption, BRIDE_CAPTION_KEYS)
-      );
-    }) ?? null;
-
-  const heroUrl = coverPhotoUrl ?? heroPhoto?.url ?? null;
-
-  const slottedIds = new Set(
-    [groom, bride, coupleBg, accentBg, footerBg, heroPhoto].filter(Boolean).map((p) => p!.id)
-  );
-
-  const extras = photos.filter(
-    (p) =>
-      !slottedIds.has(p.id) &&
-      !matchesCaption(p.caption, ACCENT_BG_KEYS) &&
-      !matchesCaption(p.caption, FOOTER_BG_KEYS)
-  );
-
-  return { heroUrl, heroPhoto, groom, bride, coupleBg, accentBg, footerBg, extras };
+  return classifyOperaDashboardPhotos(photos, coverPhotoUrl, PHANTOM_KEYS);
 }
 
 export function resolvePhantomMedia(invitation: {
   coverPhotoUrl?: string | null;
   photos: PhantomMediaPhoto[];
+  landscapeBackdropFill?: boolean;
 }) {
-  const hasCustomPhotos = invitation.photos.length > 0;
-  const photos = hasCustomPhotos ? invitation.photos : phantomDefaultPhotos;
-
-  const heroBg = invitation.coverPhotoUrl ?? phantomAssets.heroBg;
-
-  let groomPhoto = pickPortrait(photos, GROOM_CAPTION_KEYS, phantomAssets.groomPortrait, new Set());
-  let bridePhoto = pickPortrait(
-    photos,
-    BRIDE_CAPTION_KEYS,
-    phantomAssets.bridePortrait,
-    new Set([groomPhoto])
-  );
-
-  let coupleBg = pickPortrait(
-    photos,
-    COUPLE_BG_KEYS,
-    phantomAssets.coupleBg,
-    new Set([groomPhoto, bridePhoto, heroBg])
-  );
-
-  let accentBg = pickPortrait(
-    photos,
-    ACCENT_BG_KEYS,
-    phantomAssets.accentBgs[0],
-    new Set([groomPhoto, bridePhoto, coupleBg, heroBg])
-  );
-
-  let footerBg = pickPortrait(
-    photos,
-    FOOTER_BG_KEYS,
-    phantomAssets.footerBg,
-    new Set([groomPhoto, bridePhoto, coupleBg, accentBg, heroBg])
-  );
-
-  if (hasCustomPhotos) {
-    const used = new Set([groomPhoto, bridePhoto, coupleBg, heroBg]);
-    if (groomPhoto === phantomAssets.groomPortrait) {
-      const next = photos.find((p) => !used.has(p.url));
-      if (next) {
-        groomPhoto = next.url;
-        used.add(groomPhoto);
-      }
-    }
-    if (bridePhoto === phantomAssets.bridePortrait) {
-      const next = photos.find((p) => !used.has(p.url));
-      if (next) {
-        bridePhoto = next.url;
-        used.add(bridePhoto);
-      }
-    }
-  }
-
-  const reservedUrls = new Set([
-    groomPhoto,
-    bridePhoto,
-    coupleBg,
-    accentBg,
-    footerBg,
-    heroBg,
-    ...phantomAssets.accentBgs,
-    phantomAssets.footerBg,
-  ]);
-  const galleryPhotos = photos.filter((p) => !reservedUrls.has(p.url));
-
-  return {
-    heroBg,
-    coupleBg,
-    accentBg,
-    footerBg,
-    groomPhoto,
-    bridePhoto,
-    galleryPhotos:
-      galleryPhotos.length > 0
-        ? galleryPhotos
-        : [{ id: "phantom-bg-2", url: phantomAssets.accentBgs[1], caption: "Masquerade" }],
-    isPlaceholderMedia: !invitation.coverPhotoUrl || !hasCustomPhotos,
-  };
+  return resolveOperaMedia({
+    coverPhotoUrl: invitation.coverPhotoUrl,
+    photos: invitation.photos,
+    keys: PHANTOM_KEYS,
+    assets: phantomAssets,
+    defaultPhotos: phantomDefaultPhotos,
+    landscapeBackdropFill: invitation.landscapeBackdropFill,
+  });
 }
+
+export type { ResponsiveSlotMedia } from "@/lib/responsive-media";

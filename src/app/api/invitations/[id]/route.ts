@@ -3,7 +3,9 @@ import { auth } from "@/lib/auth";
 import { hasBodyKey } from "@/lib/api-errors";
 import { normalizeGiftFields } from "@/lib/gift-types";
 import { prisma } from "@/lib/prisma";
+import { canUsePremiumTemplates } from "@/lib/plans";
 import { updateInvitationSchema } from "@/lib/validations";
+import { TEMPLATES } from "@/types";
 import type { Prisma } from "@/generated/prisma/client";
 
 type Params = { params: Promise<{ id: string }> };
@@ -59,6 +61,9 @@ function buildInvitationUpdate(
   if (hasBodyKey(body, "musicAutoplay")) update.musicAutoplay = data.musicAutoplay ?? false;
   if (hasBodyKey(body, "musicStartSec")) update.musicStartSec = data.musicStartSec ?? 0;
   if (hasBodyKey(body, "coverPhotoUrl")) update.coverPhotoUrl = data.coverPhotoUrl ?? null;
+  if (hasBodyKey(body, "landscapeBackdropFill")) {
+    update.landscapeBackdropFill = data.landscapeBackdropFill ?? true;
+  }
   if (hasBodyKey(body, "opensAt")) update.opensAt = data.opensAt ?? null;
 
   if (hasBodyKey(body, "inviteVerseTitle")) update.inviteVerseTitle = data.inviteVerseTitle ?? null;
@@ -162,6 +167,17 @@ export async function PATCH(req: Request, { params }: Params) {
     where: { id, userId: session.user.id },
   });
   if (!existing) return NextResponse.json({ error: "Not found" }, { status: 404 });
+
+  const plan = session.user.plan ?? "FREE";
+  if (hasBodyKey(body, "templateId") && data.templateId) {
+    const template = TEMPLATES.find((t) => t.id === data.templateId);
+    if (template?.isPremium && !canUsePremiumTemplates(plan)) {
+      return NextResponse.json(
+        { error: "Template premium memerlukan paket Pro atau Premium." },
+        { status: 403 }
+      );
+    }
+  }
 
   if (data.isPublished === true && !existing.isPublished) {
     const eventCount = await prisma.weddingEvent.count({ where: { invitationId: id } });

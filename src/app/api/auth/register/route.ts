@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { prisma } from "@/lib/prisma";
+import { getDbConnectionHelp, isDbConnectionError, withDbRetry } from "@/lib/prisma";
 import { registerSchema } from "@/lib/validations";
 import { hashPassword } from "@/lib/password";
 
@@ -17,7 +17,10 @@ export async function POST(request: Request) {
     }
 
     const email = parsed.data.email.toLowerCase().trim();
-    const existing = await prisma.user.findUnique({ where: { email } });
+
+    const existing = await withDbRetry((db) =>
+      db.user.findUnique({ where: { email } })
+    );
     if (existing) {
       return NextResponse.json(
         { error: { email: ["Email sudah terdaftar"] } },
@@ -26,17 +29,27 @@ export async function POST(request: Request) {
     }
 
     const passwordHash = await hashPassword(parsed.data.password);
-    await prisma.user.create({
-      data: {
-        name: parsed.data.name.trim(),
-        email,
-        passwordHash,
-      },
-    });
+    await withDbRetry((db) =>
+      db.user.create({
+        data: {
+          name: parsed.data.name.trim(),
+          email,
+          passwordHash,
+        },
+      })
+    );
 
     return NextResponse.json({ ok: true }, { status: 201 });
   } catch (err) {
     console.error("[register]", err);
+    if (isDbConnectionError(err)) {
+      return NextResponse.json(
+        {
+          error: getDbConnectionHelp(),
+        },
+        { status: 503 }
+      );
+    }
     const message =
       process.env.NODE_ENV === "development" && err instanceof Error
         ? err.message

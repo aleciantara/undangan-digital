@@ -166,6 +166,7 @@ export const updateInvitationSchema = z.object({
     .refine((v) => v === null || v === undefined || z.string().url().safeParse(v).success, {
       message: "URL tidak valid",
     }),
+  landscapeBackdropFill: z.boolean().optional(),
   opensAt: z
     .union([z.string(), z.null(), z.literal("")])
     .optional()

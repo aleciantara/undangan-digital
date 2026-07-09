@@ -19,13 +19,14 @@ type Props = {
   photos: Photo[];
   accentColor: string;
   primaryColor: string;
+  sectionIndex?: string;
 };
 
 function galleryOnly(photos: Photo[]) {
   return photos;
 }
 
-export function PhantomGallery({ photos, accentColor, primaryColor }: Props) {
+export function PhantomGallery({ photos, accentColor, primaryColor, sectionIndex }: Props) {
   const items = galleryOnly(photos);
   const trackRef = useRef<HTMLDivElement>(null);
   const [active, setActive] = useState(0);
@@ -91,7 +92,7 @@ export function PhantomGallery({ photos, accentColor, primaryColor }: Props) {
   return (
     <div className="phantom-gallery-section relative px-4 pb-24 sm:px-6">
       <div className="mx-auto max-w-4xl">
-        <PhantomSectionHeading index="02" accentColor={accentColor} primaryColor={primaryColor}>
+        <PhantomSectionHeading index={sectionIndex} accentColor={accentColor} primaryColor={primaryColor}>
           Galeri Malam Opera
         </PhantomSectionHeading>
 

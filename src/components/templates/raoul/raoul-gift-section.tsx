@@ -31,9 +31,10 @@ type Props = {
   >;
   accentColor: string;
   primaryColor: string;
+  sectionIndex?: string;
 };
 
-export function RaoulGiftSection({ invitation, accentColor, primaryColor }: Props) {
+export function RaoulGiftSection({ invitation, accentColor, primaryColor, sectionIndex }: Props) {
   const { groom: groomBank, bride: brideBank } = giftBankFromInvitation(invitation);
   const { groom: groomAddress, bride: brideAddress } = giftAddressFromInvitation(invitation);
   const intro = invitation.giftMessage?.trim() || DEFAULT_GIFT_INTRO;
@@ -52,7 +53,12 @@ export function RaoulGiftSection({ invitation, accentColor, primaryColor }: Prop
 
   return (
     <div className="raoul-gift px-4 py-16 sm:py-20">
-      <RaoulSectionHeading accentColor={accentColor} primaryColor={primaryColor} align="center">
+      <RaoulSectionHeading
+        index={sectionIndex}
+        accentColor={accentColor}
+        primaryColor={primaryColor}
+        align="center"
+      >
         {invitation.giftTitle?.trim() || "Kirim Kado"}
       </RaoulSectionHeading>
       <RaoulReveal variant="up">

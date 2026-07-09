@@ -14,6 +14,7 @@ type Props = {
   live: VideoBlock;
   accentColor: string;
   primaryColor: string;
+  sectionIndex?: string;
 };
 
 function VideoEmbed({ url, title }: { url: string; title: string }) {
@@ -36,14 +37,14 @@ function VideoEmbed({ url, title }: { url: string; title: string }) {
   );
 }
 
-export function RaoulVideoSection({ prewed, live, accentColor, primaryColor }: Props) {
+export function RaoulVideoSection({ prewed, live, accentColor, primaryColor, sectionIndex }: Props) {
   const hasPrewed = prewed.url && parseYoutubeVideoId(prewed.url);
   const hasLive = live.url && parseYoutubeVideoId(live.url);
   if (!hasPrewed && !hasLive) return null;
 
   return (
     <div className="raoul-video px-4 py-16 sm:py-20">
-      <RaoulSectionHeading index="02" accentColor={accentColor} primaryColor={primaryColor} align="center">
+      <RaoulSectionHeading index={sectionIndex} accentColor={accentColor} primaryColor={primaryColor} align="center">
         Video
       </RaoulSectionHeading>
       <div className="mx-auto mt-10 flex max-w-3xl flex-col gap-10">
