@@ -1,7 +1,7 @@
 "use client";
 
 import { parseYoutubeVideoId, youtubeEmbedUrl } from "@/lib/music-embed";
-import { GardenReveal } from "@/components/templates/garden/garden-reveal";
+import { PhantomReveal } from "@/components/templates/phantom/phantom-reveal";
 import { PhantomSectionHeading } from "./phantom-section-heading";
 
 type VideoBlock = {
@@ -30,6 +30,7 @@ function VideoEmbed({ url, title }: { url: string; title: string }) {
           title={title}
           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
           allowFullScreen
+          loading="lazy"
           className="phantom-video__iframe"
         />
       </div>
@@ -49,14 +50,14 @@ export function PhantomVideoSection({ prewed, live, accentColor, primaryColor, s
       </PhantomSectionHeading>
       <div className="mx-auto mt-10 flex max-w-3xl flex-col gap-10">
         {hasPrewed && (
-          <GardenReveal variant="up">
+          <PhantomReveal variant="up">
             <VideoEmbed url={prewed.url!} title={prewed.title ?? "Pre-Wedding Film"} />
-          </GardenReveal>
+          </PhantomReveal>
         )}
         {hasLive && (
-          <GardenReveal variant="up" delay={hasPrewed ? 100 : 0}>
+          <PhantomReveal variant="up" delay={hasPrewed ? 100 : 0}>
             <VideoEmbed url={live.url!} title={live.title ?? "Siaran Langsung"} />
-          </GardenReveal>
+          </PhantomReveal>
         )}
       </div>
     </div>

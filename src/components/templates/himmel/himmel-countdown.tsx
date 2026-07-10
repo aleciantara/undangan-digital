@@ -1,19 +1,8 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCountdown } from "@/hooks/use-countdown";
 
 type Props = { targetDate: string; label?: string; accentColor: string; primaryColor: string };
-
-function getRemaining(target: Date) {
-  const diff = target.getTime() - Date.now();
-  if (diff <= 0) return null;
-  return {
-    days: Math.floor(diff / (1000 * 60 * 60 * 24)),
-    hours: Math.floor((diff / (1000 * 60 * 60)) % 24),
-    minutes: Math.floor((diff / (1000 * 60)) % 60),
-    seconds: Math.floor((diff / 1000) % 60),
-  };
-}
 
 export function HimmelCountdown({
   targetDate,
@@ -21,19 +10,7 @@ export function HimmelCountdown({
   accentColor,
   primaryColor,
 }: Props) {
-  const [remaining, setRemaining] = useState<ReturnType<typeof getRemaining>>(null);
-  const [flip, setFlip] = useState(false);
-
-  useEffect(() => {
-    const target = new Date(targetDate);
-    const update = () => {
-      setRemaining(getRemaining(target));
-      setFlip((f) => !f);
-    };
-    update();
-    const id = setInterval(update, 1000);
-    return () => clearInterval(id);
-  }, [targetDate]);
+  const { remaining, flip } = useCountdown(targetDate);
 
   if (!remaining) {
     return (

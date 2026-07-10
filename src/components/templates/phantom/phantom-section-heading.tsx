@@ -1,6 +1,6 @@
 "use client";
 
-import { GardenReveal } from "@/components/templates/garden/garden-reveal";
+import { PhantomReveal } from "@/components/templates/phantom/phantom-reveal";
 
 type Props = {
   accentColor: string;
@@ -18,7 +18,7 @@ export function PhantomSectionHeading({
   align = "left",
 }: Props) {
   return (
-    <GardenReveal variant="clip" className="mb-10 sm:mb-14">
+    <PhantomReveal variant="clip" className="mb-10 sm:mb-14">
       <div
         className={`phantom-heading ${align === "center" ? "phantom-heading--center" : ""}`}
         style={{ "--hd-accent": accentColor, "--hd-primary": primaryColor } as React.CSSProperties}
@@ -29,6 +29,6 @@ export function PhantomSectionHeading({
           <span className="phantom-heading__rose">❧</span>
         </div>
       </div>
-    </GardenReveal>
+    </PhantomReveal>
   );
 }

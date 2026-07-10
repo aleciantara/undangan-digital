@@ -4,6 +4,7 @@ import { EnvelopeCover } from "@/components/invitation/envelope-cover";
 import { InvitationScrollProvider } from "@/components/invitation/invitation-scroll-context";
 import { InvitationMusicPlayer } from "@/components/invitation/invitation-music-player";
 import type { MusicPlayerHandle } from "@/components/invitation/music-player-handle";
+import { useImagePreload } from "@/hooks/use-image-preload";
 import { useCallback, useEffect, useRef, useState } from "react";
 
 type MusicConfig = {
@@ -20,10 +21,12 @@ type Props = {
   brideName: string;
   recipientName: string;
   accentColor: string;
-  envelopeTheme?: "default" | "garden" | "phantom" | "raoul" | "himmel";
+  envelopeTheme?: "default" | "phantom" | "raoul" | "himmel";
   headerText?: string;
   hintText?: string;
   music?: MusicConfig | null;
+  /** Critical above-the-fold image URLs to warm while the envelope animates. */
+  preloadImages?: string[];
   children: React.ReactNode;
 };
 
@@ -43,12 +46,16 @@ export function InvitationExperience({
   headerText,
   hintText,
   music,
+  preloadImages,
   children,
 }: Props) {
   const musicRef = useRef<MusicPlayerHandle>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
   const [phase, setPhase] = useState<Phase>("envelope");
   const [mounted, setMounted] = useState(false);
+  const [envelopeDone, setEnvelopeDone] = useState(false);
+
+  const preloadReady = useImagePreload(preloadImages ?? [], { enabled: mounted });
 
   useEffect(() => {
     setMounted(true);
@@ -65,8 +72,20 @@ export function InvitationExperience({
   }, [music?.autoplay, slug]);
 
   const handleEnvelopeComplete = useCallback(() => {
-    setPhase("open");
+    setEnvelopeDone(true);
   }, []);
+
+  // Reveal once the envelope finishes AND the critical images are warm. A short
+  // fallback ensures a slow image never traps the guest on the spinner.
+  useEffect(() => {
+    if (!envelopeDone || phase === "open") return;
+    if (preloadReady) {
+      setPhase("open");
+      return;
+    }
+    const fallback = window.setTimeout(() => setPhase("open"), 2500);
+    return () => window.clearTimeout(fallback);
+  }, [envelopeDone, preloadReady, phase]);
 
   if (!mounted) {
     return (
@@ -78,8 +97,6 @@ export function InvitationExperience({
               ? "env-overlay env-theme-raoul"
               : envelopeTheme === "himmel"
                 ? "env-overlay env-theme-himmel"
-              : envelopeTheme === "garden"
-                ? "env-overlay env-theme-garden"
                 : "env-marble"
         }`}
       >
@@ -91,8 +108,6 @@ export function InvitationExperience({
                 ? "text-[#7a6e58]"
                 : envelopeTheme === "himmel"
                   ? "text-[#6b8ab0]"
-                : envelopeTheme === "garden"
-                  ? "text-brand-brook-dark"
                   : "text-stone-500"
           }`}
         >
@@ -131,19 +146,39 @@ export function InvitationExperience({
         />
       )}
 
+      {envelopeDone && phase !== "open" && (
+        <div
+          className={`fixed inset-0 z-[60] flex items-center justify-center ${
+            envelopeTheme === "phantom"
+              ? "env-overlay env-theme-phantom"
+              : envelopeTheme === "raoul"
+                ? "env-overlay env-theme-raoul"
+                : envelopeTheme === "himmel"
+                  ? "env-overlay env-theme-himmel"
+                  : "env-marble"
+          }`}
+          aria-live="polite"
+        >
+          <span
+            className="h-9 w-9 animate-spin rounded-full border-2 border-current border-t-transparent"
+            style={{ color: accentColor }}
+            role="status"
+            aria-label="Memuat undangan"
+          />
+        </div>
+      )}
+
       <InvitationScrollProvider scrollRef={scrollRef} revealsActive={phase === "open"}>
         <div
           ref={scrollRef}
           className={
             phase === "open"
-              ? envelopeTheme === "garden"
-                ? "invitation-content--garden-reveal"
-                : envelopeTheme === "phantom"
-                  ? "invitation-content--phantom-reveal invitation-content--snap-mobile"
-                  : envelopeTheme === "raoul"
-                    ? "invitation-content--raoul-reveal invitation-content--snap-mobile"
-                    : envelopeTheme === "himmel"
-                      ? "invitation-content--himmel-reveal"
+              ? envelopeTheme === "phantom"
+                ? "invitation-content--phantom-reveal invitation-content--snap-mobile"
+                : envelopeTheme === "raoul"
+                  ? "invitation-content--raoul-reveal invitation-content--snap-mobile"
+                  : envelopeTheme === "himmel"
+                    ? "invitation-content--himmel-reveal"
                     : "invitation-content--revealed"
               : "pointer-events-none fixed inset-0 overflow-hidden opacity-0"
           }

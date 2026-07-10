@@ -1,7 +1,7 @@
 "use client";
 
 import { pickPhantomQuote } from "@/lib/phantom-quotes";
-import { GardenReveal } from "@/components/templates/garden/garden-reveal";
+import { PhantomReveal } from "@/components/templates/phantom/phantom-reveal";
 
 type Props = {
   groomName: string;
@@ -24,7 +24,7 @@ export function PhantomQuote({
 
   return (
     <div className="phantom-quote-section px-4 py-14 sm:py-20">
-      <GardenReveal variant="up">
+      <PhantomReveal variant="up">
         <div
           className="phantom-quote-panel relative mx-auto max-w-3xl px-8 py-12 sm:px-14 sm:py-14"
           style={{ "--quote-accent": accentColor } as React.CSSProperties}
@@ -39,7 +39,7 @@ export function PhantomQuote({
             <footer className="phantom-quote-panel__author mt-8">— {author}</footer>
           </blockquote>
         </div>
-      </GardenReveal>
+      </PhantomReveal>
     </div>
   );
 }

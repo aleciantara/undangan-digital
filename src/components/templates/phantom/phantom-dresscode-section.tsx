@@ -3,7 +3,7 @@
 import { DresscodeEventCard } from "@/components/invitation/dresscode-event-card";
 import { eventsWithDresscode } from "@/lib/dresscode-colors";
 import type { SerializedEvent } from "@/lib/invitation-types";
-import { GardenReveal } from "@/components/templates/garden/garden-reveal";
+import { PhantomReveal } from "@/components/templates/phantom/phantom-reveal";
 import { PhantomSectionHeading } from "./phantom-section-heading";
 
 type Props = {
@@ -38,7 +38,7 @@ export function PhantomDresscodeSection({
         </p>
         <div className="phantom-dresscode-grid mx-auto mt-10">
           {dressed.map((event, i) => (
-            <GardenReveal key={event.id} variant="up" delay={i * 80}>
+            <PhantomReveal key={event.id} variant="up" delay={i * 80}>
               <DresscodeEventCard
                 theme="phantom"
                 event={event}
@@ -46,7 +46,7 @@ export function PhantomDresscodeSection({
                 primaryColor={primaryColor}
                 index={i}
               />
-            </GardenReveal>
+            </PhantomReveal>
           ))}
         </div>
       </div>

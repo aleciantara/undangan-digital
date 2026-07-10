@@ -9,6 +9,8 @@ type Props = {
   brideName: string;
   groomPhoto: ResponsiveSlotMedia;
   bridePhoto: ResponsiveSlotMedia;
+  groomParents?: string | null;
+  brideParents?: string | null;
   accentColor: string;
   primaryColor: string;
 };
@@ -18,12 +20,14 @@ function PortraitCard({
   alt,
   name,
   role,
+  parents,
   variant,
 }: {
   media: ResponsiveSlotMedia;
   alt: string;
   name: string;
   role: string;
+  parents?: string | null;
   variant: "groom" | "bride";
 }) {
   return (
@@ -42,6 +46,14 @@ function PortraitCard({
 
       <figcaption className="raoul-portrait__name font-invitation">{name}</figcaption>
       <span className="raoul-portrait__role">{role}</span>
+      {parents?.trim() && (
+        <p className="raoul-portrait__parents">
+          <span className="raoul-portrait__parents-label">
+            {variant === "groom" ? "Putra dari" : "Putri dari"}
+          </span>
+          {parents}
+        </p>
+      )}
     </figure>
   );
 }
@@ -51,12 +63,14 @@ export function RaoulCoupleShowcase({
   brideName,
   groomPhoto,
   bridePhoto,
+  groomParents,
+  brideParents,
   accentColor,
   primaryColor,
 }: Props) {
   return (
     <div
-      className="raoul-couple-showcase px-4 py-20 sm:py-28"
+      className="raoul-couple-showcase px-4 py-16 sm:py-20"
       style={{ "--cs-accent": accentColor, "--cs-primary": primaryColor } as React.CSSProperties}
     >
       <RaoulReveal variant="clip">
@@ -76,6 +90,7 @@ export function RaoulCoupleShowcase({
             alt={groomName}
             name={groomName}
             role="Mempelai Pria"
+            parents={groomParents}
             variant="groom"
           />
         </RaoulReveal>
@@ -85,6 +100,7 @@ export function RaoulCoupleShowcase({
             alt={brideName}
             name={brideName}
             role="Mempelai Wanita"
+            parents={brideParents}
             variant="bride"
           />
         </RaoulReveal>

@@ -94,11 +94,11 @@ type LayerSpec = {
 
 const LAYER_SPECS: Record<HimmelFlowerDensity, LayerSpec[]> = {
   full: [
-    { layer: "back", count: 52, seed: 0, config: { scaleMin: 0.32, scaleMax: 0.8, spreadMin: 0, spreadMax: 92, opacity: 0.65 } },
-    { layer: "mid", count: 48, seed: 200, config: { scaleMin: 0.5, scaleMax: 1.15, spreadMin: 0, spreadMax: 88, opacity: 0.82 } },
-    { layer: "front", count: 32, seed: 400, config: { scaleMin: 0.65, scaleMax: 1.4, spreadMin: 0, spreadMax: 78, opacity: 0.96 } },
-    { layer: "back", count: 22, seed: 600, config: { scaleMin: 0.28, scaleMax: 0.62, spreadMin: 0, spreadMax: 42, opacity: 0.55, anchor: "top" } },
-    { layer: "mid", count: 18, seed: 700, config: { scaleMin: 0.4, scaleMax: 0.9, spreadMin: 0, spreadMax: 38, opacity: 0.7, anchor: "top" } },
+    { layer: "back", count: 36, seed: 0, config: { scaleMin: 0.32, scaleMax: 0.8, spreadMin: 0, spreadMax: 92, opacity: 0.65 } },
+    { layer: "mid", count: 34, seed: 200, config: { scaleMin: 0.5, scaleMax: 1.15, spreadMin: 0, spreadMax: 88, opacity: 0.82 } },
+    { layer: "front", count: 22, seed: 400, config: { scaleMin: 0.65, scaleMax: 1.4, spreadMin: 0, spreadMax: 78, opacity: 0.96 } },
+    { layer: "back", count: 15, seed: 600, config: { scaleMin: 0.28, scaleMax: 0.62, spreadMin: 0, spreadMax: 42, opacity: 0.55, anchor: "top" } },
+    { layer: "mid", count: 13, seed: 700, config: { scaleMin: 0.4, scaleMax: 0.9, spreadMin: 0, spreadMax: 38, opacity: 0.7, anchor: "top" } },
   ],
   lite: [
     { layer: "back", count: 28, seed: 0, config: { scaleMin: 0.32, scaleMax: 0.75, spreadMin: 0, spreadMax: 90, opacity: 0.62 } },

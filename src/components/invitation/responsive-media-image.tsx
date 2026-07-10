@@ -13,7 +13,7 @@ type Props = ImgProps & {
 };
 
 /** Picks portrait on mobile; landscape on desktop unless inside desktop portrait column mode. */
-export function ResponsiveMediaImage({ media, className, ...props }: Props) {
+export function ResponsiveMediaImage({ media, className, decoding = "async", ...props }: Props) {
   const desktopPortraitColumn = useDesktopPortraitColumn();
 
   if (media.landscape && !desktopPortraitColumn) {
@@ -21,13 +21,13 @@ export function ResponsiveMediaImage({ media, className, ...props }: Props) {
       <picture>
         <source media="(min-width: 768px)" srcSet={media.landscape} />
         {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src={media.portrait} alt={props.alt ?? ""} className={className} {...props} />
+        <img src={media.portrait} alt={props.alt ?? ""} className={className} decoding={decoding} {...props} />
       </picture>
     );
   }
 
   return (
     // eslint-disable-next-line @next/next/no-img-element
-    <img src={media.portrait} alt={props.alt ?? ""} className={className} {...props} />
+    <img src={media.portrait} alt={props.alt ?? ""} className={className} decoding={decoding} {...props} />
   );
 }

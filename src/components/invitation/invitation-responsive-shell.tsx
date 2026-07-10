@@ -19,7 +19,13 @@ export function InvitationResponsiveShell({ backdropUrl, enabled, children }: Pr
       <div className="invitation-responsive-shell">
         <div className="invitation-responsive-shell__backdrop" aria-hidden>
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={backdropUrl} alt="" className="invitation-responsive-shell__backdrop-img" />
+          <img
+            src={backdropUrl}
+            alt=""
+            className="invitation-responsive-shell__backdrop-img"
+            decoding="async"
+            fetchPriority="low"
+          />
         </div>
         <div className="invitation-responsive-shell__column">{children}</div>
       </div>

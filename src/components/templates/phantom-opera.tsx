@@ -5,8 +5,8 @@ import { RsvpSection } from "@/components/invitation/rsvp-section";
 import { WishesSection } from "@/components/invitation/wishes-section";
 import type { SerializedGuest, SerializedInvitation } from "@/lib/invitation-types";
 import { resolvePhantomMedia } from "@/lib/phantom-media";
-import { GardenCountdown } from "@/components/templates/garden/garden-countdown";
-import { GardenReveal } from "@/components/templates/garden/garden-reveal";
+import { PhantomCountdown } from "@/components/templates/phantom/phantom-countdown";
+import { PhantomReveal } from "@/components/templates/phantom/phantom-reveal";
 import { PhantomCoupleShowcase } from "@/components/templates/phantom/phantom-couple-showcase";
 import { PhantomEventCard } from "@/components/templates/phantom/phantom-event-card";
 import { PhantomDresscodeSection } from "@/components/templates/phantom/phantom-dresscode-section";
@@ -59,6 +59,13 @@ export function PhantomOperaTemplate({ invitation, guest }: Props) {
     giftEnabled: invitation.giftEnabled,
   });
 
+  const preloadImages = [
+    heroBg.portrait,
+    heroBg.landscape,
+    coupleBg.portrait,
+    coupleBg.landscape,
+  ].filter((url): url is string => Boolean(url));
+
   return (
     <InvitationExperience
       slug={invitation.slug}
@@ -80,6 +87,7 @@ export function PhantomOperaTemplate({ invitation, guest }: Props) {
             }
           : null
       }
+      preloadImages={preloadImages}
     >
       <InvitationResponsiveShell
         backdropUrl={landscapeBackdropUrl}
@@ -111,6 +119,8 @@ export function PhantomOperaTemplate({ invitation, guest }: Props) {
             brideName={invitation.brideName}
             groomPhoto={groomPhoto}
             bridePhoto={bridePhoto}
+            groomParents={invitation.groomParents}
+            brideParents={invitation.brideParents}
             accentColor={accentColor}
             primaryColor={primaryColor}
           />
@@ -144,22 +154,22 @@ export function PhantomOperaTemplate({ invitation, guest }: Props) {
 
           {nextEvent && (
             <div className="px-4 py-14 sm:py-20">
-              <GardenReveal variant="up">
+              <PhantomReveal variant="up">
                 <div className="phantom-panel mx-auto max-w-4xl px-5 py-9 sm:px-10 sm:py-12">
-                  <GardenCountdown
+                  <PhantomCountdown
                     targetDate={nextEvent.date}
                     label="Menuju malam yang dinanti"
                     accentColor={accentColor}
                     primaryColor={primaryColor}
                   />
                 </div>
-              </GardenReveal>
+              </PhantomReveal>
             </div>
           )}
         </PhantomSection>
 
         {invitation.events.length > 0 && (
-          <PhantomSection className="px-4 pb-20 sm:px-6">
+          <PhantomSection className="px-4 py-16 sm:px-6 sm:py-20">
             <div className="mx-auto max-w-4xl">
               <PhantomSectionHeading
                 index={sectionNo.events}
@@ -170,7 +180,7 @@ export function PhantomOperaTemplate({ invitation, guest }: Props) {
               </PhantomSectionHeading>
               <div className="space-y-5">
                 {invitation.events.map((event, i) => (
-                  <GardenReveal key={event.id} variant="up" delay={i * 80}>
+                  <PhantomReveal key={event.id} variant="up" delay={i * 80}>
                     <PhantomEventCard
                       event={event}
                       accentColor={accentColor}
@@ -178,7 +188,7 @@ export function PhantomOperaTemplate({ invitation, guest }: Props) {
                       index={i}
                       coupleNames={coupleNames}
                     />
-                  </GardenReveal>
+                  </PhantomReveal>
                 ))}
               </div>
             </div>
@@ -186,7 +196,7 @@ export function PhantomOperaTemplate({ invitation, guest }: Props) {
         )}
 
         {eventsWithDresscode(invitation.events).length > 0 && (
-          <PhantomSection className="px-4 pb-20 sm:px-6">
+          <PhantomSection className="px-4 sm:px-6">
             <PhantomDresscodeSection
               events={invitation.events}
               accentColor={accentColor}
@@ -234,7 +244,7 @@ export function PhantomOperaTemplate({ invitation, guest }: Props) {
           blendTop
           blendBottom
           stickyBg
-          className="px-4 pb-20 sm:px-6"
+          className="px-4 py-16 sm:px-6 sm:py-20"
         >
           <div className="mx-auto max-w-2xl">
             <PhantomSectionHeading
@@ -244,7 +254,7 @@ export function PhantomOperaTemplate({ invitation, guest }: Props) {
             >
               Konfirmasi Kehadiran
             </PhantomSectionHeading>
-            <GardenReveal variant="up">
+            <PhantomReveal variant="up">
               <div className="phantom-panel phantom-interactive px-5 py-8 sm:px-8 sm:py-10">
                 <RsvpSection
                   invitationId={invitation.id}
@@ -252,11 +262,11 @@ export function PhantomOperaTemplate({ invitation, guest }: Props) {
                   guest={guest}
                 />
               </div>
-            </GardenReveal>
+            </PhantomReveal>
           </div>
         </PhantomSection>
 
-        <PhantomSection className="px-4 pb-28 sm:px-6">
+        <PhantomSection className="px-4 py-16 sm:px-6 sm:py-20">
           <div className="mx-auto max-w-2xl">
             <PhantomSectionHeading
               index={sectionNo.wishes}
@@ -265,7 +275,7 @@ export function PhantomOperaTemplate({ invitation, guest }: Props) {
             >
               Ucapan & Doa
             </PhantomSectionHeading>
-            <GardenReveal variant="up" delay={80}>
+            <PhantomReveal variant="up" delay={80}>
               <div className="phantom-panel phantom-interactive px-5 py-8 sm:px-8 sm:py-10">
                 <WishesSection
                   invitationId={invitation.id}
@@ -273,12 +283,12 @@ export function PhantomOperaTemplate({ invitation, guest }: Props) {
                   defaultGuestName={guest?.name ?? ""}
                 />
               </div>
-            </GardenReveal>
+            </PhantomReveal>
           </div>
         </PhantomSection>
 
         <FooterPhotoSection theme="phantom" bgImage={footerBg} scrim="heavy" blendTop>
-          <GardenReveal variant="up">
+          <PhantomReveal variant="up">
             <footer
               className="phantom-footer text-center"
               style={{ "--ft-accent": accentColor, "--ft-primary": primaryColor } as React.CSSProperties}
@@ -292,7 +302,7 @@ export function PhantomOperaTemplate({ invitation, guest }: Props) {
               <p className="phantom-footer__thanks">Terima kasih atas doa restunya</p>
               <p className="phantom-footer__tagline font-invitation italic">Till the end of time</p>
             </footer>
-          </GardenReveal>
+          </PhantomReveal>
         </FooterPhotoSection>
       </div>
       </InvitationResponsiveShell>

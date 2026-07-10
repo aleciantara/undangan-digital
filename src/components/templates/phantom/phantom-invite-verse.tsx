@@ -1,5 +1,5 @@
 import { resolveInviteVerse } from "@/lib/invite-verse-presets";
-import { GardenReveal } from "@/components/templates/garden/garden-reveal";
+import { PhantomReveal } from "@/components/templates/phantom/phantom-reveal";
 
 type Props = {
   inviteVerseTitle?: string | null;
@@ -27,12 +27,12 @@ export function PhantomInviteVerse({
       className="phantom-verse px-4 py-12 sm:py-16"
       style={{ "--verse-accent": accentColor, "--verse-primary": primaryColor } as React.CSSProperties}
     >
-      <GardenReveal variant="up">
+      <PhantomReveal variant="up">
         <div className="phantom-verse__panel mx-auto max-w-3xl px-6 py-10 sm:px-10 sm:py-12">
           <p className="phantom-verse__eyebrow">{verse.title}</p>
           <p className="phantom-verse__text font-invitation">{verse.text}</p>
         </div>
-      </GardenReveal>
+      </PhantomReveal>
     </div>
   );
 }

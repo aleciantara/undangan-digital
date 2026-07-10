@@ -1,7 +1,7 @@
 "use client";
 
 import { GiftSectionGrid } from "@/components/invitation/gift-section-grid";
-import { GardenReveal } from "@/components/templates/garden/garden-reveal";
+import { PhantomReveal } from "@/components/templates/phantom/phantom-reveal";
 import {
   DEFAULT_GIFT_INTRO,
   giftAddressFromInvitation,
@@ -61,7 +61,7 @@ export function PhantomGiftSection({ invitation, accentColor, primaryColor, sect
       >
         {invitation.giftTitle?.trim() || "Kirim Kado"}
       </PhantomSectionHeading>
-      <GardenReveal variant="up">
+      <PhantomReveal variant="up">
         <div className="phantom-panel mx-auto mt-10 max-w-4xl px-5 py-8 sm:px-8 sm:py-10">
           <GiftSectionGrid
             theme="phantom"
@@ -74,7 +74,7 @@ export function PhantomGiftSection({ invitation, accentColor, primaryColor, sect
             brideAddress={brideAddress}
           />
         </div>
-      </GardenReveal>
+      </PhantomReveal>
     </div>
   );
 }

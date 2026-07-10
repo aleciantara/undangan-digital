@@ -20,10 +20,10 @@ type Props = {
   headerText?: string;
   /** click for invitations; hover for landing demo */
   activateOn?: "click" | "hover";
-  /** landing: bare on page + green envelope / pink accents; invitations: same garden styling on fullscreen */
-  embedTheme?: "default" | "garden" | "phantom" | "raoul" | "himmel";
-  /** use garden envelope on fullscreen overlay (invitation templates) */
-  envelopeTheme?: "default" | "garden" | "phantom" | "raoul" | "himmel";
+  /** landing: bare on page; invitations: themed styling on fullscreen */
+  embedTheme?: "default" | "phantom" | "raoul" | "himmel";
+  /** themed envelope on fullscreen overlay (invitation templates) */
+  envelopeTheme?: "default" | "phantom" | "raoul" | "himmel";
 };
 
 const FLIP_MS = 1000;
@@ -54,9 +54,6 @@ export function EnvelopeCover({
   const timersRef = useRef<number[]>([]);
 
   const isEmbedded = variant === "embedded";
-  const isGarden =
-    (isEmbedded && embedTheme === "garden") ||
-    (!isEmbedded && (envelopeTheme === "garden" || embedTheme === "garden"));
   const isPhantom =
     (isEmbedded && embedTheme === "phantom") ||
     (!isEmbedded && (envelopeTheme === "phantom" || embedTheme === "phantom"));
@@ -66,7 +63,7 @@ export function EnvelopeCover({
   const isHimmel =
     (isEmbedded && embedTheme === "himmel") ||
     (!isEmbedded && (envelopeTheme === "himmel" || embedTheme === "himmel"));
-  const isThemed = isGarden || isPhantom || isRaoul || isHimmel;
+  const isThemed = isPhantom || isRaoul || isHimmel;
   const shouldLoop = loop ?? isEmbedded;
 
   const isFlapOpen = step === "open" || step === "pull" || step === "exit";
@@ -119,10 +116,8 @@ export function EnvelopeCover({
 
   const wrapperClass =
     variant === "overlay"
-      ? `env-overlay fixed inset-0 z-50 flex flex-col items-center justify-center px-4 ${isGarden ? "env-theme-garden" : ""} ${isPhantom ? "env-theme-phantom" : ""} ${isRaoul ? "env-theme-raoul" : ""} ${isHimmel ? "env-theme-himmel" : ""} ${step === "exit" && !shouldLoop ? "env-overlay--exit" : ""}`
-      : isGarden
-        ? "env-embedded-bare env-theme-garden relative flex flex-col items-center justify-center py-4 sm:py-6"
-        : isPhantom
+      ? `env-overlay fixed inset-0 z-50 flex flex-col items-center justify-center px-4 ${isPhantom ? "env-theme-phantom" : ""} ${isRaoul ? "env-theme-raoul" : ""} ${isHimmel ? "env-theme-himmel" : ""} ${step === "exit" && !shouldLoop ? "env-overlay--exit" : ""}`
+      : isPhantom
           ? "env-embedded-bare env-theme-phantom relative flex flex-col items-center justify-center py-4 sm:py-6"
           : isRaoul
             ? "env-embedded-bare env-theme-raoul relative flex flex-col items-center justify-center py-4 sm:py-6"
@@ -144,8 +139,6 @@ export function EnvelopeCover({
               ? "text-[#6b8ab0]"
             : isPhantom
               ? "text-[#c9929a]"
-              : isGarden
-                ? "text-brand-amaranth"
                 : isEmbedded
                   ? "text-brand-muted"
                   : "text-stone-500"
@@ -272,8 +265,6 @@ export function EnvelopeCover({
               ? "text-[#6b8ab0]"
             : isPhantom
               ? "text-[#8a6a72]"
-              : isGarden
-                ? "text-brand-brook-dark"
                 : isEmbedded
                   ? "text-brand-muted"
                   : "text-stone-500"

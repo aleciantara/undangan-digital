@@ -7,7 +7,7 @@ import type { SerializedGuest, SerializedInvitation } from "@/lib/invitation-typ
 import { resolveHimmelMedia } from "@/lib/himmel-media";
 import { eventsWithDresscode } from "@/lib/dresscode-colors";
 import { buildInvitationSectionNumbers } from "@/lib/invitation-section-numbers";
-import { HimmelAtmosphere } from "@/components/templates/himmel/himmel-atmosphere";
+import { HimmelAtmosphere } from "@/components/templates/himmel/himmel-atmosphere-lazy";
 import { HimmelCoupleShowcase } from "@/components/templates/himmel/himmel-couple-showcase";
 import { HimmelCountdown } from "@/components/templates/himmel/himmel-countdown";
 import { HimmelDresscodeSection } from "@/components/templates/himmel/himmel-dresscode-section";
@@ -64,6 +64,13 @@ export function HimmelFrierenTemplate({ invitation, guest }: Props) {
   const afterCoupleTone = invitation.events.length > 0 ? "pearl" : "ivory";
   const coupleNames = `${invitation.groomName} & ${invitation.brideName}`;
 
+  const preloadImages = [
+    heroBg?.portrait,
+    heroBg?.landscape,
+    coupleBg?.portrait,
+    coupleBg?.landscape,
+  ].filter((url): url is string => Boolean(url));
+
   return (
     <InvitationExperience
       slug={invitation.slug}
@@ -85,6 +92,7 @@ export function HimmelFrierenTemplate({ invitation, guest }: Props) {
             }
           : null
       }
+      preloadImages={preloadImages}
     >
       <InvitationResponsiveShell
         backdropUrl={landscapeBackdropUrl}
@@ -118,6 +126,8 @@ export function HimmelFrierenTemplate({ invitation, guest }: Props) {
             brideName={invitation.brideName}
             groomPhoto={groomPhoto}
             bridePhoto={bridePhoto}
+            groomParents={invitation.groomParents}
+            brideParents={invitation.brideParents}
             accentColor={accentColor}
             primaryColor={primaryColor}
           />
@@ -167,7 +177,7 @@ export function HimmelFrierenTemplate({ invitation, guest }: Props) {
         </HimmelSection>
 
         {invitation.events.length > 0 && (
-          <HimmelSection tone="pearl" meadowSeed={221} blendTop blendFrom={afterCoupleTone} blendBottom blendTo="ivory" className="px-4 pb-20 sm:px-6">
+          <HimmelSection tone="pearl" meadowSeed={221} blendTop blendFrom={afterCoupleTone} blendBottom blendTo="ivory" className="px-4 py-16 sm:px-6 sm:py-20">
             <div className="mx-auto max-w-4xl">
               <HimmelSectionHeading index={sectionNo.events} accentColor={accentColor} primaryColor={primaryColor}>
                 Rangkaian Acara
@@ -190,7 +200,7 @@ export function HimmelFrierenTemplate({ invitation, guest }: Props) {
         )}
 
         {eventsWithDresscode(invitation.events).length > 0 && (
-          <HimmelSection tone="ivory" meadowSeed={112} blendTop blendFrom="pearl" blendBottom blendTo="ivory">
+          <HimmelSection tone="ivory" meadowSeed={112} blendTop blendFrom="ivory" blendBottom blendTo="ivory">
             <HimmelDresscodeSection
               events={invitation.events}
               accentColor={accentColor}
@@ -200,7 +210,7 @@ export function HimmelFrierenTemplate({ invitation, guest }: Props) {
           </HimmelSection>
         )}
 
-        <HimmelSection tone="ivory" meadowSeed={113} blendTop blendFrom={afterCoupleTone} blendBottom blendTo="ivory">
+        <HimmelSection tone="ivory" meadowSeed={113} blendTop blendFrom="ivory" blendBottom blendTo="ivory">
           <HimmelGallery
             photos={galleryPhotos}
             accentColor={accentColor}
@@ -237,12 +247,11 @@ export function HimmelFrierenTemplate({ invitation, guest }: Props) {
           scrim="light"
           blendTop
           blendBottom
-          blendFrom="ivory"
+          blendFrom={invitation.giftEnabled ? "pearl" : "ivory"}
           blendTo="pearl"
           stickyBg
-          className="pb-20"
         >
-          <div className="mx-auto max-w-2xl px-4 pt-10 sm:px-6 sm:pt-14">
+          <div className="mx-auto max-w-2xl px-4 py-16 sm:px-6 sm:py-20">
             <HimmelSectionHeading index={sectionNo.rsvp} accentColor={accentColor} primaryColor={primaryColor}>
               Konfirmasi Kehadiran
             </HimmelSectionHeading>
@@ -258,7 +267,7 @@ export function HimmelFrierenTemplate({ invitation, guest }: Props) {
           </div>
         </HimmelSection>
 
-        <HimmelSection tone="pearl" meadowSeed={225} blendTop blendFrom="pearl" blendBottom blendTo="pearl" className="px-4 pb-32 pt-8 sm:px-6 sm:pt-12">
+        <HimmelSection tone="pearl" meadowSeed={225} blendTop blendFrom="pearl" blendBottom blendTo="pearl" className="px-4 py-16 sm:px-6 sm:py-20">
           <div className="mx-auto max-w-2xl">
             <HimmelSectionHeading index={sectionNo.wishes} accentColor={accentColor} primaryColor={primaryColor}>
               Ucapan & Doa

@@ -85,7 +85,7 @@ export function HimmelGallery({ photos, accentColor, primaryColor, sectionIndex 
   if (items.length === 0) return null;
 
   return (
-    <div className="himmel-gallery-section relative px-4 pb-24 sm:px-6">
+    <div className="himmel-gallery-section relative px-4 py-16 sm:px-6 sm:py-20">
       <div className="mx-auto max-w-4xl">
         <HimmelSectionHeading index={sectionIndex} accentColor={accentColor} primaryColor={primaryColor}>
           Galeri di Bawah Sinar Matahari
@@ -108,7 +108,7 @@ export function HimmelGallery({ photos, accentColor, primaryColor, sectionIndex 
                     aria-label={label ?? `Foto ${i + 1}`}
                   >
                     {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img src={photo.url} alt={label ?? ""} className="himmel-gallery__img" />
+                    <img src={photo.url} alt={label ?? ""} className="himmel-gallery__img" loading="lazy" decoding="async" />
                     {label && <span className="himmel-gallery__caption">{label}</span>}
                   </button>
                 );

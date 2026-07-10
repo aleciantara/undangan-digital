@@ -3,7 +3,7 @@
 import { ChevronLeft, ChevronRight, X } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { PhantomSectionHeading } from "./phantom-section-heading";
-import { GardenReveal } from "@/components/templates/garden/garden-reveal";
+import { PhantomReveal } from "@/components/templates/phantom/phantom-reveal";
 
 type Photo = { id: string; url: string; caption?: string | null };
 
@@ -90,13 +90,13 @@ export function PhantomGallery({ photos, accentColor, primaryColor, sectionIndex
   if (items.length === 0) return null;
 
   return (
-    <div className="phantom-gallery-section relative px-4 pb-24 sm:px-6">
+    <div className="phantom-gallery-section relative px-4 py-16 sm:px-6 sm:py-20">
       <div className="mx-auto max-w-4xl">
         <PhantomSectionHeading index={sectionIndex} accentColor={accentColor} primaryColor={primaryColor}>
           Galeri Malam Opera
         </PhantomSectionHeading>
 
-        <GardenReveal variant="up">
+        <PhantomReveal variant="up">
           <div
             className="phantom-gallery"
             style={{ "--gal-accent": accentColor, "--gal-primary": primaryColor } as React.CSSProperties}
@@ -113,7 +113,7 @@ export function PhantomGallery({ photos, accentColor, primaryColor, sectionIndex
                   aria-label={label ?? `Foto ${i + 1}`}
                 >
                   {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src={photo.url} alt={label ?? ""} className="phantom-gallery__img" />
+                  <img src={photo.url} alt={label ?? ""} className="phantom-gallery__img" loading="lazy" decoding="async" />
                   {label && <span className="phantom-gallery__caption">{label}</span>}
                 </button>
               );
@@ -152,7 +152,7 @@ export function PhantomGallery({ photos, accentColor, primaryColor, sectionIndex
               </button>
             </div>
           </div>
-        </GardenReveal>
+        </PhantomReveal>
       </div>
 
       {lightbox !== null && (() => {

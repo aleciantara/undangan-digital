@@ -137,7 +137,6 @@
     position: relative;
     padding: clamp(1.75rem, 5vw, 2.75rem) clamp(1.5rem, 4vw, 2.5rem);
     background: linear-gradient(168deg, rgba(253, 251, 247, 0.97) 0%, rgba(244, 239, 230, 0.94) 100%);
-    backdrop-filter: blur(10px);
     border-radius: var(--raoul-radius-lg);
     box-shadow: var(--raoul-shadow-card);
   }
@@ -267,6 +266,10 @@
     background: linear-gradient(90deg, transparent, color-mix(in srgb, var(--raoul-gold) 50%, transparent), transparent);
   }
   .raoul-section--dark .raoul-heading__gem { color: var(--raoul-gold); }
+  .raoul-section--solid {
+    content-visibility: auto;
+    contain-intrinsic-size: auto 700px;
+  }
   .raoul-section--has-bg {
     isolation: isolate;
     content-visibility: auto;
@@ -858,6 +861,24 @@
     letter-spacing: 0.35em;
     text-transform: uppercase;
     color: var(--raoul-gold);
+  }
+  .raoul-portrait__parents {
+    margin: 0.6rem auto 0;
+    max-width: 20rem;
+    font-size: 0.82rem;
+    line-height: 1.55;
+    text-align: center;
+    color: color-mix(in srgb, var(--inv-ink) 75%, transparent);
+  }
+  .raoul-portrait__parents-label {
+    display: block;
+    margin-bottom: 0.15rem;
+    font-size: 0.56rem;
+    font-weight: 700;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--raoul-gold);
+    opacity: 0.9;
   }
 
   .raoul-gallery__track {

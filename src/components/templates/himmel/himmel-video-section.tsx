@@ -30,6 +30,7 @@ function VideoEmbed({ url, title }: { url: string; title: string }) {
           title={title}
           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
           allowFullScreen
+          loading="lazy"
           className="himmel-video__iframe"
         />
       </div>

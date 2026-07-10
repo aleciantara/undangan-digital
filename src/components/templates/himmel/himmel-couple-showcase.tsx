@@ -9,6 +9,8 @@ type Props = {
   brideName: string;
   groomPhoto: ResponsiveSlotMedia;
   bridePhoto: ResponsiveSlotMedia;
+  groomParents?: string | null;
+  brideParents?: string | null;
   accentColor: string;
   primaryColor: string;
 };
@@ -18,12 +20,14 @@ function PortraitCard({
   alt,
   name,
   role,
+  parents,
   variant,
 }: {
   media: ResponsiveSlotMedia;
   alt: string;
   name: string;
   role: string;
+  parents?: string | null;
   variant: "groom" | "bride";
 }) {
   return (
@@ -41,6 +45,14 @@ function PortraitCard({
 
       <figcaption className="himmel-portrait__name font-invitation">{name}</figcaption>
       <span className="himmel-portrait__role">{role}</span>
+      {parents?.trim() && (
+        <p className="himmel-portrait__parents">
+          <span className="himmel-portrait__parents-label">
+            {variant === "groom" ? "Putra dari" : "Putri dari"}
+          </span>
+          {parents}
+        </p>
+      )}
     </figure>
   );
 }
@@ -50,12 +62,14 @@ export function HimmelCoupleShowcase({
   brideName,
   groomPhoto,
   bridePhoto,
+  groomParents,
+  brideParents,
   accentColor,
   primaryColor,
 }: Props) {
   return (
     <div
-      className="himmel-couple-showcase px-4 py-20 sm:py-28"
+      className="himmel-couple-showcase px-4 py-16 sm:py-20"
       style={{ "--cs-accent": accentColor, "--cs-primary": primaryColor } as React.CSSProperties}
     >
       <HimmelReveal variant="clip">
@@ -75,6 +89,7 @@ export function HimmelCoupleShowcase({
             alt={groomName}
             name={groomName}
             role="Mempelai Pria"
+            parents={groomParents}
             variant="groom"
           />
         </HimmelReveal>
@@ -84,6 +99,7 @@ export function HimmelCoupleShowcase({
             alt={brideName}
             name={brideName}
             role="Mempelai Wanita"
+            parents={brideParents}
             variant="bride"
           />
         </HimmelReveal>

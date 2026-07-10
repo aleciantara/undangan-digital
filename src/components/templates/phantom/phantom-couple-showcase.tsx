@@ -2,13 +2,15 @@
 
 import { ResponsiveMediaImage } from "@/components/invitation/responsive-media-image";
 import type { ResponsiveSlotMedia } from "@/lib/responsive-media";
-import { GardenReveal } from "@/components/templates/garden/garden-reveal";
+import { PhantomReveal } from "@/components/templates/phantom/phantom-reveal";
 
 type Props = {
   groomName: string;
   brideName: string;
   groomPhoto: ResponsiveSlotMedia;
   bridePhoto: ResponsiveSlotMedia;
+  groomParents?: string | null;
+  brideParents?: string | null;
   accentColor: string;
   primaryColor: string;
 };
@@ -18,12 +20,14 @@ function PortraitCard({
   alt,
   name,
   role,
+  parents,
   variant,
 }: {
   media: ResponsiveSlotMedia;
   alt: string;
   name: string;
   role: string;
+  parents?: string | null;
   variant: "groom" | "bride";
 }) {
   return (
@@ -56,6 +60,14 @@ function PortraitCard({
 
       <figcaption className="phantom-portrait__name font-invitation">{name}</figcaption>
       <span className="phantom-portrait__role">{role}</span>
+      {parents?.trim() && (
+        <p className="phantom-portrait__parents">
+          <span className="phantom-portrait__parents-label">
+            {variant === "groom" ? "Putra dari" : "Putri dari"}
+          </span>
+          {parents}
+        </p>
+      )}
     </figure>
   );
 }
@@ -65,38 +77,42 @@ export function PhantomCoupleShowcase({
   brideName,
   groomPhoto,
   bridePhoto,
+  groomParents,
+  brideParents,
   accentColor,
   primaryColor,
 }: Props) {
   return (
     <div
-      className="phantom-couple-showcase px-4 py-16 sm:py-24"
+      className="phantom-couple-showcase px-4 py-16 sm:py-20"
       style={{ "--cs-accent": accentColor, "--cs-primary": primaryColor } as React.CSSProperties}
     >
-      <GardenReveal variant="clip">
+      <PhantomReveal variant="clip">
         <p className="phantom-couple-showcase__eyebrow text-center">The Bride & Groom</p>
         <p className="phantom-couple-showcase__sub text-center">Mempelai</p>
-      </GardenReveal>
+      </PhantomReveal>
 
       <div className="phantom-couple-showcase__grid phantom-couple-showcase__grid--duo mx-auto mt-12 max-w-3xl">
-        <GardenReveal variant="up" delay={80}>
+        <PhantomReveal variant="up" delay={80}>
           <PortraitCard
             media={groomPhoto}
             alt={groomName}
             name={groomName}
             role="Mempelai Pria"
+            parents={groomParents}
             variant="groom"
           />
-        </GardenReveal>
-        <GardenReveal variant="up" delay={180}>
+        </PhantomReveal>
+        <PhantomReveal variant="up" delay={180}>
           <PortraitCard
             media={bridePhoto}
             alt={brideName}
             name={brideName}
             role="Mempelai Wanita"
+            parents={brideParents}
             variant="bride"
           />
-        </GardenReveal>
+        </PhantomReveal>
       </div>
     </div>
   );

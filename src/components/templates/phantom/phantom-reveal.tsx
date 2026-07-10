@@ -12,6 +12,6 @@ type Props = {
   delay?: number;
 };
 
-export function RaoulReveal(props: Props) {
-  return <InvitationReveal theme="raoul" {...props} />;
+export function PhantomReveal(props: Props) {
+  return <InvitationReveal theme="phantom" {...props} />;
 }

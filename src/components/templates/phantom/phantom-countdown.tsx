@@ -4,7 +4,7 @@ import { useCountdown } from "@/hooks/use-countdown";
 
 type Props = { targetDate: string; label?: string; accentColor: string; primaryColor: string };
 
-export function RaoulCountdown({
+export function PhantomCountdown({
   targetDate,
   label = "Menuju hari bahagia",
   accentColor,
@@ -14,7 +14,7 @@ export function RaoulCountdown({
 
   if (!remaining) {
     return (
-      <p className="raoul-countdown-done text-center font-invitation text-[clamp(2rem,8vw,3.5rem)] font-semibold text-inv-accent">
+      <p className="phantom-countdown-done text-center font-invitation text-[clamp(2rem,8vw,3.5rem)] font-semibold text-inv-accent">
         Hari bahagia telah tiba
       </p>
     );
@@ -29,26 +29,26 @@ export function RaoulCountdown({
 
   return (
     <div
-      className="raoul-countdown"
+      className="phantom-countdown-editorial"
       style={{ "--cd-accent": accentColor, "--cd-primary": primaryColor } as React.CSSProperties}
     >
-      <p className="raoul-countdown__label">{label}</p>
+      <p className="phantom-countdown-editorial__label">{label}</p>
 
-      <div className="raoul-countdown__row">
+      <div className="phantom-countdown-editorial__row">
         {units.map((u, i) => (
-          <div key={u.label} className="raoul-countdown__unit">
+          <div key={u.label} className="phantom-countdown-editorial__unit">
             {i > 0 && (
-              <span className="raoul-countdown__colon font-invitation" aria-hidden>
+              <span className="phantom-countdown-editorial__colon font-invitation" aria-hidden>
                 :
               </span>
             )}
-            <div className="raoul-countdown__num-wrap">
+            <div className="phantom-countdown-editorial__num-wrap">
               <span
-                className={`raoul-countdown__num font-invitation ${u.live && flip ? "raoul-countdown__num--flip" : ""}`}
+                className={`phantom-countdown-editorial__num font-invitation ${u.live && flip ? "phantom-countdown-editorial__num--flip" : ""}`}
               >
                 {String(u.value).padStart(2, "0")}
               </span>
-              <span className="raoul-countdown__unit-label">{u.label}</span>
+              <span className="phantom-countdown-editorial__unit-label">{u.label}</span>
             </div>
           </div>
         ))}
